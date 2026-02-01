@@ -10,6 +10,7 @@ import {
   Activity,
   Settings,
   StickyNote,
+  MessageCircle,
 } from 'lucide-react'
 import { AppShell } from './AppShell'
 
@@ -24,6 +25,7 @@ const sectionRoutes: Record<string, string> = {
   '/instructions': '/sections/instructions/screen-designs/InstructionList/fullscreen',
   '/activity': '/sections/activity/screen-designs/ActivityFeed/fullscreen',
   '/notes': '/sections/notes/screen-designs/NotesCanvas/fullscreen',
+  '/chat': '/sections/chat/screen-designs/ChatPage/fullscreen',
   '/settings': '/sections/settings/screen-designs/SettingsPage/fullscreen',
 }
 
@@ -60,6 +62,7 @@ export default function ShellWrapper({ children }: ShellWrapperProps) {
     { label: 'Instructions', href: '/instructions', icon: <FileText className="h-5 w-5" />, isActive: currentSection === '/instructions' },
     { label: 'Activity', href: '/activity', icon: <Activity className="h-5 w-5" />, isActive: currentSection === '/activity' },
     { label: 'Notes', href: '/notes', icon: <StickyNote className="h-5 w-5" />, isActive: currentSection === '/notes' },
+    { label: 'Chat', href: '/chat', icon: <MessageCircle className="h-5 w-5" />, isActive: currentSection === '/chat' },
     { label: 'Settings', href: '/settings', icon: <Settings className="h-5 w-5" />, isActive: currentSection === '/settings' },
   ], [currentSection])
 
