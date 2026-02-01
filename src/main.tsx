@@ -2,10 +2,16 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppShell } from '@/components/AppShell'
-import { Home, Registry, Activity, Settings } from '@/pages'
+import { Home, Registry, Activity, Settings, AuthCallback } from '@/pages'
 import './index.css'
 
 const router = createBrowserRouter([
+  // Auth callback (public route, no shell)
+  {
+    path: '/auth/callback',
+    element: <AuthCallback />,
+  },
+  // Main app routes with shell
   {
     path: '/',
     element: <AppShell />,
