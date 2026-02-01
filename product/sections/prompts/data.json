@@ -1,0 +1,41 @@
+{
+  "items": [
+    {
+      "id": "prompt-claude-team",
+      "name": "Claude Team Instructions",
+      "path": "prompts/system/claude-team.md",
+      "description": "Basis instructies voor Claude als development team",
+      "created": "2026-01-31",
+      "project": "global",
+      "tags": ["system", "core"],
+      "type": "system",
+      "content": "# Claude Code Team Instructies\n\nJe werkt voor Shadow, een MKB-directeur.\n- Hij codeert NIET - jij bent zijn complete development team\n- Hij geeft opdrachten, jij voert uit\n- Hij denkt visueel - gebruik tabellen, diagrammen, lijsten\n- Hij wil controle - log alles, vraag bij twijfel",
+      "preview": "# Claude Code Team Instructies\nJe werkt voor Shadow, een MKB-directeur."
+    },
+    {
+      "id": "prompt-code-review",
+      "name": "Code Review Template",
+      "path": "prompts/templates/code-review.md",
+      "description": "Template voor code review feedback",
+      "created": "2026-01-25",
+      "project": "global",
+      "tags": ["template", "review"],
+      "type": "template",
+      "variables": ["file_path", "code_snippet", "focus_areas"],
+      "content": "Review de volgende code in {{file_path}}:\n\n```\n{{code_snippet}}\n```\n\nFocus op: {{focus_areas}}",
+      "preview": "Review de volgende code in {{file_path}}:\n```"
+    },
+    {
+      "id": "prompt-veha-context",
+      "name": "VEHA Project Context",
+      "path": "prompts/project/veha-context.md",
+      "description": "Context voor VEHA app development",
+      "created": "2026-01-20",
+      "project": "veha-app",
+      "tags": ["project", "context"],
+      "type": "project",
+      "content": "VEHA is een Next.js 16 applicatie met Supabase SSR.\n\nTech stack:\n- Next.js 16.1.6\n- Supabase SSR\n- Tailwind CSS v4\n- TypeScript",
+      "preview": "VEHA is een Next.js 16 applicatie met Supabase SSR.\nTech stack:"
+    }
+  ]
+}

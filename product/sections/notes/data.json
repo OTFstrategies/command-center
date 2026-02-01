@@ -1,0 +1,77 @@
+{
+  "currentProject": "command-center",
+  "canvases": [
+    {
+      "project": "command-center",
+      "viewport": { "x": 0, "y": 0, "zoom": 1 },
+      "notes": [
+        {
+          "id": "note-1",
+          "title": "Project Visie",
+          "content": "# Command Center\n\nCentraal beheer van alle Claude Code assets.\n\n- Automatische detectie\n- Registry per type\n- Dashboard voor overzicht",
+          "position": { "x": 100, "y": 100 },
+          "size": { "width": 280, "height": 200 },
+          "project": "command-center",
+          "connections": ["note-2", "note-3"],
+          "created": "2026-01-31T10:00:00Z",
+          "updated": "2026-01-31T10:00:00Z"
+        },
+        {
+          "id": "note-2",
+          "title": "Fase 1",
+          "content": "## Structuur\n\n- [x] Mappen aanmaken\n- [x] CLAUDE.md\n- [x] Registry JSON\n- [x] Bestaande items",
+          "position": { "x": 450, "y": 80 },
+          "size": { "width": 220, "height": 160 },
+          "project": "command-center",
+          "connections": [],
+          "created": "2026-01-31T10:05:00Z",
+          "updated": "2026-01-31T18:00:00Z"
+        },
+        {
+          "id": "note-3",
+          "title": "Fase 2-5",
+          "content": "## Nog te doen\n\n- [ ] Supabase sync\n- [ ] Dashboard bouwen\n- [ ] Hooks automatisering",
+          "position": { "x": 450, "y": 280 },
+          "size": { "width": 220, "height": 140 },
+          "project": "command-center",
+          "connections": [],
+          "created": "2026-01-31T10:10:00Z",
+          "updated": "2026-01-31T10:10:00Z"
+        },
+        {
+          "id": "note-4",
+          "title": "Design Beslissingen",
+          "content": "- Monochroom zinc\n- Subtiel blauw accent\n- Apple minimalistisch\n- Less is more",
+          "position": { "x": 100, "y": 350 },
+          "size": { "width": 280, "height": 120 },
+          "project": "command-center",
+          "connections": [],
+          "created": "2026-01-31T12:00:00Z",
+          "updated": "2026-01-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "project": "veha-app",
+      "viewport": { "x": 0, "y": 0, "zoom": 1 },
+      "notes": [
+        {
+          "id": "note-veha-1",
+          "title": "VEHA Architectuur",
+          "content": "# Stack\n\n- Next.js 16\n- Supabase SSR\n- Tailwind v4",
+          "position": { "x": 100, "y": 100 },
+          "size": { "width": 250, "height": 150 },
+          "project": "veha-app",
+          "connections": [],
+          "created": "2026-01-20T09:00:00Z",
+          "updated": "2026-01-20T09:00:00Z"
+        }
+      ]
+    },
+    {
+      "project": "global",
+      "viewport": { "x": 0, "y": 0, "zoom": 1 },
+      "notes": []
+    }
+  ]
+}

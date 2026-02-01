@@ -1,0 +1,83 @@
+{
+  "categories": [
+    {
+      "name": "agent-os",
+      "isExpanded": true,
+      "commands": [
+        {
+          "id": "agent-os",
+          "name": "agent-os",
+          "description": "Start een nieuw project met Agent OS - spec-driven development",
+          "hasSubcommands": true,
+          "subcommandCount": 6,
+          "subcommands": [
+            "agent-os/write-spec",
+            "agent-os/shape-spec",
+            "agent-os/create-tasks",
+            "agent-os/implement-tasks",
+            "agent-os/orchestrate-tasks",
+            "agent-os/plan-product"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "design-os",
+      "isExpanded": false,
+      "commands": [
+        {
+          "id": "design-os",
+          "name": "design-os",
+          "description": "Start een nieuw Design OS project - product planning en design tool",
+          "hasSubcommands": false
+        }
+      ]
+    },
+    {
+      "name": "miro",
+      "isExpanded": false,
+      "commands": [
+        {
+          "id": "miro-start",
+          "name": "miro-start",
+          "description": "Miro Toolkit Navigator - Start hier voor flowcharts, frameworks en architecture diagrams",
+          "hasSubcommands": false
+        },
+        {
+          "id": "miro-flowcharts",
+          "name": "miro-flowcharts",
+          "description": "Flowchart categorie - Kies tussen process flows, decision trees of workflows",
+          "hasSubcommands": true,
+          "subcommandCount": 12
+        },
+        {
+          "id": "miro-frameworks",
+          "name": "miro-frameworks",
+          "description": "Frameworks categorie - Kies tussen Kanban boards, matrices of roadmaps",
+          "hasSubcommands": true,
+          "subcommandCount": 12
+        },
+        {
+          "id": "miro-architecture",
+          "name": "miro-architecture",
+          "description": "Architecture categorie - Kies tussen system diagrams, components of data flows",
+          "hasSubcommands": true,
+          "subcommandCount": 12
+        }
+      ]
+    },
+    {
+      "name": "utility",
+      "isExpanded": false,
+      "commands": [
+        {
+          "id": "vibe-sync",
+          "name": "vibe-sync",
+          "description": "Synchroniseer taken met Vibe Kanban",
+          "hasSubcommands": false
+        }
+      ]
+    }
+  ],
+  "totalCount": 49
+}

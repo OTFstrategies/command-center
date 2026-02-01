@@ -1,0 +1,46 @@
+{
+  "supabase": {
+    "projectUrl": "https://command-center.supabase.co",
+    "isConnected": true
+  },
+  "syncStatus": "synced",
+  "lastSyncTime": "2026-01-31T17:30:00Z",
+  "syncTypes": [
+    {
+      "type": "APIs",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 4
+    },
+    {
+      "type": "Prompts",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 3
+    },
+    {
+      "type": "Skills",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 1
+    },
+    {
+      "type": "Agents",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 8
+    },
+    {
+      "type": "Commands",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 49
+    },
+    {
+      "type": "Instructions",
+      "enabled": true,
+      "lastSynced": "2026-01-31T17:30:00Z",
+      "itemCount": 2
+    }
+  ]
+}

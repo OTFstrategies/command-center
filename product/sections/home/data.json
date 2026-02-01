@@ -1,0 +1,62 @@
+{
+  "stats": {
+    "apis": 4,
+    "prompts": 3,
+    "skills": 1,
+    "agents": 8,
+    "commands": 49,
+    "instructions": 2
+  },
+  "recentActivity": [
+    {
+      "id": "act-1",
+      "type": "command",
+      "assetId": "vibe-sync",
+      "assetName": "vibe-sync",
+      "event": "used",
+      "timestamp": "2026-01-31T18:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "global"
+    },
+    {
+      "id": "act-2",
+      "type": "agent",
+      "assetId": "agent-os-implementer",
+      "assetName": "implementer",
+      "event": "used",
+      "timestamp": "2026-01-31T14:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "agent-os"
+    },
+    {
+      "id": "act-3",
+      "type": "skill",
+      "assetId": "miro-patterns",
+      "assetName": "miro-patterns",
+      "event": "used",
+      "timestamp": "2026-01-30T10:00:00Z",
+      "relativeTime": "gisteren",
+      "project": "global"
+    },
+    {
+      "id": "act-4",
+      "type": "command",
+      "assetId": "miro-flowcharts-process-linear",
+      "assetName": "miro-flowcharts-process-linear",
+      "event": "used",
+      "timestamp": "2026-01-29T16:00:00Z",
+      "relativeTime": "2 dagen geleden",
+      "project": "global"
+    },
+    {
+      "id": "act-5",
+      "type": "instruction",
+      "assetId": "command-center-rules",
+      "assetName": "Command Center Rules",
+      "event": "created",
+      "timestamp": "2026-01-31T12:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "command-center"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "entries": [
+    {
+      "id": "act-1",
+      "type": "command",
+      "assetId": "vibe-sync",
+      "assetName": "vibe-sync",
+      "event": "used",
+      "timestamp": "2026-01-31T18:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "global"
+    },
+    {
+      "id": "act-2",
+      "type": "agent",
+      "assetId": "agent-os-implementer",
+      "assetName": "implementer",
+      "event": "used",
+      "timestamp": "2026-01-31T14:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "agent-os"
+    },
+    {
+      "id": "act-3",
+      "type": "instruction",
+      "assetId": "instr-trigger-system",
+      "assetName": "Command Center Trigger System",
+      "event": "created",
+      "timestamp": "2026-01-31T12:00:00Z",
+      "relativeTime": "vandaag",
+      "project": "global"
+    },
+    {
+      "id": "act-4",
+      "type": "skill",
+      "assetId": "miro-patterns",
+      "assetName": "miro-patterns",
+      "event": "used",
+      "timestamp": "2026-01-30T10:00:00Z",
+      "relativeTime": "gisteren",
+      "project": "global"
+    },
+    {
+      "id": "act-5",
+      "type": "command",
+      "assetId": "miro-flowcharts-process-linear",
+      "assetName": "miro-flowcharts-process-linear",
+      "event": "used",
+      "timestamp": "2026-01-29T16:00:00Z",
+      "relativeTime": "2 dagen geleden",
+      "project": "global"
+    },
+    {
+      "id": "act-6",
+      "type": "agent",
+      "assetId": "agent-os-spec-writer",
+      "assetName": "spec-writer",
+      "event": "used",
+      "timestamp": "2026-01-28T09:00:00Z",
+      "relativeTime": "3 dagen geleden",
+      "project": "agent-os"
+    },
+    {
+      "id": "act-7",
+      "type": "prompt",
+      "assetId": "prompt-veha-context",
+      "assetName": "VEHA Project Context",
+      "event": "created",
+      "timestamp": "2026-01-20T11:00:00Z",
+      "relativeTime": "11 dagen geleden",
+      "project": "veha-app"
+    },
+    {
+      "id": "act-8",
+      "type": "api",
+      "assetId": "api-supabase",
+      "assetName": "Supabase Production",
+      "event": "created",
+      "timestamp": "2026-01-10T14:00:00Z",
+      "relativeTime": "3 weken geleden",
+      "project": "veha-app"
+    }
+  ],
+  "hasMore": true,
+  "filters": {
+    "type": "all",
+    "period": "all",
+    "project": "all"
+  }
+}

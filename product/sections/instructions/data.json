@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "id": "instr-trigger-system",
+      "name": "Command Center Trigger System",
+      "path": "instructions/workflows/trigger-system.md",
+      "description": "Instructies voor automatische detectie en opslag van nieuwe assets",
+      "created": "2026-01-31",
+      "project": "global",
+      "tags": ["workflow", "automation"],
+      "scope": "workflow",
+      "content": "# Trigger System\n\nVraag ALTIJD om opslag wanneer je een van deze aanmaakt:\n- API configuratie\n- Prompt template\n- Skill definitie\n- Agent definitie\n- Instructie set\n- Slash command"
+    },
+    {
+      "id": "instr-veha-coding",
+      "name": "VEHA Coding Standards",
+      "path": "instructions/per-project/veha-coding.md",
+      "description": "Coding standards specifiek voor het VEHA project",
+      "created": "2026-01-20",
+      "project": "veha-app",
+      "tags": ["project", "standards"],
+      "scope": "project",
+      "content": "# VEHA Coding Standards\n\n- Gebruik Supabase SSR patterns\n- Server Components waar mogelijk\n- Nederlandse comments\n- Tailwind CSS v4 utilities"
+    }
+  ]
+}

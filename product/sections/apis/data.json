@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "api-supabase",
+      "name": "Supabase Production",
+      "path": "apis/supabase/config.json",
+      "description": "Supabase project voor productie database en auth",
+      "created": "2026-01-10",
+      "project": "veha-app",
+      "tags": ["database", "auth", "production"],
+      "service": "Supabase",
+      "authType": "api_key",
+      "baseUrl": "https://qfhsctnvwsne.supabase.co"
+    },
+    {
+      "id": "api-openai",
+      "name": "OpenAI API",
+      "path": "apis/openai/config.json",
+      "description": "OpenAI API voor embeddings en completions",
+      "created": "2026-01-15",
+      "project": "global",
+      "tags": ["ai", "embeddings"],
+      "service": "OpenAI",
+      "authType": "bearer",
+      "baseUrl": "https://api.openai.com/v1"
+    },
+    {
+      "id": "api-miro",
+      "name": "Miro Board API",
+      "path": "apis/miro/config.json",
+      "description": "Miro API voor board management",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["diagrams", "boards"],
+      "service": "Miro",
+      "authType": "oauth",
+      "baseUrl": "https://api.miro.com/v2"
+    },
+    {
+      "id": "api-vercel",
+      "name": "Vercel Deployment",
+      "path": "apis/vercel/config.json",
+      "description": "Vercel API voor deployments",
+      "created": "2026-01-20",
+      "project": "global",
+      "tags": ["deployment", "hosting"],
+      "service": "Vercel",
+      "authType": "bearer",
+      "baseUrl": "https://api.vercel.com"
+    }
+  ]
+}

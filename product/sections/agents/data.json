@@ -1,0 +1,92 @@
+{
+  "items": [
+    {
+      "id": "agent-os-spec-initializer",
+      "name": "spec-initializer",
+      "path": "agents/agent-os/spec-initializer.md",
+      "description": "Initialiseert een nieuwe spec folder en slaat het ruwe idee op",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["spec", "initialization"],
+      "tools": ["Write", "Bash"],
+      "toolCount": 2
+    },
+    {
+      "id": "agent-os-spec-writer",
+      "name": "spec-writer",
+      "path": "agents/agent-os/spec-writer.md",
+      "description": "Schrijft gedetailleerde specificatie documenten voor development",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["spec", "writing"],
+      "tools": ["Write", "Read", "WebFetch"],
+      "toolCount": 3
+    },
+    {
+      "id": "agent-os-spec-shaper",
+      "name": "spec-shaper",
+      "path": "agents/agent-os/spec-shaper.md",
+      "description": "Verzamelt gedetailleerde requirements via gerichte vragen en visuele analyse",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["spec", "requirements"],
+      "tools": ["Read", "AskUserQuestion", "Write"],
+      "toolCount": 3
+    },
+    {
+      "id": "agent-os-spec-verifier",
+      "name": "spec-verifier",
+      "path": "agents/agent-os/spec-verifier.md",
+      "description": "Verifieert de volledigheid en kwaliteit van specs en takenlijsten",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["spec", "verification"],
+      "tools": ["Read", "Glob", "Grep"],
+      "toolCount": 3
+    },
+    {
+      "id": "agent-os-product-planner",
+      "name": "product-planner",
+      "path": "agents/agent-os/product-planner.md",
+      "description": "Plant product features en maakt product documentatie",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["planning", "product"],
+      "tools": ["Write", "Read", "WebFetch"],
+      "toolCount": 3
+    },
+    {
+      "id": "agent-os-tasks-list-creator",
+      "name": "tasks-list-creator",
+      "path": "agents/agent-os/tasks-list-creator.md",
+      "description": "Maakt gedetailleerde en strategische takenlijsten voor spec implementatie",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["tasks", "planning"],
+      "tools": ["Write", "Read"],
+      "toolCount": 2
+    },
+    {
+      "id": "agent-os-implementer",
+      "name": "implementer",
+      "path": "agents/agent-os/implementer.md",
+      "description": "Implementeert features door het volgen van tasks.md voor een spec",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["implementation", "development"],
+      "tools": ["Write", "Read", "Bash", "Edit"],
+      "toolCount": 4
+    },
+    {
+      "id": "agent-os-implementation-verifier",
+      "name": "implementation-verifier",
+      "path": "agents/agent-os/implementation-verifier.md",
+      "description": "Verifieert de end-to-end implementatie van een spec",
+      "created": "2026-01-06",
+      "project": "agent-os",
+      "tags": ["verification", "testing"],
+      "tools": ["Read", "Bash", "Playwright"],
+      "toolCount": 3
+    }
+  ]
+}
