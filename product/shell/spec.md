@@ -6,13 +6,8 @@ Minimalistische sidebar navigatie met icon-only weergave en tooltips on hover. D
 
 ## Navigation Structure
 
-- **Home** → Dashboard met statistieken en recente activiteit
-- **APIs** → Lijst van API configuraties
-- **Prompts** → Prompt library met filter op type
-- **Skills** → Skills overzicht met file counts
-- **Agents** → Agent definities met tool counts
-- **Commands** → Slash commands gegroepeerd per categorie
-- **Instructions** → Instructie sets met scope filter
+- **Home** → Dashboard met statistieken per asset type en recente activiteit
+- **Registry** → Asset beheer met tabs voor APIs, Prompts, Skills, Agents, Commands, Instructions
 - **Activity** → Chronologische activiteiten feed
 - **Settings** → Connectie status en voorkeuren
 

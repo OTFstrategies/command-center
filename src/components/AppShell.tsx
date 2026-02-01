@@ -1,24 +1,9 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import {
-  Home,
-  Key,
-  MessageSquare,
-  Sparkles,
-  Bot,
-  Terminal,
-  FileText,
-  Activity,
-  Settings,
-} from 'lucide-react'
+import { Home, Database, Activity, Settings } from 'lucide-react'
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
-  { to: '/apis', icon: Key, label: 'APIs' },
-  { to: '/prompts', icon: MessageSquare, label: 'Prompts' },
-  { to: '/skills', icon: Sparkles, label: 'Skills' },
-  { to: '/agents', icon: Bot, label: 'Agents' },
-  { to: '/commands', icon: Terminal, label: 'Commands' },
-  { to: '/instructions', icon: FileText, label: 'Instructions' },
+  { to: '/registry', icon: Database, label: 'Registry' },
   { to: '/activity', icon: Activity, label: 'Activity' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]
