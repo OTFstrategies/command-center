@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+@theme {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-body);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+code, pre, .font-mono {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles - subtle */
+:focus-visible {
+  outline: 1.5px solid rgba(0, 0, 0, 0.15);
+  outline-offset: 2px;
+}
+
+/* Bold Glassmorphism */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 30px;
+  --accent-blue: #3B82F6;
+  --glow-blue: rgba(59, 130, 246, 0.4);
+  --glow-blue-subtle: rgba(59, 130, 246, 0.15);
+}
+
+.dark {
+  --glass-bg: rgba(24, 24, 27, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass-subtle {
+  background: rgba(24, 24, 27, 0.5);
+}
+
+.glow-blue {
+  box-shadow: 0 0 30px var(--glow-blue-subtle);
+}
+
+.glow-blue-hover:hover {
+  box-shadow: 0 0 40px var(--glow-blue);
+}
+
+.text-glow-blue:hover {
+  text-shadow: 0 0 20px var(--glow-blue);
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, [role="button"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
