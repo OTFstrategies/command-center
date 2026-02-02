@@ -13,6 +13,33 @@ export interface Project {
   updated_at: string
 }
 
+export interface ProjectFolder {
+  id: string
+  path: string
+  description: string | null
+  sort_order: number
+}
+
+export interface ProjectCredential {
+  id: string
+  service: string
+  username: string | null
+  password: string | null
+  notes: string | null
+}
+
+export interface ProjectChangelog {
+  id: string
+  description: string
+  created_at: string
+}
+
+export interface ProjectDetail extends Project {
+  folders: ProjectFolder[]
+  credentials: ProjectCredential[]
+  changelog: ProjectChangelog[]
+}
+
 export async function getProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from('projects')
@@ -25,4 +52,27 @@ export async function getProjects(): Promise<Project[]> {
     return []
   }
   return data || []
+}
+
+export async function getProjectBySlug(slug: string): Promise<ProjectDetail | null> {
+  const { data: project, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error || !project) return null
+
+  const [folders, credentials, changelog] = await Promise.all([
+    supabase.from('project_folders').select('*').eq('project_id', project.id).order('sort_order'),
+    supabase.from('project_credentials').select('*').eq('project_id', project.id),
+    supabase.from('project_changelog').select('*').eq('project_id', project.id).order('created_at', { ascending: false }),
+  ])
+
+  return {
+    ...project,
+    folders: folders.data || [],
+    credentials: credentials.data || [],
+    changelog: changelog.data || [],
+  }
 }
