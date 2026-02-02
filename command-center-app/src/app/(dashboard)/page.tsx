@@ -2,6 +2,7 @@ import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText } from 'lucide-re
 import { getStats, getRecentActivity } from '@/lib/registry'
 import { getProjects } from '@/lib/projects'
 import Link from 'next/link'
+import type { AssetStats } from '@/types'
 
 const assetTypes = [
   { key: 'apis', label: 'APIs', icon: Key },
@@ -12,7 +13,11 @@ const assetTypes = [
   { key: 'instructions', label: 'Instructions', icon: FileText },
 ] as const
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
+interface HomePageProps {
+  searchParams: Promise<{ project?: string }>
+}
+
+export default async function HomePage({ searchParams }: HomePageProps) {
   const { project } = await searchParams
   const [stats, recentActivity, projects] = await Promise.all([
     getStats(project),
@@ -67,7 +72,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           </h2>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
             {assetTypes.map((type) => {
-              const count = stats[type.key as keyof typeof stats]
+              const count = stats[type.key as keyof AssetStats]
               return (
                 <Link
                   key={type.key}
@@ -78,7 +83,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
                   <span className="text-zinc-400 group-hover:text-[var(--accent-blue)]">{count}</span>
                 </Link>
               )
-            ))}
+            })}
           </div>
         </section>
 
