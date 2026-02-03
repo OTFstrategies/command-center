@@ -5,12 +5,12 @@ import Link from 'next/link'
 import type { AssetStats } from '@/types'
 
 const assetTypes = [
-  { key: 'apis', label: 'APIs', icon: Key },
-  { key: 'prompts', label: 'Prompts', icon: MessageSquare },
-  { key: 'skills', label: 'Skills', icon: Sparkles },
-  { key: 'agents', label: 'Agents', icon: Bot },
-  { key: 'commands', label: 'Commands', icon: Terminal },
-  { key: 'instructions', label: 'Instructions', icon: FileText },
+  { key: 'api', statsKey: 'apis', label: 'APIs', icon: Key },
+  { key: 'prompt', statsKey: 'prompts', label: 'Prompts', icon: MessageSquare },
+  { key: 'skill', statsKey: 'skills', label: 'Skills', icon: Sparkles },
+  { key: 'agent', statsKey: 'agents', label: 'Agents', icon: Bot },
+  { key: 'command', statsKey: 'commands', label: 'Commands', icon: Terminal },
+  { key: 'instruction', statsKey: 'instructions', label: 'Instructions', icon: FileText },
 ] as const
 
 interface HomePageProps {
@@ -72,7 +72,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </h2>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
             {assetTypes.map((type) => {
-              const count = stats[type.key as keyof AssetStats]
+              const count = stats[type.statsKey as keyof AssetStats]
               return (
                 <Link
                   key={type.key}
