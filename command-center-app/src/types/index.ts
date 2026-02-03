@@ -1,0 +1,266 @@
+// =============================================================================
+// BASE TYPES
+// =============================================================================
+
+export interface Asset {
+  id: string;
+  name: string;
+  path: string;
+  description: string;
+  created: string;
+  project: string;
+  tags: string[];
+}
+
+// =============================================================================
+// HOME / DASHBOARD
+// =============================================================================
+
+export interface AssetStats {
+  apis: number;
+  prompts: number;
+  skills: number;
+  agents: number;
+  commands: number;
+  instructions: number;
+}
+
+export interface ActivityItem {
+  id: string;
+  type: 'api' | 'prompt' | 'skill' | 'agent' | 'command' | 'instruction';
+  assetId: string;
+  assetName: string;
+  event: 'created' | 'used';
+  timestamp: string;
+  relativeTime: string;
+  project: string;
+}
+
+export interface HomeData {
+  stats: AssetStats;
+  recentActivity: ActivityItem[];
+}
+
+// =============================================================================
+// APIs
+// =============================================================================
+
+export interface Api extends Asset {
+  service: string;
+  authType: 'api_key' | 'oauth' | 'basic' | 'bearer';
+  endpoints?: string[];
+  baseUrl?: string;
+}
+
+export interface ApiListItem {
+  id: string;
+  name: string;
+  service: string;
+  authType: string;
+  project: string;
+}
+
+export interface ApiDetail extends Api {
+  credentials: {
+    key: string; // Always masked: "sk-...xxxx"
+  };
+}
+
+// =============================================================================
+// PROMPTS
+// =============================================================================
+
+export type PromptType = 'system' | 'project' | 'template';
+
+export interface Prompt extends Asset {
+  type: PromptType;
+  content: string;
+  variables?: string[];
+  preview: string;
+}
+
+export interface PromptListItem {
+  id: string;
+  name: string;
+  type: PromptType;
+  preview: string;
+  project: string;
+}
+
+// =============================================================================
+// SKILLS
+// =============================================================================
+
+export interface Skill extends Asset {
+  files: string[];
+  fileCount: number;
+  dependencies?: string[];
+  skillMdPreview?: string;
+}
+
+export interface SkillListItem {
+  id: string;
+  name: string;
+  fileCount: number;
+  project: string;
+}
+
+// =============================================================================
+// AGENTS
+// =============================================================================
+
+export interface Agent extends Asset {
+  tools: string[];
+  toolCount: number;
+  parent?: string;
+  config?: Record<string, unknown>;
+}
+
+export interface AgentListItem {
+  id: string;
+  name: string;
+  toolCount: number;
+  parent?: string;
+  project: string;
+}
+
+// =============================================================================
+// COMMANDS
+// =============================================================================
+
+export interface Command extends Asset {
+  category: string;
+  subcommands?: string[];
+  hasSubcommands: boolean;
+}
+
+export interface CommandCategory {
+  name: string;
+  commands: CommandListItem[];
+  isExpanded: boolean;
+}
+
+export interface CommandListItem {
+  id: string;
+  name: string;
+  description: string;
+  hasSubcommands: boolean;
+  subcommandCount?: number;
+}
+
+// =============================================================================
+// INSTRUCTIONS
+// =============================================================================
+
+export type InstructionScope = 'workflow' | 'project';
+
+export interface Instruction extends Asset {
+  scope: InstructionScope;
+  content: string;
+}
+
+export interface InstructionListItem {
+  id: string;
+  name: string;
+  scope: InstructionScope;
+  project: string;
+}
+
+// =============================================================================
+// ACTIVITY
+// =============================================================================
+
+export type AssetType = 'api' | 'prompt' | 'skill' | 'agent' | 'command' | 'instruction';
+export type EventType = 'created' | 'used';
+export type PeriodFilter = 'today' | 'week' | 'month' | 'all';
+
+export interface ActivityEntry {
+  id: string;
+  type: AssetType;
+  assetId: string;
+  assetName: string;
+  event: EventType;
+  timestamp: string;
+  relativeTime: string;
+  project: string;
+}
+
+export interface ActivityFilters {
+  type: AssetType | 'all';
+  period: PeriodFilter;
+  project: string | 'all';
+}
+
+export interface ActivityData {
+  entries: ActivityEntry[];
+  hasMore: boolean;
+  filters: ActivityFilters;
+}
+
+// =============================================================================
+// SETTINGS
+// =============================================================================
+
+export type SyncStatus = 'synced' | 'pending' | 'error' | 'never';
+
+export interface SyncTypeConfig {
+  type: string;
+  enabled: boolean;
+  lastSynced?: string;
+  itemCount: number;
+}
+
+export interface SupabaseConfig {
+  projectUrl: string;
+  isConnected: boolean;
+}
+
+export interface SettingsData {
+  supabase: SupabaseConfig;
+  syncStatus: SyncStatus;
+  lastSyncTime?: string;
+  syncTypes: SyncTypeConfig[];
+}
+
+// =============================================================================
+// NOTES
+// =============================================================================
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export interface Note {
+  id: string;
+  title: string;
+  content: string;
+  position: Position;
+  size: Size;
+  project: string;
+  connections: string[];
+  created: string;
+  updated: string;
+}
+
+export interface CanvasViewport {
+  x: number;
+  y: number;
+  zoom: number;
+}
+
+export interface NotesCanvas {
+  project: string;
+  notes: Note[];
+  viewport: CanvasViewport;
+}
+
+export interface NotesData {
+  canvases: NotesCanvas[];
+  currentProject: string;
+}
