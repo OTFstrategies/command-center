@@ -1,5 +1,7 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+  "version": 2,
+  "buildCommand": "cd command-center-app && npm run build",
+  "installCommand": "cd command-center-app && npm install",
+  "framework": "nextjs",
+  "outputDirectory": "command-center-app/.next"
 }
