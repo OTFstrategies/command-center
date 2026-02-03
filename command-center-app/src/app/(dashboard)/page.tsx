@@ -73,10 +73,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
             {assetTypes.map((type) => {
               const count = stats[type.statsKey as keyof AssetStats]
+              const href = project
+                ? `/registry?type=${type.key}&project=${project}`
+                : `/registry?type=${type.key}`
               return (
                 <Link
                   key={type.key}
-                  href={`/registry?type=${type.key}`}
+                  href={href}
                   className="group flex items-center gap-2 text-sm text-zinc-600 transition-all duration-300 hover:text-[var(--accent-blue)] text-glow-blue"
                 >
                   <span className="font-medium">{type.label}</span>

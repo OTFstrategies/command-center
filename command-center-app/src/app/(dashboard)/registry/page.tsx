@@ -1,5 +1,6 @@
 import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText } from 'lucide-react'
 import { getAgents, getApis, getCommands, getInstructions, getPrompts, getSkills } from '@/lib/registry'
+import Link from 'next/link'
 
 const typeConfig = {
   api: { icon: Key, label: 'API' },
@@ -12,6 +13,14 @@ const typeConfig = {
 
 interface Props {
   searchParams: Promise<{ type?: string; project?: string }>
+}
+
+function buildUrl(type: string | null, project: string | undefined) {
+  const params = new URLSearchParams()
+  if (type) params.set('type', type)
+  if (project) params.set('project', project)
+  const query = params.toString()
+  return query ? `/registry?${query}` : '/registry'
 }
 
 export default async function RegistryPage({ searchParams }: Props) {
@@ -59,8 +68,8 @@ export default async function RegistryPage({ searchParams }: Props) {
 
         {/* Type filters */}
         <div className="mt-8 flex flex-wrap gap-2">
-          <a
-            href="/registry"
+          <Link
+            href={buildUrl(null, project)}
             className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
               !type
                 ? 'bg-[var(--accent-blue)] text-white glow-blue'
@@ -68,11 +77,11 @@ export default async function RegistryPage({ searchParams }: Props) {
             }`}
           >
             All
-          </a>
+          </Link>
           {Object.entries(typeConfig).map(([key, config]) => (
-            <a
+            <Link
               key={key}
-              href={`/registry?type=${key}`}
+              href={buildUrl(key, project)}
               className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
                 type === key
                   ? 'bg-[var(--accent-blue)] text-white glow-blue'
@@ -80,7 +89,7 @@ export default async function RegistryPage({ searchParams }: Props) {
               }`}
             >
               {config.label}s
-            </a>
+            </Link>
           ))}
         </div>
 
