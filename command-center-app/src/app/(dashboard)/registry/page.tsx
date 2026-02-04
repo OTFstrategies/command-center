@@ -2,6 +2,9 @@ import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText } from 'lucide-re
 import { getAgents, getApis, getCommands, getInstructions, getPrompts, getSkills } from '@/lib/registry'
 import Link from 'next/link'
 
+// Disable caching - always fetch fresh data
+export const dynamic = 'force-dynamic'
+
 const typeConfig = {
   api: { icon: Key, label: 'API' },
   prompt: { icon: MessageSquare, label: 'Prompt' },

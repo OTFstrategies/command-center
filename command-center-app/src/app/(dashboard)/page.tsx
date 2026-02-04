@@ -4,6 +4,9 @@ import { getProjects } from '@/lib/projects'
 import Link from 'next/link'
 import type { AssetStats } from '@/types'
 
+// Disable caching - always fetch fresh data
+export const dynamic = 'force-dynamic'
+
 const assetTypes = [
   { key: 'api', statsKey: 'apis', label: 'APIs', icon: Key },
   { key: 'prompt', statsKey: 'prompts', label: 'Prompts', icon: MessageSquare },
