@@ -26,3 +26,4 @@ dist-ssr
 .vercel
 .playwright-mcp/
 .claude/
+sync-cli/.env
