@@ -1,0 +1,20 @@
+{
+  "name": "command-center-sync",
+  "version": "1.0.0",
+  "description": "Sync CLI for Command Center - syncs local registry to Supabase",
+  "type": "module",
+  "scripts": {
+    "sync": "npx tsx sync.ts",
+    "sync:dry": "npx tsx sync.ts --dry-run",
+    "sync:apis": "npx tsx sync.ts --type api",
+    "sync:prompts": "npx tsx sync.ts --type prompt",
+    "sync:skills": "npx tsx sync.ts --type skill",
+    "sync:agents": "npx tsx sync.ts --type agent",
+    "sync:commands": "npx tsx sync.ts --type command",
+    "sync:instructions": "npx tsx sync.ts --type instruction"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "@types/node": "^20.11.0"
+  }
+}
