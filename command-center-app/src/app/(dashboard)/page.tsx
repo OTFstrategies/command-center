@@ -3,9 +3,11 @@ import { getStats, getRecentActivity } from '@/lib/registry'
 import { getProjects } from '@/lib/projects'
 import Link from 'next/link'
 import type { AssetStats } from '@/types'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // Disable caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 const assetTypes = [
   { key: 'api', statsKey: 'apis', label: 'APIs', icon: Key },
@@ -21,6 +23,7 @@ interface HomePageProps {
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
+  noStore()
   const { project } = await searchParams
   const [stats, recentActivity, projects] = await Promise.all([
     getStats(project),

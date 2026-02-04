@@ -1,9 +1,11 @@
 import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText } from 'lucide-react'
 import { getAgents, getApis, getCommands, getInstructions, getPrompts, getSkills } from '@/lib/registry'
 import Link from 'next/link'
+import { unstable_noStore as noStore } from 'next/cache'
 
 // Disable caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 const typeConfig = {
   api: { icon: Key, label: 'API' },
@@ -27,6 +29,7 @@ function buildUrl(type: string | null, project: string | undefined) {
 }
 
 export default async function RegistryPage({ searchParams }: Props) {
+  noStore()
   const { type, project } = await searchParams
 
   const [apis, prompts, skills, agents, commands, instructions] = await Promise.all([
