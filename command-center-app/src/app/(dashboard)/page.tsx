@@ -30,40 +30,47 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <div className="mx-auto max-w-3xl">
         {/* Header */}
         <h1 className="text-2xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
-          Command Center
+          {project ? project : 'Command Center'}
         </h1>
+        {project && (
+          <p className="mt-1 text-sm text-zinc-500">
+            Gefilterd op project
+          </p>
+        )}
 
-        {/* Projects Section */}
-        <section className="mt-12">
-          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Projects
-          </h2>
-          <div className="mt-4 space-y-2">
-            {projects.length === 0 ? (
-              <p className="text-sm text-zinc-500">No projects yet</p>
-            ) : (
-              projects.map((proj) => (
-                <Link
-                  key={proj.id}
-                  href={`/projects/${proj.slug}`}
-                  className="group flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
-                >
-                  <div>
-                    <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)]">
-                      {proj.name}
-                    </p>
-                    {proj.description && (
-                      <p className="text-sm text-zinc-500">{proj.description}</p>
-                    )}
-                  </div>
-                  <span className="text-xs text-zinc-400">
-                    {new Date(proj.updated_at).toLocaleDateString('nl-NL')}
-                  </span>
-                </Link>
-              ))
-            )}
-          </div>
-        </section>
+        {/* Projects Section - only show when not filtering */}
+        {!project && (
+          <section className="mt-12">
+            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+              Projects
+            </h2>
+            <div className="mt-4 space-y-2">
+              {projects.length === 0 ? (
+                <p className="text-sm text-zinc-500">No projects yet</p>
+              ) : (
+                projects.map((proj) => (
+                  <Link
+                    key={proj.id}
+                    href={`/projects/${proj.slug}`}
+                    className="group flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
+                  >
+                    <div>
+                      <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)]">
+                        {proj.name}
+                      </p>
+                      {proj.description && (
+                        <p className="text-sm text-zinc-500">{proj.description}</p>
+                      )}
+                    </div>
+                    <span className="text-xs text-zinc-400">
+                      {new Date(proj.updated_at).toLocaleDateString('nl-NL')}
+                    </span>
+                  </Link>
+                ))
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Assets Section - Compact */}
         <section className="mt-12">
