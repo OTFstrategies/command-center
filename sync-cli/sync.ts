@@ -15,6 +15,21 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as os from 'os'
 
+// Load .env file if it exists
+const envPath = path.join(import.meta.dirname || __dirname, '.env')
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf-8')
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim()
+    if (trimmed && !trimmed.startsWith('#')) {
+      const [key, ...valueParts] = trimmed.split('=')
+      if (key && valueParts.length > 0) {
+        process.env[key.trim()] = valueParts.join('=').trim()
+      }
+    }
+  }
+}
+
 // Configuration
 const REGISTRY_PATH = path.join(os.homedir(), '.claude', 'registry')
 const API_URL = process.env.COMMAND_CENTER_URL || 'https://command-center-app-nine.vercel.app'
