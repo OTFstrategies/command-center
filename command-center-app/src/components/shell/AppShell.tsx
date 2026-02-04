@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { MainNav } from './MainNav'
+import { UserMenu } from './UserMenu'
 
 export interface NavigationItem {
   label: string
@@ -23,7 +24,9 @@ export interface AppShellProps {
 export function AppShell({
   children,
   navigationItems,
+  user,
   onNavigate,
+  onLogout,
   headerContent,
 }: AppShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -47,15 +50,17 @@ export function AppShell({
         >
           {mobileMenuOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <Menu className="h-5 w-5" strokeWidth={1.5} />}
         </button>
-        {headerContent}
+        <div className="flex items-center gap-2">
+          {headerContent}
+          {user && <UserMenu user={user} onLogout={onLogout} />}
+        </div>
       </header>
 
       {/* Desktop header content - floating */}
-      {headerContent && (
-        <div className="fixed top-4 right-4 z-40 max-md:hidden">
-          {headerContent}
-        </div>
-      )}
+      <div className="fixed top-4 right-4 z-40 flex items-center gap-3 max-md:hidden">
+        {headerContent}
+        {user && <UserMenu user={user} onLogout={onLogout} />}
+      </div>
 
       {/* Sidebar - Mobile overlay */}
       {mobileMenuOpen && (
