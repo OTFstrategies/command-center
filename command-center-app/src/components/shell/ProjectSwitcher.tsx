@@ -1,15 +1,16 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, FolderOpen } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 interface ProjectSwitcherProps {
   projects: string[]
   currentProject: string | null
+  sidebar?: boolean
 }
 
-export function ProjectSwitcher({ projects, currentProject }: ProjectSwitcherProps) {
+export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSwitcherProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -37,6 +38,58 @@ export function ProjectSwitcher({ projects, currentProject }: ProjectSwitcherPro
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Sidebar compact mode - icon only with tooltip-style dropdown
+  if (sidebar) {
+    return (
+      <div className="relative flex justify-center" ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          aria-label={`Project: ${currentProject || 'All'}`}
+        >
+          <FolderOpen className="h-5 w-5" />
+        </button>
+
+        {isOpen && (
+          <div className="absolute bottom-0 left-full ml-2 z-50 min-w-[180px] overflow-hidden rounded-xl glass py-1 shadow-xl glow-blue">
+            <div className="px-3 py-2 text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-white/10">
+              Project
+            </div>
+            <button
+              onClick={() => handleSelect(null)}
+              className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
+                !currentProject
+                  ? 'text-[var(--accent-blue)] font-medium'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+              }`}
+            >
+              All projects
+            </button>
+
+            {projects.length > 0 && (
+              <div className="my-1 border-t border-white/10" />
+            )}
+
+            {projects.map((project) => (
+              <button
+                key={project}
+                onClick={() => handleSelect(project)}
+                className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
+                  currentProject === project
+                    ? 'text-[var(--accent-blue)] font-medium'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+                }`}
+              >
+                {project}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Default mode - full button with text
   return (
     <div className="relative" ref={dropdownRef}>
       <button

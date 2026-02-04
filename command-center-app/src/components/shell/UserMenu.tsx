@@ -6,9 +6,10 @@ import { LogOut, ChevronDown, Sun, Moon } from 'lucide-react'
 interface UserMenuProps {
   user: { name: string; avatarUrl?: string }
   onLogout?: () => void
+  compact?: boolean
 }
 
-export function UserMenu({ user, onLogout }: UserMenuProps) {
+export function UserMenu({ user, onLogout, compact }: UserMenuProps) {
   const [open, setOpen] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -46,6 +47,63 @@ export function UserMenu({ user, onLogout }: UserMenuProps) {
     .toUpperCase()
     .slice(0, 2)
 
+  // Compact mode for sidebar - vertical stack, icons only
+  if (compact) {
+    return (
+      <div className="flex flex-col items-center gap-1">
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+          aria-label="Toggle dark mode"
+        >
+          {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </button>
+
+        {/* User avatar */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setOpen(!open)}
+            className="rounded-lg p-1.5 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+            aria-label="User menu"
+          >
+            {user.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user.name}
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-200 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+                {initials}
+              </div>
+            )}
+          </button>
+
+          {open && (
+            <div className="absolute bottom-full left-full ml-2 mb-0 w-48 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+              <div className="border-b border-zinc-200 px-3 py-2 dark:border-zinc-700">
+                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">{user.name}</p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setOpen(false)
+                  onLogout?.()
+                }}
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Default horizontal layout
   return (
     <div className="flex items-center gap-2">
       {/* Dark mode toggle */}

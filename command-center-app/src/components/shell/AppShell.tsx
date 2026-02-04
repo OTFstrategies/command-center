@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
+import { ProjectSwitcher } from './ProjectSwitcher'
 
 export interface NavigationItem {
   label: string
@@ -18,7 +19,8 @@ export interface AppShellProps {
   user?: { name: string; avatarUrl?: string }
   onNavigate?: (href: string) => void
   onLogout?: () => void
-  headerContent?: React.ReactNode
+  projects?: string[]
+  currentProject?: string | null
 }
 
 export function AppShell({
@@ -27,18 +29,37 @@ export function AppShell({
   user,
   onNavigate,
   onLogout,
-  headerContent,
+  projects = [],
+  currentProject = null,
 }: AppShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
       {/* Sidebar - Desktop */}
-      <aside className="fixed inset-y-0 left-0 z-50 w-16 glass max-md:hidden">
-        <MainNav
-          items={navigationItems}
-          onNavigate={onNavigate}
-        />
+      <aside className="fixed inset-y-0 left-0 z-50 w-16 glass max-md:hidden flex flex-col">
+        {/* Navigation - Top */}
+        <div className="flex-1">
+          <MainNav
+            items={navigationItems}
+            onNavigate={onNavigate}
+          />
+        </div>
+
+        {/* Bottom controls: Project, Dark mode, User */}
+        <div className="flex flex-col items-center gap-1 p-2 border-t border-zinc-200/50 dark:border-zinc-800/50">
+          {/* Project Switcher - Compact */}
+          <ProjectSwitcher
+            projects={projects}
+            currentProject={currentProject}
+            sidebar
+          />
+
+          {/* User Menu with dark mode - Compact */}
+          {user && (
+            <UserMenu user={user} onLogout={onLogout} compact />
+          )}
+        </div>
       </aside>
 
       {/* Mobile header */}
@@ -51,16 +72,13 @@ export function AppShell({
           {mobileMenuOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <Menu className="h-5 w-5" strokeWidth={1.5} />}
         </button>
         <div className="flex items-center gap-2">
-          {headerContent}
+          <ProjectSwitcher
+            projects={projects}
+            currentProject={currentProject}
+          />
           {user && <UserMenu user={user} onLogout={onLogout} />}
         </div>
       </header>
-
-      {/* Desktop header content - floating */}
-      <div className="fixed top-4 right-4 z-40 flex items-center gap-3 max-md:hidden">
-        {headerContent}
-        {user && <UserMenu user={user} onLogout={onLogout} />}
-      </div>
 
       {/* Sidebar - Mobile overlay */}
       {mobileMenuOpen && (
@@ -69,15 +87,27 @@ export function AppShell({
             className="fixed inset-0 z-40 bg-zinc-950/20 backdrop-blur-sm md:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <aside className="fixed inset-y-0 left-0 z-50 w-64 glass md:hidden">
-            <MainNav
-              items={navigationItems}
-              onNavigate={(href) => {
-                onNavigate?.(href)
-                setMobileMenuOpen(false)
-              }}
-              showLabels
-            />
+          <aside className="fixed inset-y-0 left-0 z-50 w-64 glass md:hidden flex flex-col">
+            {/* Navigation - Top */}
+            <div className="flex-1">
+              <MainNav
+                items={navigationItems}
+                onNavigate={(href) => {
+                  onNavigate?.(href)
+                  setMobileMenuOpen(false)
+                }}
+                showLabels
+              />
+            </div>
+
+            {/* Bottom controls */}
+            <div className="flex flex-col gap-3 p-4 border-t border-zinc-200/50 dark:border-zinc-800/50">
+              <ProjectSwitcher
+                projects={projects}
+                currentProject={currentProject}
+              />
+              {user && <UserMenu user={user} onLogout={onLogout} />}
+            </div>
           </aside>
         </>
       )}

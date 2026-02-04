@@ -2,7 +2,6 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { AppShell, type NavigationItem } from './AppShell'
-import { ProjectSwitcher } from './ProjectSwitcher'
 import {
   Home,
   Database,
@@ -45,12 +44,8 @@ export function ShellLayout({ children, projects }: ShellLayoutProps) {
       navigationItems={navItemsWithActive}
       user={{ name: 'Shadow' }}
       onNavigate={handleNavigate}
-      headerContent={
-        <ProjectSwitcher
-          projects={projects}
-          currentProject={currentProject}
-        />
-      }
+      projects={projects}
+      currentProject={currentProject}
     >
       {children}
     </AppShell>
