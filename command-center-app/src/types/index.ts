@@ -264,3 +264,31 @@ export interface NotesData {
   canvases: NotesCanvas[];
   currentProject: string;
 }
+
+// =============================================================================
+// PROJECT CHANGELOG
+// =============================================================================
+
+export type ChangelogEntryType = 'added' | 'updated' | 'removed' | 'sync';
+
+export interface ProjectChangelogEntry {
+  id: string;
+  project: string;
+  project_id?: string;
+  title: string;
+  description: string;
+  change_type: ChangelogEntryType;
+  items_affected: string[];
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface RecentChange {
+  id: string;
+  project: string;
+  title: string;
+  change_type: ChangelogEntryType;
+  items_affected: string[];
+  created_at: string;
+  relativeTime: string;
+}

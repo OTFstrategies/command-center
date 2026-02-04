@@ -67,6 +67,15 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabase()
 
+    // Get existing items to detect changes
+    const { data: existingItems } = await supabase
+      .from('registry_items')
+      .select('name, project')
+      .eq('type', type)
+
+    const existingNames = new Set((existingItems || []).map(i => `${i.project}:${i.name}`))
+    const newNames = new Set(items.map(i => `${i.project || 'global'}:${i.name}`))
+
     // Transform items to database format
     const dbItems = items.map((item) => {
       // Extract known fields, rest goes to metadata
@@ -85,6 +94,32 @@ export async function POST(request: NextRequest) {
         updated_at: new Date().toISOString(),
       }
     })
+
+    // Calculate changes per project
+    const changesByProject = new Map<string, { added: string[], removed: string[] }>()
+
+    // Find added items
+    for (const item of dbItems) {
+      const key = `${item.project}:${item.name}`
+      if (!existingNames.has(key)) {
+        if (!changesByProject.has(item.project)) {
+          changesByProject.set(item.project, { added: [], removed: [] })
+        }
+        changesByProject.get(item.project)!.added.push(item.name)
+      }
+    }
+
+    // Find removed items
+    for (const existing of existingItems || []) {
+      const key = `${existing.project}:${existing.name}`
+      if (!newNames.has(key)) {
+        const project = existing.project || 'global'
+        if (!changesByProject.has(project)) {
+          changesByProject.set(project, { added: [], removed: [] })
+        }
+        changesByProject.get(project)!.removed.push(existing.name)
+      }
+    }
 
     // Delete existing items of this type, then insert new ones
     const { error: deleteError } = await supabase
@@ -118,17 +153,81 @@ export async function POST(request: NextRequest) {
     // Log sync activity
     await supabase.from('activity_log').insert({
       item_type: type,
-      item_id: 'sync',
+      item_id: null,
       item_name: `${type} sync`,
       action: 'synced',
       details: { count: dbItems.length, timestamp: new Date().toISOString() },
     })
+
+    // Create changelog entries for each project with changes
+    const changelogEntries = []
+    for (const [project, changes] of changesByProject) {
+      if (changes.added.length > 0) {
+        changelogEntries.push({
+          project,
+          title: `Added ${changes.added.length} ${type}${changes.added.length > 1 ? 's' : ''}`,
+          description: `New: ${changes.added.join(', ')}`,
+          change_type: 'added',
+          items_affected: changes.added,
+          metadata: { type, action: 'sync' },
+        })
+      }
+      if (changes.removed.length > 0) {
+        changelogEntries.push({
+          project,
+          title: `Removed ${changes.removed.length} ${type}${changes.removed.length > 1 ? 's' : ''}`,
+          description: `Removed: ${changes.removed.join(', ')}`,
+          change_type: 'removed',
+          items_affected: changes.removed,
+          metadata: { type, action: 'sync' },
+        })
+      }
+    }
+
+    // Insert changelog entries
+    if (changelogEntries.length > 0) {
+      await supabase.from('project_changelog').insert(changelogEntries)
+    }
+
+    // Auto-create projects in projects table if they don't exist
+    const uniqueProjects = [...new Set(dbItems.map(i => i.project).filter(p => p !== 'global'))]
+    for (const projectName of uniqueProjects) {
+      const slug = projectName.toLowerCase().replace(/\s+/g, '-')
+
+      // Check if project exists
+      const { data: existingProject } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('slug', slug)
+        .limit(1)
+        .single()
+
+      if (!existingProject) {
+        // Create new project
+        await supabase.from('projects').insert({
+          name: projectName,
+          slug,
+          description: null,
+        })
+
+        // Log project creation in changelog
+        await supabase.from('project_changelog').insert({
+          project: projectName,
+          title: 'Project created',
+          description: `Project "${projectName}" auto-created during sync`,
+          change_type: 'added',
+          items_affected: [],
+          metadata: { auto_created: true },
+        })
+      }
+    }
 
     return NextResponse.json({
       success: true,
       type,
       count: dbItems.length,
       message: `Synced ${dbItems.length} ${type} items`,
+      changelog: changelogEntries.length,
     })
   } catch (error) {
     console.error('Sync error:', error)

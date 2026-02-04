@@ -339,3 +339,140 @@ function getRelativeTime(timestamp: string): string {
   if (diffHours < 24) return `${diffHours}h ago`
   return `${diffDays}d ago`
 }
+
+// =============================================================================
+// CHANGELOG FUNCTIONS
+// =============================================================================
+
+export type ChangelogEntryType = 'added' | 'updated' | 'removed' | 'sync'
+
+export interface ChangelogEntry {
+  id: string
+  project: string
+  title: string
+  description: string | null
+  change_type: ChangelogEntryType
+  items_affected: string[]
+  metadata: Record<string, unknown>
+  created_at: string
+  relativeTime: string
+}
+
+/**
+ * Gets recent changelog entries across all projects
+ */
+export async function getRecentChanges(limit = 10): Promise<ChangelogEntry[]> {
+  try {
+    const { data, error } = await getSupabase()
+      .from('project_changelog')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      console.error('Error fetching changelog:', error)
+      return []
+    }
+
+    return (data || []).map((item: {
+      id: string
+      project: string
+      title: string
+      description: string | null
+      change_type: ChangelogEntryType
+      items_affected: string[]
+      metadata: Record<string, unknown>
+      created_at: string
+    }) => ({
+      id: item.id,
+      project: item.project || 'global',
+      title: item.title || item.description || 'Update',
+      description: item.description,
+      change_type: item.change_type || 'sync',
+      items_affected: item.items_affected || [],
+      metadata: item.metadata || {},
+      created_at: item.created_at,
+      relativeTime: getRelativeTime(item.created_at),
+    }))
+  } catch (e) {
+    console.error('Supabase not configured:', e)
+    return []
+  }
+}
+
+/**
+ * Gets changelog entries for a specific project
+ */
+export async function getProjectChangelog(project: string, limit = 20): Promise<ChangelogEntry[]> {
+  try {
+    const { data, error } = await getSupabase()
+      .from('project_changelog')
+      .select('*')
+      .eq('project', project)
+      .order('created_at', { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      console.error('Error fetching project changelog:', error)
+      return []
+    }
+
+    return (data || []).map((item: {
+      id: string
+      project: string
+      title: string
+      description: string | null
+      change_type: ChangelogEntryType
+      items_affected: string[]
+      metadata: Record<string, unknown>
+      created_at: string
+    }) => ({
+      id: item.id,
+      project: item.project || project,
+      title: item.title || item.description || 'Update',
+      description: item.description,
+      change_type: item.change_type || 'sync',
+      items_affected: item.items_affected || [],
+      metadata: item.metadata || {},
+      created_at: item.created_at,
+      relativeTime: getRelativeTime(item.created_at),
+    }))
+  } catch (e) {
+    console.error('Supabase not configured:', e)
+    return []
+  }
+}
+
+/**
+ * Adds a changelog entry (used by sync API)
+ */
+export async function addChangelogEntry(entry: {
+  project: string
+  title: string
+  description?: string
+  change_type: ChangelogEntryType
+  items_affected?: string[]
+  metadata?: Record<string, unknown>
+}): Promise<boolean> {
+  try {
+    const { error } = await getSupabase()
+      .from('project_changelog')
+      .insert({
+        project: entry.project,
+        title: entry.title,
+        description: entry.description || null,
+        change_type: entry.change_type,
+        items_affected: entry.items_affected || [],
+        metadata: entry.metadata || {},
+      })
+
+    if (error) {
+      console.error('Error adding changelog entry:', error)
+      return false
+    }
+    return true
+  } catch (e) {
+    console.error('Supabase not configured:', e)
+    return false
+  }
+}

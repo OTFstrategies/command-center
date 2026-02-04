@@ -1,6 +1,6 @@
-import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText } from 'lucide-react'
-import { getStats, getRecentActivity } from '@/lib/registry'
-import { getProjects } from '@/lib/projects'
+import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText, Plus, ArrowRight } from 'lucide-react'
+import { getStats, getRecentActivity, getRecentChanges } from '@/lib/registry'
+import { getProjectsFromRegistry } from '@/lib/projects'
 import Link from 'next/link'
 import type { AssetStats } from '@/types'
 import { unstable_noStore as noStore } from 'next/cache'
@@ -25,10 +25,11 @@ interface HomePageProps {
 export default async function HomePage({ searchParams }: HomePageProps) {
   noStore()
   const { project } = await searchParams
-  const [stats, recentActivity, projects] = await Promise.all([
+  const [stats, recentActivity, projects, recentChanges] = await Promise.all([
     getStats(project),
     getRecentActivity(project),
-    getProjects(),
+    getProjectsFromRegistry(),
+    getRecentChanges(5),
   ])
 
   return (
@@ -44,6 +45,42 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </p>
         )}
 
+        {/* Recent Changes Section - only show when not filtering */}
+        {!project && recentChanges.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+              Recent Changes
+            </h2>
+            <div className="mt-4 space-y-2">
+              {recentChanges.map((change) => (
+                <Link
+                  key={change.id}
+                  href={`/projects/${change.project.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="group flex items-start gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
+                >
+                  <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${
+                    change.change_type === 'added' ? 'bg-emerald-500' :
+                    change.change_type === 'removed' ? 'bg-red-500' :
+                    change.change_type === 'updated' ? 'bg-amber-500' :
+                    'bg-blue-500'
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)]">
+                      {change.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-xs text-zinc-400">{change.project}</span>
+                      <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                      <span className="text-xs text-zinc-400">{change.relativeTime}</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Projects Section - only show when not filtering */}
         {!project && (
           <section className="mt-12">
@@ -56,7 +93,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               ) : (
                 projects.map((proj) => (
                   <Link
-                    key={proj.id}
+                    key={proj.name}
                     href={`/projects/${proj.slug}`}
                     className="group flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
                   >
@@ -68,9 +105,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         <p className="text-sm text-zinc-500">{proj.description}</p>
                       )}
                     </div>
-                    <span className="text-xs text-zinc-400">
-                      {new Date(proj.updated_at).toLocaleDateString('nl-NL')}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-zinc-400">{proj.itemCount} items</span>
+                    </div>
                   </Link>
                 ))
               )}
