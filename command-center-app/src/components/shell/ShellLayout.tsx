@@ -7,10 +7,12 @@ import {
   Database,
   Activity,
   Settings,
+  LayoutGrid,
 } from 'lucide-react'
 
 const navigationItems: Omit<NavigationItem, 'isActive'>[] = [
   { label: 'Home', href: '/', icon: <Home className="h-5 w-5" /> },
+  { label: 'Tasks', href: '/tasks', icon: <LayoutGrid className="h-5 w-5" /> },
   { label: 'Registry', href: '/registry', icon: <Database className="h-5 w-5" /> },
   { label: 'Activity', href: '/activity', icon: <Activity className="h-5 w-5" /> },
   { label: 'Settings', href: '/settings', icon: <Settings className="h-5 w-5" /> },

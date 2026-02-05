@@ -1,0 +1,110 @@
+{
+  "testRun": {
+    "started": "2026-02-04T19:50:00Z",
+    "completed": "2026-02-04T20:15:00Z",
+    "status": "completed",
+    "environment": {
+      "server": "http://localhost:3001",
+      "framework": "Next.js 14.2.35",
+      "database": "Supabase (connected)"
+    }
+  },
+  "results": [
+    {
+      "section": "1. Server Startup",
+      "tests": [
+        {"testId": "1.1", "name": "Development Server Starts", "status": "PASS", "evidence": "Server running on port 3001, HTTP 200 response", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "2. API Endpoints",
+      "tests": [
+        {"testId": "2.1", "name": "GET /api/sync - Success", "status": "PASS", "evidence": "HTTP 200, connected=true, stats has 6 keys", "confidence": 1.0},
+        {"testId": "2.2", "name": "GET /api/sync - Stats Accuracy", "status": "PASS", "evidence": "api=1, prompt=1, skill=1, agent=15, command=56, instruction=0", "confidence": 1.0},
+        {"testId": "2.3", "name": "POST /api/sync - Missing API Key", "status": "PASS", "evidence": "HTTP 401, 'Invalid API key'", "confidence": 1.0},
+        {"testId": "2.4", "name": "POST /api/sync - Invalid API Key", "status": "PASS", "evidence": "HTTP 401", "confidence": 1.0},
+        {"testId": "2.5", "name": "POST /api/sync - Missing Type", "status": "PASS", "evidence": "HTTP 400, 'Invalid payload'", "confidence": 1.0},
+        {"testId": "2.6", "name": "POST /api/sync - Missing Items", "status": "PASS", "evidence": "HTTP 400, 'Invalid payload'", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "3. Page Rendering",
+      "tests": [
+        {"testId": "3.1", "name": "Home Page Renders", "status": "PASS", "evidence": "Title 'Shadow's Command Center', heading visible, 6 asset cards", "confidence": 1.0},
+        {"testId": "3.2", "name": "Home Page - Asset Cards Display", "status": "PASS", "evidence": "APIs=1, Prompts=1, Skills=1, Agents=15, Commands=56, Instructions=0", "confidence": 1.0},
+        {"testId": "3.3", "name": "Registry Page Renders", "status": "PASS", "evidence": "7 filter tabs visible", "confidence": 1.0},
+        {"testId": "3.4", "name": "Registry Page - Item Count", "status": "PASS", "evidence": "74 items displayed", "confidence": 1.0},
+        {"testId": "3.5", "name": "Activity Page Renders", "status": "PASS", "evidence": "5 type filters + 4 period filters = 9 buttons", "confidence": 1.0},
+        {"testId": "3.6", "name": "Settings Page Renders", "status": "PASS", "evidence": "Connection card, sync table, refresh button, instructions panel", "confidence": 0.95},
+        {"testId": "3.7", "name": "Settings Page - Connection Status", "status": "PASS", "evidence": "'Verbonden' (Connected) displayed", "confidence": 1.0},
+        {"testId": "3.8", "name": "Settings Page - Sync Stats Table", "status": "PASS", "evidence": "6 rows: apis(1), prompts(1), skills(1), agents(15), commands(56), instructions(0)", "confidence": 1.0},
+        {"testId": "3.9", "name": "Project Detail Page Renders", "status": "PASS", "evidence": "Back button, heading, structure, credentials, changelog sections", "confidence": 0.95},
+        {"testId": "3.10", "name": "404 Page - Invalid Project", "status": "PASS", "evidence": "404 page with 'This page could not be found'", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "4. Navigation",
+      "tests": [
+        {"testId": "4.1", "name": "Nav - Home Link Works", "status": "PASS", "evidence": "URL changed to /", "confidence": 1.0},
+        {"testId": "4.2", "name": "Nav - Registry Link Works", "status": "PASS", "evidence": "URL changed to /registry", "confidence": 1.0},
+        {"testId": "4.3", "name": "Nav - Activity Link Works", "status": "PASS", "evidence": "URL changed to /activity", "confidence": 1.0},
+        {"testId": "4.4", "name": "Nav - Settings Link Works", "status": "PASS", "evidence": "URL changed to /settings", "confidence": 1.0},
+        {"testId": "4.5", "name": "Home - Asset Card Navigation", "status": "PASS", "evidence": "URL contains type=agent", "confidence": 1.0},
+        {"testId": "4.7", "name": "Registry - Type Filter Navigation", "status": "PASS", "evidence": "URL contains type=command", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "5. Data Display",
+      "tests": [
+        {"testId": "5.1", "name": "Registry - APIs Display", "status": "PASS", "evidence": "1 item: 'Anthropic Claude API'", "confidence": 1.0},
+        {"testId": "5.2", "name": "Registry - Prompts Display", "status": "PASS", "evidence": "1 item: 'Shadow's Design Style'", "confidence": 1.0},
+        {"testId": "5.3", "name": "Registry - Skills Display", "status": "PASS", "evidence": "1 item: 'miro-patterns'", "confidence": 1.0},
+        {"testId": "5.4", "name": "Registry - Agents Display", "status": "PASS", "evidence": "15 agents displayed", "confidence": 1.0},
+        {"testId": "5.5", "name": "Registry - Commands Display", "status": "PASS", "evidence": "56 commands displayed", "confidence": 1.0},
+        {"testId": "5.6", "name": "Registry - Instructions Display", "status": "PASS", "evidence": "0 items, 'No items found' message", "confidence": 1.0},
+        {"testId": "5.7", "name": "Registry - hs-docs Commands Present", "status": "PASS", "evidence": "All 6 found: hs-docs, hs-l4, hs-l5, hs-extract, hs-scan, hs-combine", "confidence": 1.0},
+        {"testId": "5.8", "name": "Registry - hs-docs Agents Present", "status": "PASS", "evidence": "7 agents with project 'hs-docs'", "confidence": 1.0},
+        {"testId": "5.9", "name": "Registry - agent-os Items Present", "status": "PASS", "evidence": "8 agent-os agents visible", "confidence": 1.0},
+        {"testId": "5.10", "name": "Project Filter - hs-docs", "status": "PASS", "evidence": "13 items (7 agents + 6 commands)", "confidence": 1.0},
+        {"testId": "5.11", "name": "Project Filter - agent-os", "status": "FAIL", "evidence": "Shows 14 items instead of 8 - filter includes name prefix matches, not just exact project match", "confidence": 1.0, "note": "Design decision: filter matches by name OR project"},
+        {"testId": "5.12", "name": "Home Page - Recent Activity", "status": "PASS", "evidence": "'Recent Activity' section with 'No activity yet'", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "6. Interactive Elements",
+      "tests": [
+        {"testId": "6.1", "name": "ProjectSwitcher - Opens", "status": "PASS", "evidence": "Dropdown menu appeared", "confidence": 1.0},
+        {"testId": "6.2", "name": "ProjectSwitcher - Shows Projects", "status": "PASS", "evidence": "5 options: All, agent-os, command-center, global, hs-docs", "confidence": 1.0},
+        {"testId": "6.3", "name": "ProjectSwitcher - Select Project", "status": "PASS", "evidence": "URL contains project=hs-docs", "confidence": 1.0},
+        {"testId": "6.4", "name": "ProjectSwitcher - Select All", "status": "PASS", "evidence": "URL no longer contains project=", "confidence": 1.0},
+        {"testId": "6.5", "name": "ProjectSwitcher - Closes on Outside Click", "status": "PASS", "evidence": "Dropdown closed after clicking outside", "confidence": 1.0},
+        {"testId": "6.6", "name": "Dark Mode Toggle - Enable", "status": "FAIL", "evidence": "UserMenu component with toggle exists but not rendered in layout", "confidence": 1.0, "note": "Feature not exposed in UI"},
+        {"testId": "6.7", "name": "Dark Mode Toggle - Disable", "status": "FAIL", "evidence": "Depends on 6.6 - toggle not available", "confidence": 1.0, "note": "Feature not exposed in UI"},
+        {"testId": "6.8", "name": "Settings - Refresh Button", "status": "PASS", "evidence": "Button clicked, loading state shown, data refreshed", "confidence": 1.0},
+        {"testId": "6.9", "name": "Activity - Type Filter", "status": "PASS", "evidence": "'Agents' button shows active state", "confidence": 1.0},
+        {"testId": "6.10", "name": "Activity - Period Filter", "status": "PASS", "evidence": "'Week' button shows active state", "confidence": 1.0},
+        {"testId": "6.15", "name": "Registry Tabs - Visual State", "status": "PASS", "evidence": "Commands tab shows [active] state", "confidence": 1.0}
+      ]
+    },
+    {
+      "section": "7. Edge Cases",
+      "tests": [
+        {"testId": "7.1", "name": "Empty Registry Type", "status": "PASS", "evidence": "'0 items (instruction)', 'No items found' displayed", "confidence": 1.0},
+        {"testId": "7.2", "name": "Invalid Registry Type", "status": "FAIL", "evidence": "Shows 0 items for type=invalid. Expected: fallback to all items", "confidence": 1.0, "note": "Current behavior treats invalid type as having no matches"},
+        {"testId": "7.3", "name": "Invalid Project Filter", "status": "PASS", "evidence": "'0 items', 'No items found' for nonexistent project", "confidence": 1.0},
+        {"testId": "7.5", "name": "Large Data Set Performance", "status": "PASS", "evidence": "Loaded in 223ms (< 3 seconds)", "confidence": 1.0},
+        {"testId": "7.6", "name": "Browser Back/Forward", "status": "PASS", "evidence": "Back button returns to previous page", "confidence": 1.0},
+        {"testId": "7.7", "name": "Direct URL Access", "status": "PASS", "evidence": "Filters applied correctly on direct access", "confidence": 1.0},
+        {"testId": "7.8", "name": "Concurrent Filter Params", "status": "PASS", "evidence": "type=command&project=hs-docs shows 6 items", "confidence": 1.0},
+        {"testId": "7.10", "name": "Page Refresh Preserves State", "status": "PASS", "evidence": "URL and filters preserved after refresh", "confidence": 1.0}
+      ]
+    }
+  ],
+  "summary": {
+    "totalTests": 54,
+    "passed": 50,
+    "failed": 4,
+    "passRate": "92.6%",
+    "failedTests": ["5.11", "6.6", "6.7", "7.2"]
+  }
+}
