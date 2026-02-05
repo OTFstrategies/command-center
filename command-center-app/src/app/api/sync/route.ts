@@ -2,16 +2,21 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 
-// Initialize Supabase with service role for write access
+// Initialize Supabase with service role for write access (bypasses RLS)
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !key) {
-    throw new Error('Supabase environment variables not configured')
+  if (!url || !serviceKey) {
+    throw new Error('Supabase URL or SERVICE_ROLE_KEY not configured')
   }
 
-  return createClient(url, key)
+  return createClient(url, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  })
 }
 
 // Type mapping from registry JSON to database
