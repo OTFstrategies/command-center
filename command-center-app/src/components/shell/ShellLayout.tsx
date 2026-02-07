@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { AppShell, type NavigationItem } from './AppShell'
+import { ToastProvider } from '@/components/ui/ToastProvider'
 import {
   Home,
   Database,
@@ -42,14 +43,16 @@ export function ShellLayout({ children, projects }: ShellLayoutProps) {
   }
 
   return (
-    <AppShell
-      navigationItems={navItemsWithActive}
-      user={{ name: 'Shadow' }}
-      onNavigate={handleNavigate}
-      projects={projects}
-      currentProject={currentProject}
-    >
-      {children}
-    </AppShell>
+    <ToastProvider>
+      <AppShell
+        navigationItems={navItemsWithActive}
+        user={{ name: 'Shadow' }}
+        onNavigate={handleNavigate}
+        projects={projects}
+        currentProject={currentProject}
+      >
+        {children}
+      </AppShell>
+    </ToastProvider>
   )
 }

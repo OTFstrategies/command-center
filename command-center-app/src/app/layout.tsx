@@ -4,6 +4,15 @@ import './globals.css'
 export const metadata: Metadata = {
   title: "Shadow's Command Center",
   description: 'Dashboard for managing Claude Code assets',
+  icons: {
+    icon: '/icon.svg',
+  },
+  metadataBase: new URL('https://command-center-app-nine.vercel.app'),
+  openGraph: {
+    title: "Shadow's Command Center",
+    description: 'Dashboard for managing Claude Code assets',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({

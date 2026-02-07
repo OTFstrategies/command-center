@@ -84,3 +84,51 @@ html {
 button, a, [role="button"] {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Semantic colors */
+:root {
+  --color-success: #22c55e;
+  --color-success-light: rgba(34, 197, 94, 0.15);
+  --color-warning: #f59e0b;
+  --color-warning-light: rgba(245, 158, 11, 0.15);
+  --color-error: #ef4444;
+  --color-error-light: rgba(239, 68, 68, 0.15);
+  --color-info: #3b82f6;
+  --color-info-light: rgba(59, 130, 246, 0.15);
+}
+
+/* Priority colors */
+:root {
+  --priority-urgent: #ef4444;
+  --priority-high: #f97316;
+  --priority-medium: #3b82f6;
+  --priority-low: #6b7280;
+}
+
+/* Animation keyframes */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-up {
+  animation: slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
