@@ -1,21 +1,24 @@
-import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText, Plus, ArrowRight } from 'lucide-react'
+import { Key, MessageSquare, Sparkles, Bot, Terminal, FileText, ArrowRight } from 'lucide-react'
 import { getStats, getRecentActivity, getRecentChanges } from '@/lib/registry'
 import { getProjectsFromRegistry } from '@/lib/projects'
 import Link from 'next/link'
 import type { AssetStats } from '@/types'
 import { unstable_noStore as noStore } from 'next/cache'
+import { StatCard } from '@/components/dashboard/StatCard'
+import { ProjectCard } from '@/components/dashboard/ProjectCard'
+import { QuickActionBar } from '@/components/dashboard/QuickActionBar'
 
 // Disable caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const assetTypes = [
-  { key: 'api', statsKey: 'apis', label: 'APIs', icon: Key },
-  { key: 'prompt', statsKey: 'prompts', label: 'Prompts', icon: MessageSquare },
-  { key: 'skill', statsKey: 'skills', label: 'Skills', icon: Sparkles },
-  { key: 'agent', statsKey: 'agents', label: 'Agents', icon: Bot },
-  { key: 'command', statsKey: 'commands', label: 'Commands', icon: Terminal },
-  { key: 'instruction', statsKey: 'instructions', label: 'Instructions', icon: FileText },
+  { key: 'api', statsKey: 'apis', label: 'APIs', icon: Key, href: '/registry?type=api' },
+  { key: 'prompt', statsKey: 'prompts', label: 'Prompts', icon: MessageSquare, href: '/registry?type=prompt' },
+  { key: 'skill', statsKey: 'skills', label: 'Skills', icon: Sparkles, href: '/registry?type=skill' },
+  { key: 'agent', statsKey: 'agents', label: 'Agents', icon: Bot, href: '/registry?type=agent' },
+  { key: 'command', statsKey: 'commands', label: 'Commands', icon: Terminal, href: '/registry?type=command' },
+  { key: 'instruction', statsKey: 'instructions', label: 'Instructions', icon: FileText, href: '/registry?type=instruction' },
 ] as const
 
 interface HomePageProps {
@@ -34,120 +37,124 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <div className="min-h-screen p-8 lg:p-12">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         {/* Header */}
-        <h1 className="text-2xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
-          {project ? project : 'Command Center'}
-        </h1>
-        {project && (
-          <p className="mt-1 text-sm text-zinc-500">
-            Gefilterd op project
-          </p>
-        )}
+        <div className="mb-8">
+          <h1 className="text-2xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
+            {project ? project : 'Command Center'}
+          </h1>
+          {project && (
+            <p className="mt-1 text-sm text-zinc-500">
+              Gefilterd op project
+            </p>
+          )}
+        </div>
 
-        {/* Recent Changes Section - only show when not filtering */}
-        {!project && recentChanges.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Recent Changes
-            </h2>
-            <div className="mt-4 space-y-2">
-              {recentChanges.map((change) => (
-                <Link
-                  key={change.id}
-                  href={`/projects/${change.project.toLowerCase().replace(/\s+/g, '-')}`}
-                  className="group flex items-start gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
-                >
-                  <div className={`mt-1 h-2 w-2 rounded-full flex-shrink-0 ${
-                    change.change_type === 'added' ? 'bg-emerald-500' :
-                    change.change_type === 'removed' ? 'bg-red-500' :
-                    change.change_type === 'updated' ? 'bg-amber-500' :
-                    'bg-blue-500'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)]">
-                      {change.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs text-zinc-400">{change.project}</span>
-                      <span className="text-zinc-300 dark:text-zinc-600">·</span>
-                      <span className="text-xs text-zinc-400">{change.relativeTime}</span>
-                    </div>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Projects Section - only show when not filtering */}
+        {/* Quick Action Bar */}
         {!project && (
-          <section className="mt-12">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Projects
-            </h2>
-            <div className="mt-4 space-y-2">
-              {projects.length === 0 ? (
-                <p className="text-sm text-zinc-500">No projects yet</p>
-              ) : (
-                projects.map((proj) => (
-                  <Link
-                    key={proj.name}
-                    href={`/projects/${proj.slug}`}
-                    className="group flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
-                  >
-                    <div>
-                      <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)]">
-                        {proj.name}
-                      </p>
-                      {proj.description && (
-                        <p className="text-sm text-zinc-500">{proj.description}</p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-zinc-400">{proj.itemCount} items</span>
-                    </div>
-                  </Link>
-                ))
-              )}
-            </div>
-          </section>
+          <div className="mb-8">
+            <QuickActionBar />
+          </div>
         )}
 
-        {/* Assets Section - Compact */}
-        <section className="mt-12">
-          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+        {/* Stats Grid */}
+        <section className="mb-10">
+          <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
             Assets
           </h2>
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {assetTypes.map((type) => {
               const count = stats[type.statsKey as keyof AssetStats]
+              const Icon = type.icon
               const href = project
                 ? `/registry?type=${type.key}&project=${project}`
-                : `/registry?type=${type.key}`
+                : type.href
               return (
-                <Link
+                <StatCard
                   key={type.key}
+                  label={type.label}
+                  count={count}
+                  icon={<Icon />}
                   href={href}
-                  className="group flex items-center gap-2 text-sm text-zinc-600 transition-all duration-300 hover:text-[var(--accent-blue)] text-glow-blue"
-                >
-                  <span className="font-medium">{type.label}</span>
-                  <span className="text-zinc-400 group-hover:text-[var(--accent-blue)]">{count}</span>
-                </Link>
+                />
               )
             })}
           </div>
         </section>
 
+        {/* Two Column Layout: Recent Changes + Projects */}
+        {!project && (
+          <div className="mb-10 grid gap-8 lg:grid-cols-2">
+            {/* Recent Changes */}
+            <section>
+              <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
+                Recent Changes
+              </h2>
+              <div className="space-y-2">
+                {recentChanges.length === 0 ? (
+                  <p className="text-sm text-zinc-500">Nog geen wijzigingen</p>
+                ) : (
+                  recentChanges.map((change) => (
+                    <Link
+                      key={change.id}
+                      href={`/projects/${change.project.toLowerCase().replace(/\s+/g, '-')}`}
+                      className="group flex items-start gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
+                    >
+                      <div className={`mt-1.5 h-2 w-2 rounded-full flex-shrink-0 ${
+                        change.change_type === 'added' ? 'bg-emerald-500' :
+                        change.change_type === 'removed' ? 'bg-red-500' :
+                        change.change_type === 'updated' ? 'bg-amber-500' :
+                        'bg-blue-500'
+                      }`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)] transition-colors">
+                          {change.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-zinc-400">{change.project}</span>
+                          <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                          <span className="text-xs text-zinc-400">{change.relativeTime}</span>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-zinc-300 dark:text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
+                    </Link>
+                  ))
+                )}
+              </div>
+            </section>
+
+            {/* Projects */}
+            <section>
+              <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
+                Projects
+              </h2>
+              <div className="space-y-2">
+                {projects.length === 0 ? (
+                  <p className="text-sm text-zinc-500">Nog geen projecten</p>
+                ) : (
+                  projects.map((proj) => (
+                    <ProjectCard
+                      key={proj.slug}
+                      name={proj.name}
+                      slug={proj.slug}
+                      description={proj.description}
+                      itemCount={proj.itemCount}
+                    />
+                  ))
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+
         {/* Recent Activity */}
-        <section className="mt-12">
-          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+        <section>
+          <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
             Recent Activity
           </h2>
-          <div className="mt-4 space-y-1">
+          <div className="space-y-1">
             {recentActivity.length === 0 ? (
-              <p className="text-sm text-zinc-500">No activity yet</p>
+              <p className="text-sm text-zinc-500">Nog geen activiteit</p>
             ) : (
               recentActivity.map((item) => (
                 <div

@@ -28,6 +28,25 @@ export function KanbanBoard({ initialTasks, projects = [] }: KanbanBoardProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
   const [activeTask, setActiveTask] = useState<Task | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [collapsedColumns, setCollapsedColumns] = useState<Set<TaskStatus>>(() => {
+    if (typeof window === 'undefined') return new Set()
+    try {
+      const saved = localStorage.getItem('kanban-collapsed')
+      return saved ? new Set(JSON.parse(saved)) : new Set()
+    } catch {
+      return new Set()
+    }
+  })
+
+  const toggleColumn = (status: TaskStatus) => {
+    setCollapsedColumns((prev) => {
+      const next = new Set(prev)
+      if (next.has(status)) next.delete(status)
+      else next.add(status)
+      localStorage.setItem('kanban-collapsed', JSON.stringify([...next]))
+      return next
+    })
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -166,6 +185,8 @@ export function KanbanBoard({ initialTasks, projects = [] }: KanbanBoardProps) {
               key={status}
               status={status}
               tasks={getTasksByStatus(status)}
+              collapsed={collapsedColumns.has(status)}
+              onToggleCollapse={() => toggleColumn(status)}
               onDeleteTask={handleDeleteTask}
             />
           ))}

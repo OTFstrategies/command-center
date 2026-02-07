@@ -17,6 +17,13 @@ const priorityColors: Record<TaskPriority, string> = {
   urgent: 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300',
 }
 
+const priorityBorderColors: Record<TaskPriority, string> = {
+  low: 'border-l-gray-400',
+  medium: 'border-l-blue-500',
+  high: 'border-l-orange-500',
+  urgent: 'border-l-red-500',
+}
+
 const priorityLabels: Record<TaskPriority, string> = {
   low: 'Low',
   medium: 'Medium',
@@ -47,8 +54,9 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       {...listeners}
       className={`
         bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700
+        border-l-[3px] ${priorityBorderColors[task.priority]}
         p-3 cursor-grab active:cursor-grabbing
-        hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-sm
+        hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm
         transition-all duration-150
         ${isDragging ? 'opacity-50 shadow-lg ring-2 ring-blue-400' : ''}
       `}
