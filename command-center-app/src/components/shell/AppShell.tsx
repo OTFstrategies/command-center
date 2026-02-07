@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Search } from 'lucide-react'
+import { useSearch } from '@/components/search/SearchProvider'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
 import { ProjectSwitcher } from './ProjectSwitcher'
@@ -33,11 +34,23 @@ export function AppShell({
   currentProject = null,
 }: AppShellProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { openSearch } = useSearch()
 
   return (
     <div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
       {/* Sidebar - Desktop */}
       <aside className="fixed inset-y-0 left-0 z-50 w-16 glass max-md:hidden flex flex-col">
+        {/* Search Button */}
+        <div className="flex justify-center p-3">
+          <button
+            onClick={openSearch}
+            className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100/50 hover:text-zinc-900 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-50"
+            aria-label="Search (Ctrl+K)"
+          >
+            <Search className="h-5 w-5" strokeWidth={1.5} />
+          </button>
+        </div>
+
         {/* Navigation - Top */}
         <div className="flex-1">
           <MainNav
@@ -72,6 +85,13 @@ export function AppShell({
           {mobileMenuOpen ? <X className="h-5 w-5" strokeWidth={1.5} /> : <Menu className="h-5 w-5" strokeWidth={1.5} />}
         </button>
         <div className="flex items-center gap-2">
+          <button
+            onClick={openSearch}
+            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-50"
+            aria-label="Search"
+          >
+            <Search className="h-5 w-5" strokeWidth={1.5} />
+          </button>
           <ProjectSwitcher
             projects={projects}
             currentProject={currentProject}
