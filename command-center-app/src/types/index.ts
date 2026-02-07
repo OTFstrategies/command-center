@@ -292,3 +292,34 @@ export interface RecentChange {
   created_at: string;
   relativeTime: string;
 }
+
+// =============================================================================
+// INBOX SYNC
+// =============================================================================
+
+export type InboxStatus = 'pending' | 'processing' | 'synced' | 'error'
+
+export interface InboxManifest {
+  project: string
+  slug: string
+  scannedAt: string
+  counts: Record<string, number>
+  totalItems: number
+}
+
+export interface InboxPending {
+  id: string
+  project: string
+  slug: string
+  manifest: InboxManifest
+  project_meta: {
+    name: string
+    path?: string
+    description?: string
+    techStack?: string[]
+  }
+  registry_data: Record<string, unknown[]>
+  status: InboxStatus
+  created_at: string
+  synced_at: string | null
+}

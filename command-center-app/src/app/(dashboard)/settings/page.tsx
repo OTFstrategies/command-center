@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Cloud, RefreshCw, Check, AlertCircle, Clock, Loader2 } from 'lucide-react'
 import type { SyncStatus } from '@/types'
+import { InboxPanel } from '@/components/sync/InboxPanel'
 
 interface SyncTypeData {
   type: string
@@ -177,6 +178,11 @@ export default function SettingsPage() {
               {error}
             </div>
           )}
+        </div>
+
+        {/* Inbox Panel */}
+        <div className="mb-6">
+          <InboxPanel />
         </div>
 
         {/* Sync Types */}
