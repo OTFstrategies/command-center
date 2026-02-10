@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Cloud, RefreshCw, Check, AlertCircle, Clock, Loader2 } from 'lucide-react'
 import type { SyncStatus } from '@/types'
 import { InboxPanel } from '@/components/sync/InboxPanel'
+import { useToast } from '@/components/ui/ToastProvider'
 
 interface SyncTypeData {
   type: string
@@ -41,6 +42,7 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSyncing, setIsSyncing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { addToast } = useToast()
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -93,6 +95,7 @@ export default function SettingsPage() {
     setIsSyncing(true)
     await fetchStatus()
     setIsSyncing(false)
+    addToast({ type: 'success', title: 'Status vernieuwd' })
   }
 
   const formatLastSynced = (timestamp: string | null): string => {
