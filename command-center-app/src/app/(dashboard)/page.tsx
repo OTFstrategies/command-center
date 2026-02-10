@@ -98,16 +98,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     <Link
                       key={change.id}
                       href={`/projects/${change.project.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="group flex items-start gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
+                      className="group flex items-start gap-3 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-hover"
                     >
                       <div className={`mt-1.5 h-2 w-2 rounded-full flex-shrink-0 ${
-                        change.change_type === 'added' ? 'bg-emerald-500' :
+                        change.change_type === 'added' ? 'bg-zinc-600 dark:bg-zinc-400' :
                         change.change_type === 'removed' ? 'bg-red-500' :
-                        change.change_type === 'updated' ? 'bg-amber-500' :
-                        'bg-blue-500'
+                        change.change_type === 'updated' ? 'bg-zinc-400 dark:bg-zinc-500' :
+                        'bg-zinc-300 dark:bg-zinc-600'
                       }`} />
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-[var(--accent-blue)] transition-colors">
+                        <p className="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
                           {change.title}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">

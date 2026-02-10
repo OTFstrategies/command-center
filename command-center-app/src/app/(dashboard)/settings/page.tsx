@@ -27,8 +27,8 @@ const statusIcons: Record<SyncStatus, typeof Check> = {
 }
 
 const statusColors: Record<SyncStatus, string> = {
-  synced: 'text-green-500',
-  pending: 'text-amber-500',
+  synced: 'text-zinc-600 dark:text-zinc-400',
+  pending: 'text-zinc-400 dark:text-zinc-500',
   error: 'text-red-500',
   never: 'text-zinc-400',
 }
@@ -145,8 +145,8 @@ export default function SettingsPage() {
         <div className="mb-6 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`rounded-full p-2 ${isConnected ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                <Cloud className={`h-5 w-5 ${isConnected ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`} />
+              <div className={`rounded-full p-2 ${isConnected ? 'bg-zinc-100 dark:bg-zinc-800' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                <Cloud className={`h-5 w-5 ${isConnected ? 'text-zinc-600 dark:text-zinc-400' : 'text-red-600 dark:text-red-400'}`} />
               </div>
               <div>
                 <p className="font-medium text-zinc-900 dark:text-zinc-50">Supabase</p>
@@ -168,7 +168,7 @@ export default function SettingsPage() {
               <button
                 onClick={handleRefresh}
                 disabled={isSyncing}
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 disabled:opacity-50"
               >
                 <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
                 {isSyncing ? 'Laden...' : 'Ververs'}
@@ -208,7 +208,7 @@ export default function SettingsPage() {
                     {syncType.lastSynced && ` · Laatste sync: ${formatLastSynced(syncType.lastSynced)}`}
                   </p>
                 </div>
-                <div className={`flex items-center gap-1.5 text-sm ${syncType.count > 0 ? 'text-green-500' : 'text-zinc-400'}`}>
+                <div className={`flex items-center gap-1.5 text-sm ${syncType.count > 0 ? 'text-zinc-600 dark:text-zinc-400' : 'text-zinc-400'}`}>
                   {syncType.count > 0 ? (
                     <Check className="h-4 w-4" />
                   ) : (

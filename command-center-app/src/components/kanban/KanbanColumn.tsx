@@ -23,8 +23,8 @@ const statusConfig: Record<TaskStatus, { label: string; color: string; bgColor: 
   },
   todo: {
     label: 'To Do',
-    color: 'text-blue-600 dark:text-blue-400',
-    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+    color: 'text-zinc-700 dark:text-zinc-300',
+    bgColor: 'bg-zinc-50 dark:bg-zinc-900/20',
   },
   doing: {
     label: 'In Progress',
@@ -33,8 +33,8 @@ const statusConfig: Record<TaskStatus, { label: string; color: string; bgColor: 
   },
   done: {
     label: 'Done',
-    color: 'text-green-600 dark:text-green-400',
-    bgColor: 'bg-green-50 dark:bg-green-900/20',
+    color: 'text-zinc-600 dark:text-zinc-300',
+    bgColor: 'bg-zinc-50 dark:bg-zinc-800/20',
   },
 }
 
@@ -48,7 +48,7 @@ export function KanbanColumn({ status, tasks, collapsed, onToggleCollapse, onEdi
       className={`
         flex flex-col min-h-[500px] rounded-lg border
         ${config.bgColor}
-        ${isOver ? 'border-blue-400 ring-2 ring-blue-200 dark:ring-blue-800' : 'border-gray-200 dark:border-gray-700'}
+        ${isOver ? 'border-zinc-400 ring-2 ring-zinc-400/30' : 'border-gray-200 dark:border-gray-700'}
         transition-all duration-150
       `}
     >

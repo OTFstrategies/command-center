@@ -20,15 +20,15 @@ export function MainNav({ items, onNavigate, showLabels = false }: MainNavProps)
                 group relative flex w-full items-center gap-3 rounded-xl p-3 transition-all duration-300
                 ${showLabels ? 'justify-start' : 'justify-center'}
                 ${item.isActive
-                  ? 'text-white glow-blue'
-                  : 'text-zinc-400 hover:text-white glow-blue-hover'
+                  ? 'text-white glow'
+                  : 'text-zinc-400 hover:text-white glow-hover'
                 }
               `}
               aria-label={item.label}
             >
               {/* Glow background for active */}
               {item.isActive && (
-                <div className="absolute inset-0 rounded-xl bg-[var(--accent-blue)] opacity-20 blur-xl" />
+                <div className="absolute inset-0 rounded-xl bg-zinc-400 opacity-20 blur-xl" />
               )}
               <span className="relative h-5 w-5 shrink-0 [&>svg]:stroke-[1.5]">{item.icon}</span>
 

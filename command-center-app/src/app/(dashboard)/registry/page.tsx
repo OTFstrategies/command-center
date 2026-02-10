@@ -78,8 +78,8 @@ export default async function RegistryPage({ searchParams }: Props) {
             href={buildUrl(null, project)}
             className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
               !type
-                ? 'bg-[var(--accent-blue)] text-white glow-blue'
-                : 'text-zinc-500 hover:text-[var(--accent-blue)]'
+                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 glow'
+                : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
             }`}
           >
             All
@@ -90,8 +90,8 @@ export default async function RegistryPage({ searchParams }: Props) {
               href={buildUrl(key, project)}
               className={`px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
                 type === key
-                  ? 'bg-[var(--accent-blue)] text-white glow-blue'
-                  : 'text-zinc-500 hover:text-[var(--accent-blue)]'
+                  ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 glow'
+                  : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
               {config.label}s
@@ -110,9 +110,9 @@ export default async function RegistryPage({ searchParams }: Props) {
               return (
                 <div
                   key={`${item.type}-${item.id}`}
-                  className="group flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-blue-hover"
+                  className="group flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/30 glow-hover"
                 >
-                  <Icon className="h-4 w-4 text-zinc-400 group-hover:text-[var(--accent-blue)]" strokeWidth={1.5} />
+                  <Icon className="h-4 w-4 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100" strokeWidth={1.5} />
                   <span className="flex-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {item.name}
                   </span>

@@ -15,8 +15,8 @@ export interface ToastData {
 const toastConfig: Record<ToastType, { icon: typeof CheckCircle2; color: string; bg: string }> = {
   success: {
     icon: CheckCircle2,
-    color: 'text-green-400',
-    bg: 'border-green-500/20',
+    color: 'text-zinc-500 dark:text-zinc-400',
+    bg: 'border-zinc-500/20',
   },
   error: {
     icon: AlertCircle,
@@ -25,13 +25,13 @@ const toastConfig: Record<ToastType, { icon: typeof CheckCircle2; color: string;
   },
   info: {
     icon: Info,
-    color: 'text-blue-400',
-    bg: 'border-blue-500/20',
+    color: 'text-zinc-500 dark:text-zinc-400',
+    bg: 'border-zinc-500/20',
   },
   warning: {
     icon: AlertTriangle,
-    color: 'text-amber-400',
-    bg: 'border-amber-500/20',
+    color: 'text-zinc-500 dark:text-zinc-400',
+    bg: 'border-zinc-400/20',
   },
 }
 

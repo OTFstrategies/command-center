@@ -23,7 +23,7 @@ export function AppShell() {
                   className={({ isActive }) => `
                     group relative flex w-full items-center justify-center rounded-lg p-3 transition-colors
                     ${isActive
-                      ? 'bg-zinc-100 text-blue-600 dark:bg-zinc-800 dark:text-blue-400'
+                      ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50'
                       : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50'
                     }
                   `}

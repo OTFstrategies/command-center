@@ -85,7 +85,7 @@ export function InboxPanel() {
           <Inbox className="h-4 w-4 text-zinc-500" />
           <h2 className="font-medium text-zinc-900 dark:text-zinc-50">Inbox</h2>
           {pending.length > 0 && (
-            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-100 px-1.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-100 px-1.5 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
               {pending.length}
             </span>
           )}
@@ -101,7 +101,7 @@ export function InboxPanel() {
           {pending.length > 1 && (
             <button
               onClick={processAll}
-              className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
             >
               Sync All
             </button>
@@ -111,7 +111,7 @@ export function InboxPanel() {
 
       {pending.length === 0 ? (
         <div className="p-6 text-center">
-          <Check className="mx-auto h-8 w-8 text-green-400 mb-2" />
+          <Check className="mx-auto h-8 w-8 text-zinc-400 mb-2" />
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
             Inbox is leeg - alles is gesynchroniseerd
           </p>
@@ -140,7 +140,7 @@ export function InboxPanel() {
                 <button
                   onClick={() => processItem(item.id, item.project)}
                   disabled={isProcessing}
-                  className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
                 >
                   {isProcessing ? (
                     <>

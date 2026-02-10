@@ -18,9 +18,9 @@ const categoryIcons: Record<string, string> = {
 }
 
 const categoryColors: Record<string, string> = {
-  asset: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-  project: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
-  task: 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
+  asset: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
+  project: 'bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300',
+  task: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400',
   page: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400',
 }
 
@@ -115,7 +115,7 @@ export function SearchDialog({ isOpen, onClose }: SearchDialogProps) {
                     onClick={() => handleSelect(item)}
                     className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
                       index === selectedIndex
-                        ? 'bg-blue-50 dark:bg-blue-900/20'
+                        ? 'bg-zinc-100 dark:bg-zinc-800/50'
                         : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50'
                     }`}
                   >

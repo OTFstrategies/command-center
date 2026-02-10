@@ -12,15 +12,15 @@ interface TaskCardProps {
 
 const priorityColors: Record<TaskPriority, string> = {
   low: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
-  medium: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
-  high: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300',
+  medium: 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
+  high: 'bg-state-warning-bg text-state-warning-text',
   urgent: 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300',
 }
 
 const priorityBorderHex: Record<TaskPriority, string> = {
   low: '#9ca3af',
-  medium: '#3b82f6',
-  high: '#f97316',
+  medium: '#71717a',
+  high: '#a1a1aa',
   urgent: '#ef4444',
 }
 
@@ -59,7 +59,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         p-3 cursor-grab active:cursor-grabbing
         hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm
         transition-all duration-150
-        ${isDragging ? 'opacity-50 shadow-lg ring-2 ring-blue-400' : ''}
+        ${isDragging ? 'opacity-50 shadow-lg ring-2 ring-zinc-400/30' : ''}
       `}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -87,7 +87,7 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
             {onEdit && (
               <button
                 onClick={(e) => { e.stopPropagation(); onEdit(task) }}
-                className="text-gray-400 hover:text-blue-500 p-1"
+                className="text-gray-400 hover:text-foreground p-1"
                 title="Edit"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

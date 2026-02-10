@@ -10,7 +10,7 @@ export function Settings() {
             Connected to Command Center database
           </p>
           <div className="mt-4 flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-green-500" />
+            <div className="h-2 w-2 rounded-full bg-zinc-600 dark:bg-zinc-400" />
             <span className="text-xs text-zinc-500">Connected</span>
           </div>
         </div>

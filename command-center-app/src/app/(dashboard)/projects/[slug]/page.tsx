@@ -44,10 +44,10 @@ export default async function ProjectDetailPage({ params }: Props) {
   // Get change type icon
   const getChangeIcon = (type: string) => {
     switch (type) {
-      case 'added': return <Plus className="h-3.5 w-3.5 text-emerald-500" />
+      case 'added': return <Plus className="h-3.5 w-3.5 text-zinc-600 dark:text-zinc-400" />
       case 'removed': return <Minus className="h-3.5 w-3.5 text-red-500" />
-      case 'updated': return <RefreshCw className="h-3.5 w-3.5 text-amber-500" />
-      default: return <RefreshCw className="h-3.5 w-3.5 text-blue-500" />
+      case 'updated': return <RefreshCw className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
+      default: return <RefreshCw className="h-3.5 w-3.5 text-zinc-300 dark:text-zinc-600" />
     }
   }
 
@@ -57,7 +57,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-[var(--accent-blue)] transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
           Back

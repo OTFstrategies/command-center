@@ -51,7 +51,7 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
         </button>
 
         {isOpen && (
-          <div className="absolute bottom-0 left-full ml-2 z-50 min-w-[180px] overflow-hidden rounded-xl glass py-1 shadow-xl glow-blue">
+          <div className="absolute bottom-0 left-full ml-2 z-50 min-w-[180px] overflow-hidden rounded-xl glass py-1 shadow-xl glow">
             <div className="px-3 py-2 text-xs font-medium text-zinc-400 uppercase tracking-wider border-b border-white/10">
               Project
             </div>
@@ -59,8 +59,8 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
               onClick={() => handleSelect(null)}
               className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
                 !currentProject
-                  ? 'text-[var(--accent-blue)] font-medium'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+                  ? 'text-zinc-900 dark:text-zinc-50 font-medium'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
               All projects
@@ -76,8 +76,8 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
                 onClick={() => handleSelect(project)}
                 className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
                   currentProject === project
-                    ? 'text-[var(--accent-blue)] font-medium'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+                    ? 'text-zinc-900 dark:text-zinc-50 font-medium'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
                 }`}
               >
                 {project}
@@ -94,7 +94,7 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-xl glass px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 transition-all duration-300 glow-blue-hover"
+        className="flex items-center gap-2 rounded-xl glass px-4 py-2 text-sm text-zinc-600 dark:text-zinc-300 transition-all duration-300 glow-hover"
       >
         <span className="font-medium">{currentProject || 'All'}</span>
         <ChevronDown
@@ -104,13 +104,13 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full z-50 mt-2 min-w-[180px] overflow-hidden rounded-xl glass py-1 shadow-xl glow-blue">
+        <div className="absolute right-0 top-full z-50 mt-2 min-w-[180px] overflow-hidden rounded-xl glass py-1 shadow-xl glow">
           <button
             onClick={() => handleSelect(null)}
             className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
               !currentProject
-                ? 'text-[var(--accent-blue)] font-medium'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+                ? 'text-zinc-900 dark:text-zinc-50 font-medium'
+                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
             }`}
           >
             All projects
@@ -126,8 +126,8 @@ export function ProjectSwitcher({ projects, currentProject, sidebar }: ProjectSw
               onClick={() => handleSelect(project)}
               className={`flex w-full items-center px-4 py-2.5 text-left text-sm transition-all duration-200 ${
                 currentProject === project
-                  ? 'text-[var(--accent-blue)] font-medium'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-[var(--accent-blue)]'
+                  ? 'text-zinc-900 dark:text-zinc-50 font-medium'
+                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
               }`}
             >
               {project}
