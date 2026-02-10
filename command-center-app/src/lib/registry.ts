@@ -327,6 +327,90 @@ export async function getRecentActivity(project?: string | null) {
   }
 }
 
+export async function getActivityLog(filters?: {
+  type?: string
+  period?: 'today' | 'week' | 'month' | 'all'
+  limit?: number
+  offset?: number
+}): Promise<{ entries: Array<{
+  id: string
+  type: 'api' | 'prompt' | 'skill' | 'agent' | 'command' | 'instruction'
+  assetId: string
+  assetName: string
+  event: 'created' | 'used'
+  timestamp: string
+  relativeTime: string
+  project: string
+}>, total: number }> {
+  try {
+    let query = getSupabase()
+      .from('activity_log')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+
+    // Type filter
+    if (filters?.type && filters.type !== 'all') {
+      query = query.eq('item_type', filters.type)
+    }
+
+    // Period filter
+    if (filters?.period && filters.period !== 'all') {
+      const now = new Date()
+      let since: Date
+      switch (filters.period) {
+        case 'today':
+          since = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+          break
+        case 'week':
+          since = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          break
+        case 'month':
+          since = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+          break
+        default:
+          since = new Date(0)
+      }
+      query = query.gte('created_at', since.toISOString())
+    }
+
+    // Pagination
+    const limit = filters?.limit || 50
+    const offset = filters?.offset || 0
+    query = query.range(offset, offset + limit - 1)
+
+    const { data, error, count } = await query
+
+    if (error) {
+      console.error('Error fetching activity log:', error)
+      return { entries: [], total: 0 }
+    }
+
+    const entries = (data || []).map((item: {
+      id: string
+      item_type: string
+      item_id: string
+      item_name: string
+      action: string
+      created_at: string
+      details: { project?: string; category?: string }
+    }) => ({
+      id: item.id,
+      type: item.item_type as 'api' | 'prompt' | 'skill' | 'agent' | 'command' | 'instruction',
+      assetId: item.item_id || '',
+      assetName: item.item_name,
+      event: item.action as 'created' | 'used',
+      timestamp: item.created_at,
+      relativeTime: getRelativeTime(item.created_at),
+      project: item.details?.project || 'global',
+    }))
+
+    return { entries, total: count || 0 }
+  } catch (e) {
+    console.error('Activity log fetch failed:', e)
+    return { entries: [], total: 0 }
+  }
+}
+
 function getRelativeTime(timestamp: string): string {
   const now = new Date()
   const then = new Date(timestamp)
