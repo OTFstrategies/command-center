@@ -54,10 +54,10 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       {...attributes}
       {...listeners}
       className={`
-        bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700
+        glass glow-hover rounded-lg
         border-l-[3px]
         p-3 cursor-grab active:cursor-grabbing
-        hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-sm
+        hover:border-zinc-300 dark:hover:border-zinc-600 hover:shadow-sm
         transition-all duration-150
         ${isDragging ? 'opacity-50 shadow-lg ring-2 ring-zinc-400/30' : ''}
       `}

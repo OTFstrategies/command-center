@@ -15,7 +15,7 @@ export function ProjectCard({ name, slug, description, itemCount }: ProjectCardP
   return (
     <Link
       href={`/projects/${slug}`}
-      className="group flex items-center gap-3 rounded-xl border-l-[3px] bg-white/50 px-4 py-3 transition-all duration-300 hover:bg-white/80 dark:bg-zinc-900/50 dark:hover:bg-zinc-900/80 glow-hover"
+      className="group flex items-center gap-3 rounded-xl border-l-[3px] glass px-4 py-3 transition-all duration-300 glow-hover"
       style={{ borderLeftColor: color }}
     >
       <div className="flex-1 min-w-0">
