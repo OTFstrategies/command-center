@@ -18,10 +18,10 @@ const priorityColors: Record<TaskPriority, string> = {
 }
 
 const priorityBorderColors: Record<TaskPriority, string> = {
-  low: 'border-l-gray-400',
-  medium: 'border-l-blue-500',
-  high: 'border-l-orange-500',
-  urgent: 'border-l-red-500',
+  low: 'border-l-gray-400 dark:border-l-gray-400',
+  medium: 'border-l-blue-500 dark:border-l-blue-500',
+  high: 'border-l-orange-500 dark:border-l-orange-500',
+  urgent: 'border-l-red-500 dark:border-l-red-500',
 }
 
 const priorityLabels: Record<TaskPriority, string> = {
