@@ -46,6 +46,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-state-success-bg: var(--state-success-bg);
+  --color-state-success-text: var(--state-success-text);
+  --color-state-error-bg: var(--state-error-bg);
+  --color-state-error-text: var(--state-error-text);
+  --color-state-warning-bg: var(--state-warning-bg);
+  --color-state-warning-text: var(--state-warning-text);
+  --color-state-info-bg: var(--state-info-bg);
+  --color-state-info-text: var(--state-info-text);
 }
 
 :root {
@@ -93,6 +101,16 @@
   --glow: rgba(0, 0, 0, 0.06);
   --glow-hover: rgba(0, 0, 0, 0.1);
   --glow-strong: rgba(0, 0, 0, 0.15);
+
+  /* Status state backgrounds (subtle colored bg + zinc text) */
+  --state-success-bg: oklch(0.95 0.02 145);
+  --state-success-text: oklch(0.228 0.006 285.885);
+  --state-error-bg: oklch(0.95 0.03 25);
+  --state-error-text: oklch(0.228 0.006 285.885);
+  --state-warning-bg: oklch(0.95 0.03 85);
+  --state-warning-text: oklch(0.228 0.006 285.885);
+  --state-info-bg: oklch(0.967 0.001 286.375);
+  --state-info-text: oklch(0.228 0.006 285.885);
 }
 
 .dark {
@@ -135,6 +153,16 @@
   --glow: rgba(255, 255, 255, 0.06);
   --glow-hover: rgba(255, 255, 255, 0.1);
   --glow-strong: rgba(255, 255, 255, 0.15);
+
+  /* Status state backgrounds dark */
+  --state-success-bg: oklch(0.25 0.02 145);
+  --state-success-text: oklch(0.920 0.004 286.32);
+  --state-error-bg: oklch(0.25 0.03 25);
+  --state-error-text: oklch(0.920 0.004 286.32);
+  --state-warning-bg: oklch(0.25 0.03 85);
+  --state-warning-text: oklch(0.920 0.004 286.32);
+  --state-info-bg: oklch(0.200 0.006 285.885);
+  --state-info-text: oklch(0.920 0.004 286.32);
 }
 
 /* Glass utility classes */
