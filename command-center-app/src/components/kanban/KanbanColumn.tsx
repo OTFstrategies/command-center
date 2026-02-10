@@ -3,8 +3,26 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { ChevronDown } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Task, TaskStatus } from '@/lib/tasks'
 import { TaskCard } from './TaskCard'
+
+const listVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.05 },
+  },
+} as const
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 300, damping: 24 },
+  },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.15 } },
+}
 
 interface KanbanColumnProps {
   status: TaskStatus
@@ -69,26 +87,49 @@ export function KanbanColumn({ status, tasks, collapsed, onToggleCollapse, onEdi
         </div>
       </div>
 
-      {!collapsed && (
-        <div className="flex-1 p-2 space-y-2 overflow-y-auto">
-          <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onEdit={onEditTask}
-                onDelete={onDeleteTask}
-              />
-            ))}
-          </SortableContext>
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            className="flex-1 p-2 space-y-2 overflow-y-auto"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
+          >
+            <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+              <motion.div
+                className="space-y-2"
+                variants={listVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <AnimatePresence mode="popLayout">
+                  {tasks.map((task) => (
+                    <motion.div
+                      key={task.id}
+                      variants={cardVariants}
+                      layout
+                      exit="exit"
+                    >
+                      <TaskCard
+                        task={task}
+                        onEdit={onEditTask}
+                        onDelete={onDeleteTask}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            </SortableContext>
 
-          {tasks.length === 0 && (
-            <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">
-              No tasks
-            </div>
-          )}
-        </div>
-      )}
+            {tasks.length === 0 && (
+              <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">
+                No tasks
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

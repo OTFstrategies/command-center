@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import type { NavigationItem } from './AppShell'
 
 interface MainNavProps {
@@ -17,18 +18,30 @@ export function MainNav({ items, onNavigate, showLabels = false }: MainNavProps)
             <button
               onClick={() => onNavigate?.(item.href)}
               className={`
-                group relative flex w-full items-center gap-3 rounded-xl p-3 transition-all duration-300
+                group relative flex w-full items-center gap-3 rounded-xl p-3 transition-colors duration-200
                 ${showLabels ? 'justify-start' : 'justify-center'}
                 ${item.isActive
-                  ? 'text-white glow'
+                  ? 'text-white'
                   : 'text-zinc-400 hover:text-white glow-hover'
                 }
               `}
               aria-label={item.label}
             >
+              {/* Sliding active indicator with layoutId */}
+              {item.isActive && (
+                <motion.div
+                  layoutId={showLabels ? 'nav-indicator-mobile' : 'nav-indicator'}
+                  className="absolute inset-0 rounded-xl bg-zinc-800/60 dark:bg-zinc-700/40"
+                  transition={{ type: 'spring' as const, stiffness: 350, damping: 30 }}
+                />
+              )}
               {/* Glow background for active */}
               {item.isActive && (
-                <div className="absolute inset-0 rounded-xl bg-zinc-400 opacity-20 blur-xl" />
+                <motion.div
+                  layoutId={showLabels ? 'nav-glow-mobile' : 'nav-glow'}
+                  className="absolute inset-0 rounded-xl bg-zinc-400 opacity-20 blur-xl"
+                  transition={{ type: 'spring' as const, stiffness: 350, damping: 30 }}
+                />
               )}
               <span className="relative h-5 w-5 shrink-0 [&>svg]:stroke-[1.5]">{item.icon}</span>
 

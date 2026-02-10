@@ -7,6 +7,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import { StatCard } from '@/components/dashboard/StatCard'
 import { ProjectCard } from '@/components/dashboard/ProjectCard'
 import { QuickActionBar } from '@/components/dashboard/QuickActionBar'
+import { StaggerGrid, StaggerItem } from '@/components/dashboard/StaggerGrid'
 
 // Disable caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
@@ -62,7 +63,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
             Assets
           </h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <StaggerGrid className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {assetTypes.map((type) => {
               const count = stats[type.statsKey as keyof AssetStats]
               const Icon = type.icon
@@ -70,16 +71,17 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                 ? `/registry?type=${type.key}&project=${project}`
                 : type.href
               return (
-                <StatCard
-                  key={type.key}
-                  label={type.label}
-                  count={count}
-                  icon={<Icon />}
-                  href={href}
-                />
+                <StaggerItem key={type.key}>
+                  <StatCard
+                    label={type.label}
+                    count={count}
+                    icon={<Icon />}
+                    href={href}
+                  />
+                </StaggerItem>
               )
             })}
-          </div>
+          </StaggerGrid>
         </section>
 
         {/* Two Column Layout: Recent Changes + Projects */}
@@ -128,21 +130,22 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               <h2 className="mb-4 text-xs font-medium uppercase tracking-widest text-zinc-400">
                 Projects
               </h2>
-              <div className="space-y-2">
+              <StaggerGrid className="space-y-2">
                 {projects.length === 0 ? (
                   <p className="text-sm text-zinc-500">Nog geen projecten</p>
                 ) : (
                   projects.map((proj) => (
-                    <ProjectCard
-                      key={proj.slug}
-                      name={proj.name}
-                      slug={proj.slug}
-                      description={proj.description}
-                      itemCount={proj.itemCount}
-                    />
+                    <StaggerItem key={proj.slug}>
+                      <ProjectCard
+                        name={proj.name}
+                        slug={proj.slug}
+                        description={proj.description}
+                        itemCount={proj.itemCount}
+                      />
+                    </StaggerItem>
                   ))
                 )}
-              </div>
+              </StaggerGrid>
             </section>
           </div>
         )}
