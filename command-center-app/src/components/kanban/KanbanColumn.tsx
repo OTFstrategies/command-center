@@ -36,8 +36,8 @@ interface KanbanColumnProps {
 const statusConfig: Record<TaskStatus, { label: string; color: string; bgColor: string }> = {
   backlog: {
     label: 'Backlog',
-    color: 'text-gray-600 dark:text-gray-400',
-    bgColor: 'bg-gray-50 dark:bg-gray-900/50',
+    color: 'text-zinc-600 dark:text-zinc-400',
+    bgColor: 'bg-zinc-50 dark:bg-zinc-900/50',
   },
   todo: {
     label: 'To Do',
@@ -46,8 +46,8 @@ const statusConfig: Record<TaskStatus, { label: string; color: string; bgColor: 
   },
   doing: {
     label: 'In Progress',
-    color: 'text-yellow-600 dark:text-yellow-400',
-    bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+    color: 'text-zinc-700 dark:text-zinc-300',
+    bgColor: 'bg-zinc-100 dark:bg-zinc-800/20',
   },
   done: {
     label: 'Done',
