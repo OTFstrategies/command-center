@@ -59,3 +59,22 @@ command-center-app/src/
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Publieke Supabase key
 - `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase key (bypass RLS)
 - `SYNC_API_KEY` — Authenticatie voor sync API routes
+
+## Sync Pipeline
+Registry data flow: `~/.claude/registry/*.json` → `scripts/sync-registry.mjs` → `POST /api/sync` → Supabase
+- **Handmatig:** `SYNC_API_KEY="<key>" npm run sync` vanuit `command-center-app/`
+- **Via Claude Code:** `/sync-cc` command
+- Het script leest alle registry JSON bestanden en pusht per type naar de sync API
+- De API vervangt alle items van dat type, genereert changelog entries, en maakt projecten aan
+
+## Systeemrollen
+
+| Systeem | Rol | Data |
+|---------|-----|------|
+| **Claude CLI** | Runtime — produceert en gebruikt assets (agents, commands, skills, etc.) | `~/.claude/registry/*.json` (source of truth) |
+| **Command Center v2** | Dashboard — visueel overzicht van assets, projecten, taken, activiteit | Supabase (mirror via sync) |
+| **Serena** | Code intelligence — symbol navigatie, refactoring, project memories | `.serena/project.yml` + `.serena/memories/` |
+
+- Claude CLI is de **producent** (`/save-to-cc` slaat assets op)
+- CC v2 is de **viewer** (`/sync-cc` synchroniseert naar Supabase)
+- Serena is de **code-tool** (onafhankelijk, eigen data)
