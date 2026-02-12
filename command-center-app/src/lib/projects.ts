@@ -51,6 +51,13 @@ export interface ProjectDetail extends Project {
   folders: ProjectFolder[]
   credentials: ProjectCredential[]
   changelog: ProjectChangelog[]
+  tech_stack?: string[]
+  build_command?: string | null
+  test_command?: string | null
+  dev_command?: string | null
+  languages?: string[]
+  live_url?: string | null
+  repo_url?: string | null
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -183,6 +190,36 @@ export async function getProjectsFromRegistry(): Promise<UnifiedProject[]> {
  * Gets a project by name (from registry_items.project), with all related data.
  * Uses registry_items as primary source, enriched with projects table data.
  */
+export interface ProjectMemory {
+  id: string
+  project: string
+  name: string
+  content: string
+  created_at: string
+  updated_at: string
+}
+
+export async function getProjectMemories(projectName: string): Promise<ProjectMemory[]> {
+  try {
+    const client = getSupabase()
+    const slug = projectName.toLowerCase().replace(/\s+/g, '-')
+    const { data, error } = await client
+      .from('project_memories')
+      .select('*')
+      .or(`project.eq.${projectName},project.eq.${slug}`)
+      .order('updated_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching memories:', error)
+      return []
+    }
+    return data || []
+  } catch (e) {
+    console.error('Supabase not configured:', e)
+    return []
+  }
+}
+
 export async function getProjectByName(projectName: string): Promise<ProjectDetail | null> {
   try {
     const client = getSupabase()

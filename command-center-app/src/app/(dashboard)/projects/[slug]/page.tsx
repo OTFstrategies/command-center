@@ -1,6 +1,7 @@
-import { ArrowLeft, FolderOpen, Key, Clock, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw } from 'lucide-react'
-import { getProjectByName } from '@/lib/projects'
+import { ArrowLeft, FolderOpen, Key, Clock, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw, Globe, Code, ExternalLink } from 'lucide-react'
+import { getProjectByName, getProjectMemories } from '@/lib/projects'
 import { getCommands, getAgents, getSkills, getPrompts, getApis, getInstructions, getProjectChangelog } from '@/lib/registry'
+import { MemoryList } from '@/components/memories/MemoryList'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -27,7 +28,7 @@ export default async function ProjectDetailPage({ params }: Props) {
   if (!finalProject) notFound()
 
   // Get all assets for this project
-  const [commands, agents, skills, prompts, apis, instructions, changelog] = await Promise.all([
+  const [commands, agents, skills, prompts, apis, instructions, changelog, memories] = await Promise.all([
     getCommands(finalProject.name),
     getAgents(finalProject.name),
     getSkills(finalProject.name),
@@ -35,6 +36,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     getApis(finalProject.name),
     getInstructions(finalProject.name),
     getProjectChangelog(finalProject.name, 20),
+    getProjectMemories(finalProject.name),
   ])
 
   // Calculate asset counts
@@ -82,6 +84,87 @@ export default async function ProjectDetailPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Project Info (onboarding metadata) */}
+        {(finalProject.tech_stack?.length || finalProject.build_command || finalProject.live_url) && (
+          <section className="mt-10">
+            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+              Project Info
+            </h2>
+            <div className="mt-4 rounded-xl px-4 py-4 bg-white/30 dark:bg-zinc-800/20 space-y-3">
+              {/* Tech Stack */}
+              {finalProject.tech_stack && finalProject.tech_stack.length > 0 && (
+                <div className="flex items-start gap-3">
+                  <Code className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                  <div className="flex flex-wrap gap-1.5">
+                    {finalProject.tech_stack.map((tech) => (
+                      <span key={tech} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Languages */}
+              {finalProject.languages && finalProject.languages.length > 0 && (
+                <div className="flex items-start gap-3">
+                  <Globe className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                  <div className="flex flex-wrap gap-1.5">
+                    {finalProject.languages.map((lang) => (
+                      <span key={lang} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Commands */}
+              {(finalProject.build_command || finalProject.dev_command || finalProject.test_command) && (
+                <div className="flex items-start gap-3">
+                  <Terminal className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                  <div className="space-y-1 text-sm font-mono">
+                    {finalProject.dev_command && (
+                      <p className="text-zinc-600 dark:text-zinc-300">
+                        <span className="text-zinc-400">dev:</span> {finalProject.dev_command}
+                      </p>
+                    )}
+                    {finalProject.build_command && (
+                      <p className="text-zinc-600 dark:text-zinc-300">
+                        <span className="text-zinc-400">build:</span> {finalProject.build_command}
+                      </p>
+                    )}
+                    {finalProject.test_command && (
+                      <p className="text-zinc-600 dark:text-zinc-300">
+                        <span className="text-zinc-400">test:</span> {finalProject.test_command}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Links */}
+              {(finalProject.live_url || finalProject.repo_url) && (
+                <div className="flex items-start gap-3">
+                  <ExternalLink className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                  <div className="space-y-1 text-sm">
+                    {finalProject.live_url && (
+                      <a href={finalProject.live_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                        {finalProject.live_url}
+                      </a>
+                    )}
+                    {finalProject.repo_url && (
+                      <a href={finalProject.repo_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                        {finalProject.repo_url}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Changelog - prominent position */}
         {changelog.length > 0 && (
           <section className="mt-10">
@@ -112,6 +195,9 @@ export default async function ProjectDetailPage({ params }: Props) {
             </div>
           </section>
         )}
+
+        {/* Memories */}
+        <MemoryList memories={memories} />
 
         {/* Assets Overview */}
         {totalAssets > 0 && (
