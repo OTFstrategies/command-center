@@ -26,11 +26,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   // Auth check
   const apiKey = request.headers.get('x-api-key')
-  if (apiKey !== process.env.SYNC_API_KEY) {
+  if (!apiKey || !process.env.SYNC_API_KEY || apiKey !== process.env.SYNC_API_KEY) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await request.json()
+  let body
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+  }
   const { item_type, item_name, action, details } = body
 
   if (!item_type || !item_name || !action) {
