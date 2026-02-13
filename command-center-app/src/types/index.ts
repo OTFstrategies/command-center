@@ -303,6 +303,76 @@ export interface RecentChange {
 // INBOX SYNC
 // =============================================================================
 
+// =============================================================================
+// CODE INTELLIGENCE
+// =============================================================================
+
+export interface CodeSymbol {
+  id: string
+  project: string
+  file_path: string
+  name: string
+  kind: string
+  signature: string | null
+  return_type: string | null
+  line_start: number
+  line_end: number
+  parent: string | null
+  exported: boolean
+  is_async: boolean
+  parameters: { name: string; type: string; optional: boolean }[] | null
+}
+
+export interface CodeDiagnostic {
+  id: string
+  project: string
+  file_path: string
+  line: number
+  character: number
+  severity: 'error' | 'warning' | 'suggestion'
+  code: string | null
+  message: string
+  source: string | null
+}
+
+export interface CodeDependency {
+  id: string
+  project: string
+  name: string
+  version: string
+  dep_type: 'production' | 'dev' | 'peer' | 'optional'
+}
+
+export interface CodeMetrics {
+  id: string
+  project: string
+  total_files: number
+  total_loc: number
+  languages: Record<string, number>
+  total_symbols: number
+  total_exports: number
+  total_diagnostics_error: number
+  total_diagnostics_warning: number
+  total_dependencies: number
+  analyzed_at: string
+}
+
+export interface CodeHealthScore {
+  score: 'healthy' | 'needs-attention' | 'unhealthy'
+  loc: number
+  files: number
+  symbols: number
+  errors: number
+  warnings: number
+  dependencies: number
+  last_analyzed: string
+  issues: string[]
+}
+
+// =============================================================================
+// INBOX SYNC
+// =============================================================================
+
 export type InboxStatus = 'pending' | 'processing' | 'synced' | 'error'
 
 export interface InboxManifest {
