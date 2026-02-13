@@ -51,6 +51,13 @@ export interface ProjectDetail extends Project {
   folders: ProjectFolder[]
   credentials: ProjectCredential[]
   changelog: ProjectChangelog[]
+  tech_stack?: string[]
+  build_command?: string | null
+  test_command?: string | null
+  dev_command?: string | null
+  languages?: string[]
+  live_url?: string | null
+  repo_url?: string | null
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -183,6 +190,36 @@ export async function getProjectsFromRegistry(): Promise<UnifiedProject[]> {
  * Gets a project by name (from registry_items.project), with all related data.
  * Uses registry_items as primary source, enriched with projects table data.
  */
+export interface ProjectMemory {
+  id: string
+  project: string
+  name: string
+  content: string
+  created_at: string
+  updated_at: string
+}
+
+export async function getProjectMemories(projectName: string): Promise<ProjectMemory[]> {
+  try {
+    const client = getSupabase()
+    const slug = projectName.toLowerCase().replace(/\s+/g, '-')
+    const { data, error } = await client
+      .from('project_memories')
+      .select('*')
+      .in('project', [projectName, slug])
+      .order('updated_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching memories:', error)
+      return []
+    }
+    return data || []
+  } catch (e) {
+    console.error('Supabase not configured:', e)
+    return []
+  }
+}
+
 export async function getProjectByName(projectName: string): Promise<ProjectDetail | null> {
   try {
     const client = getSupabase()
@@ -198,14 +235,27 @@ export async function getProjectByName(projectName: string): Promise<ProjectDeta
       return null
     }
 
-    // Try to find matching project in projects table
+    // Try to find matching project in projects table (by slug first, then by name)
     const slug = projectName.toLowerCase().replace(/\s+/g, '-')
-    const { data: projectData } = await client
+    let projectData = null
+    const { data: bySlug } = await client
       .from('projects')
       .select('*')
-      .or(`slug.eq.${slug},name.ilike.${projectName}`)
+      .eq('slug', slug)
       .limit(1)
       .single()
+
+    if (bySlug) {
+      projectData = bySlug
+    } else {
+      const { data: byName } = await client
+        .from('projects')
+        .select('*')
+        .ilike('name', projectName)
+        .limit(1)
+        .single()
+      projectData = byName
+    }
 
     // Get changelog for this project (by project name string)
     const { data: changelogData } = await client
