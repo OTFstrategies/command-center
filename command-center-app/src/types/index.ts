@@ -321,6 +321,7 @@ export interface CodeSymbol {
   exported: boolean
   is_async: boolean
   parameters: { name: string; type: string; optional: boolean }[] | null
+  analyzed_at: string
 }
 
 export interface CodeDiagnostic {
@@ -328,11 +329,12 @@ export interface CodeDiagnostic {
   project: string
   file_path: string
   line: number
-  character: number
+  col: number | null
   severity: 'error' | 'warning' | 'suggestion'
-  code: string | null
+  code: number | null
   message: string
   source: string | null
+  analyzed_at: string
 }
 
 export interface CodeDependency {
@@ -341,6 +343,7 @@ export interface CodeDependency {
   name: string
   version: string
   dep_type: 'production' | 'dev' | 'peer' | 'optional'
+  analyzed_at: string
 }
 
 export interface CodeMetrics {
