@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "cc-v2-code-intel": {
+      "command": "node",
+      "args": ["cc-v2-mcp/dist/index.js"],
+      "cwd": "."
+    }
+  }
+}
