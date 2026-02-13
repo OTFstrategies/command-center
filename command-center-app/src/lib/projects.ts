@@ -206,7 +206,7 @@ export async function getProjectMemories(projectName: string): Promise<ProjectMe
     const { data, error } = await client
       .from('project_memories')
       .select('*')
-      .or(`project.eq.${projectName},project.eq.${slug}`)
+      .in('project', [projectName, slug])
       .order('updated_at', { ascending: false })
 
     if (error) {
@@ -235,14 +235,27 @@ export async function getProjectByName(projectName: string): Promise<ProjectDeta
       return null
     }
 
-    // Try to find matching project in projects table
+    // Try to find matching project in projects table (by slug first, then by name)
     const slug = projectName.toLowerCase().replace(/\s+/g, '-')
-    const { data: projectData } = await client
+    let projectData = null
+    const { data: bySlug } = await client
       .from('projects')
       .select('*')
-      .or(`slug.eq.${slug},name.ilike.${projectName}`)
+      .eq('slug', slug)
       .limit(1)
       .single()
+
+    if (bySlug) {
+      projectData = bySlug
+    } else {
+      const { data: byName } = await client
+        .from('projects')
+        .select('*')
+        .ilike('name', projectName)
+        .limit(1)
+        .single()
+      projectData = byName
+    }
 
     // Get changelog for this project (by project name string)
     const { data: changelogData } = await client

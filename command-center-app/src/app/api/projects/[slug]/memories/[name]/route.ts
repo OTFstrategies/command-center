@@ -18,14 +18,20 @@ interface Props {
 export async function GET(_request: NextRequest, { params }: Props) {
   const { slug, name } = await params
   const project = slug.replace(/-/g, ' ')
-  const memoryName = decodeURIComponent(name)
+
+  let memoryName: string
+  try {
+    memoryName = decodeURIComponent(name)
+  } catch {
+    return NextResponse.json({ error: 'Invalid URL encoding in memory name' }, { status: 400 })
+  }
 
   try {
     const supabase = getSupabase()
     const { data, error } = await supabase
       .from('project_memories')
       .select('*')
-      .or(`project.eq.${project},project.eq.${slug}`)
+      .in('project', [project, slug])
       .eq('name', memoryName)
       .limit(1)
       .single()
@@ -47,32 +53,42 @@ export async function GET(_request: NextRequest, { params }: Props) {
 export async function DELETE(request: NextRequest, { params }: Props) {
   const { slug, name } = await params
   const apiKey = request.headers.get('x-api-key')
-  if (apiKey !== process.env.SYNC_API_KEY) {
+  const expectedKey = process.env.SYNC_API_KEY
+  if (!expectedKey) {
+    return NextResponse.json({ error: 'SYNC_API_KEY not configured on server' }, { status: 500 })
+  }
+  if (apiKey !== expectedKey) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const project = slug.replace(/-/g, ' ')
-  const memoryName = decodeURIComponent(name)
+
+  let memoryName: string
+  try {
+    memoryName = decodeURIComponent(name)
+  } catch {
+    return NextResponse.json({ error: 'Invalid URL encoding in memory name' }, { status: 400 })
+  }
 
   try {
     const supabase = getSupabase()
     const { error } = await supabase
       .from('project_memories')
       .delete()
-      .or(`project.eq.${project},project.eq.${slug}`)
+      .in('project', [project, slug])
       .eq('name', memoryName)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Log activity
+    // Log activity (best-effort)
     await supabase.from('activity_log').insert({
       item_type: 'memory',
       item_name: `${project}/${memoryName}`,
       action: 'deleted',
       details: { project, memory_name: memoryName },
-    })
+    }).then(() => {}, () => {})
 
     return NextResponse.json({ success: true })
   } catch (err) {

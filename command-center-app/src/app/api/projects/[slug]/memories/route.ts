@@ -24,7 +24,7 @@ export async function GET(_request: NextRequest, { params }: Props) {
     const { data, error } = await supabase
       .from('project_memories')
       .select('id, project, name, content, created_at, updated_at')
-      .or(`project.eq.${project},project.eq.${slug}`)
+      .in('project', [project, slug])
       .order('updated_at', { ascending: false })
 
     if (error) {
@@ -44,12 +44,23 @@ export async function GET(_request: NextRequest, { params }: Props) {
 export async function POST(request: NextRequest, { params }: Props) {
   const { slug } = await params
   const apiKey = request.headers.get('x-api-key')
-  if (apiKey !== process.env.SYNC_API_KEY) {
+  const expectedKey = process.env.SYNC_API_KEY
+  if (!expectedKey) {
+    return NextResponse.json({ error: 'SYNC_API_KEY not configured on server' }, { status: 500 })
+  }
+  if (apiKey !== expectedKey) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    const { name, content } = await request.json()
+    let body: { name?: string; content?: string }
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+    }
+
+    const { name, content } = body
     if (!name || !content) {
       return NextResponse.json(
         { error: 'name and content required' },
@@ -60,47 +71,31 @@ export async function POST(request: NextRequest, { params }: Props) {
     const project = slug.replace(/-/g, ' ')
     const supabase = getSupabase()
 
-    // Upsert: update if exists, insert if not
-    const { data: existing } = await supabase
+    // Upsert: atomic create-or-update (no race condition)
+    const { data, error } = await supabase
       .from('project_memories')
-      .select('id')
-      .eq('project', project)
-      .eq('name', name)
-      .limit(1)
+      .upsert(
+        { project, name, content, updated_at: new Date().toISOString() },
+        { onConflict: 'project,name' }
+      )
+      .select()
       .single()
 
-    let result
-    if (existing) {
-      result = await supabase
-        .from('project_memories')
-        .update({ content, updated_at: new Date().toISOString() })
-        .eq('id', existing.id)
-        .select()
-        .single()
-    } else {
-      result = await supabase
-        .from('project_memories')
-        .insert({ project, name, content })
-        .select()
-        .single()
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    if (result.error) {
-      return NextResponse.json({ error: result.error.message }, { status: 500 })
-    }
-
-    // Log activity
+    // Log activity (best-effort, don't fail on logging errors)
     await supabase.from('activity_log').insert({
       item_type: 'memory',
       item_name: `${project}/${name}`,
-      action: existing ? 'updated' : 'created',
+      action: 'synced',
       details: { project, memory_name: name },
-    })
+    }).then(() => {}, () => {})
 
     return NextResponse.json({
       success: true,
-      memory: result.data,
-      action: existing ? 'updated' : 'created',
+      memory: data,
     })
   } catch (err) {
     return NextResponse.json(

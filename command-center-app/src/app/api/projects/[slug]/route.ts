@@ -43,12 +43,22 @@ export async function GET(_request: NextRequest, { params }: Props) {
 export async function PATCH(request: NextRequest, { params }: Props) {
   const { slug } = await params
   const apiKey = request.headers.get('x-api-key')
-  if (apiKey !== process.env.SYNC_API_KEY) {
+  const expectedKey = process.env.SYNC_API_KEY
+  if (!expectedKey) {
+    return NextResponse.json({ error: 'SYNC_API_KEY not configured on server' }, { status: 500 })
+  }
+  if (apiKey !== expectedKey) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    const body = await request.json()
+    let body: Record<string, unknown>
+    try {
+      body = await request.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
+    }
+
     const allowed = ['description', 'tech_stack', 'build_command', 'test_command', 'dev_command', 'languages', 'live_url', 'repo_url']
     const updates: Record<string, unknown> = {}
     for (const key of allowed) {
@@ -57,6 +67,18 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 
     if (Object.keys(updates).length === 0) {
       return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 })
+    }
+
+    // Type validation
+    for (const arrayField of ['tech_stack', 'languages']) {
+      if (arrayField in updates && !Array.isArray(updates[arrayField])) {
+        return NextResponse.json({ error: `${arrayField} must be an array` }, { status: 400 })
+      }
+    }
+    for (const stringField of ['description', 'build_command', 'test_command', 'dev_command', 'live_url', 'repo_url']) {
+      if (stringField in updates && updates[stringField] !== null && typeof updates[stringField] !== 'string') {
+        return NextResponse.json({ error: `${stringField} must be a string or null` }, { status: 400 })
+      }
     }
 
     const supabase = getSupabase()
@@ -71,13 +93,13 @@ export async function PATCH(request: NextRequest, { params }: Props) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Log activity
+    // Log activity (best-effort)
     await supabase.from('activity_log').insert({
       item_type: 'project',
       item_name: slug,
       action: 'updated',
       details: { updated_fields: Object.keys(updates) },
-    })
+    }).then(() => {}, () => {})
 
     return NextResponse.json({ project: data })
   } catch (err) {
