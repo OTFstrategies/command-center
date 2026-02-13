@@ -56,6 +56,7 @@ export interface MetricsRecord {
   total_diagnostics_error: number;
   total_diagnostics_warning: number;
   total_dependencies: number;
+  analyzed_at?: string;
 }
 
 export interface AnalysisResult {
