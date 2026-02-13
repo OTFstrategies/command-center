@@ -1,7 +1,12 @@
 import { ArrowLeft, FolderOpen, Key, Clock, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw, Globe, Code, ExternalLink } from 'lucide-react'
 import { getProjectByName, getProjectMemories } from '@/lib/projects'
 import { getCommands, getAgents, getSkills, getPrompts, getApis, getInstructions, getProjectChangelog } from '@/lib/registry'
+import { getProjectMetrics, getProjectSymbols, getProjectDependencies } from '@/lib/code-intel'
 import { MemoryList } from '@/components/memories/MemoryList'
+import { ProjectTabs } from '@/components/code-intel/ProjectTabs'
+import { CodeTab } from '@/components/code-intel/CodeTab'
+import { DependenciesTab } from '@/components/code-intel/DependenciesTab'
+import { HealthTab } from '@/components/code-intel/HealthTab'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -27,8 +32,8 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   if (!finalProject) notFound()
 
-  // Get all assets for this project
-  const [commands, agents, skills, prompts, apis, instructions, changelog, memories] = await Promise.all([
+  // Get all assets for this project + code intelligence data
+  const [commands, agents, skills, prompts, apis, instructions, changelog, memories, metrics, symbols, dependencies] = await Promise.all([
     getCommands(finalProject.name),
     getAgents(finalProject.name),
     getSkills(finalProject.name),
@@ -37,6 +42,9 @@ export default async function ProjectDetailPage({ params }: Props) {
     getInstructions(finalProject.name),
     getProjectChangelog(finalProject.name, 20),
     getProjectMemories(finalProject.name),
+    getProjectMetrics(finalProject.name),
+    getProjectSymbols(finalProject.name, { limit: 500 }),
+    getProjectDependencies(finalProject.name),
   ])
 
   // Calculate asset counts
@@ -53,6 +61,306 @@ export default async function ProjectDetailPage({ params }: Props) {
     }
   }
 
+  // Build tab configuration
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'code', label: 'Code', count: symbols.length },
+    { id: 'dependencies', label: 'Dependencies', count: dependencies.length },
+    { id: 'health', label: 'Health', count: metrics ? 1 : 0 },
+  ]
+
+  // Overview tab content (existing page content)
+  const overviewContent = (
+    <>
+      {/* Project Info (onboarding metadata) */}
+      {(finalProject.tech_stack?.length || finalProject.build_command || finalProject.live_url) && (
+        <section>
+          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Project Info
+          </h2>
+          <div className="mt-4 rounded-xl px-4 py-4 bg-white/30 dark:bg-zinc-800/20 space-y-3">
+            {/* Tech Stack */}
+            {finalProject.tech_stack && finalProject.tech_stack.length > 0 && (
+              <div className="flex items-start gap-3">
+                <Code className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                <div className="flex flex-wrap gap-1.5">
+                  {finalProject.tech_stack.map((tech) => (
+                    <span key={tech} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Languages */}
+            {finalProject.languages && finalProject.languages.length > 0 && (
+              <div className="flex items-start gap-3">
+                <Globe className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                <div className="flex flex-wrap gap-1.5">
+                  {finalProject.languages.map((lang) => (
+                    <span key={lang} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Commands */}
+            {(finalProject.build_command || finalProject.dev_command || finalProject.test_command) && (
+              <div className="flex items-start gap-3">
+                <Terminal className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                <div className="space-y-1 text-sm font-mono">
+                  {finalProject.dev_command && (
+                    <p className="text-zinc-600 dark:text-zinc-300">
+                      <span className="text-zinc-400">dev:</span> {finalProject.dev_command}
+                    </p>
+                  )}
+                  {finalProject.build_command && (
+                    <p className="text-zinc-600 dark:text-zinc-300">
+                      <span className="text-zinc-400">build:</span> {finalProject.build_command}
+                    </p>
+                  )}
+                  {finalProject.test_command && (
+                    <p className="text-zinc-600 dark:text-zinc-300">
+                      <span className="text-zinc-400">test:</span> {finalProject.test_command}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Links */}
+            {(finalProject.live_url || finalProject.repo_url) && (
+              <div className="flex items-start gap-3">
+                <ExternalLink className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                <div className="space-y-1 text-sm">
+                  {finalProject.live_url && (
+                    <a href={finalProject.live_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                      {finalProject.live_url}
+                    </a>
+                  )}
+                  {finalProject.repo_url && (
+                    <a href={finalProject.repo_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                      {finalProject.repo_url}
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Changelog - prominent position */}
+      {changelog.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Recent Changes
+          </h2>
+          <div className="mt-4 space-y-3">
+            {changelog.slice(0, 10).map((entry) => (
+              <div key={entry.id} className="flex items-start gap-3 rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
+                <div className="mt-0.5">
+                  {getChangeIcon(entry.change_type)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-zinc-700 dark:text-zinc-300">
+                    {entry.title}
+                  </p>
+                  {entry.items_affected.length > 0 && (
+                    <p className="mt-1 text-sm text-zinc-500 truncate">
+                      {entry.items_affected.join(', ')}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-zinc-400">
+                    {entry.relativeTime}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Memories */}
+      <MemoryList memories={memories} />
+
+      {/* Assets Overview */}
+      {totalAssets > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Assets
+          </h2>
+
+          {/* Commands */}
+          {totalCommands > 0 && (
+            <div className="mt-4">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <Terminal className="h-4 w-4" />
+                <span className="text-sm font-medium">Commands ({totalCommands})</span>
+              </div>
+              <div className="space-y-1">
+                {commands.map((cat) => (
+                  cat.commands.map((cmd) => (
+                    <div key={cmd.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                      <code className="text-sm text-zinc-700 dark:text-zinc-300">/{cmd.name}</code>
+                      {cmd.description && (
+                        <span className="text-sm text-zinc-400 truncate">{cmd.description}</span>
+                      )}
+                    </div>
+                  ))
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Agents */}
+          {agents.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <Bot className="h-4 w-4" />
+                <span className="text-sm font-medium">Agents ({agents.length})</span>
+              </div>
+              <div className="space-y-1">
+                {agents.map((agent) => (
+                  <div key={agent.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{agent.name}</span>
+                    <span className="text-xs text-zinc-400">{agent.toolCount} tools</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Skills */}
+          {skills.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <Sparkles className="h-4 w-4" />
+                <span className="text-sm font-medium">Skills ({skills.length})</span>
+              </div>
+              <div className="space-y-1">
+                {skills.map((skill) => (
+                  <div key={skill.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{skill.name}</span>
+                    {skill.description && (
+                      <span className="text-sm text-zinc-400 truncate">{skill.description}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Prompts */}
+          {prompts.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <MessageSquare className="h-4 w-4" />
+                <span className="text-sm font-medium">Prompts ({prompts.length})</span>
+              </div>
+              <div className="space-y-1">
+                {prompts.map((prompt) => (
+                  <div key={prompt.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{prompt.name}</span>
+                    <span className="text-xs text-zinc-400">{prompt.type}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* APIs */}
+          {apis.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <Key className="h-4 w-4" />
+                <span className="text-sm font-medium">APIs ({apis.length})</span>
+              </div>
+              <div className="space-y-1">
+                {apis.map((api) => (
+                  <div key={api.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{api.name}</span>
+                    <span className="text-xs text-zinc-400">{api.authType}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Instructions */}
+          {instructions.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-zinc-500 mb-2">
+                <FileText className="h-4 w-4" />
+                <span className="text-sm font-medium">Instructions ({instructions.length})</span>
+              </div>
+              <div className="space-y-1">
+                {instructions.map((inst) => (
+                  <div key={inst.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">{inst.name}</span>
+                    <span className="text-xs text-zinc-400">{inst.scope}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Folder Structure */}
+      {finalProject.folders.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Structure
+          </h2>
+          <div className="mt-4 space-y-2">
+            {finalProject.folders.map((folder) => (
+              <div key={folder.id} className="flex items-start gap-3 rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
+                <FolderOpen className="h-5 w-5 text-zinc-400 mt-0.5" strokeWidth={1.5} />
+                <div>
+                  <p className="font-mono text-sm text-zinc-700 dark:text-zinc-300">{folder.path}</p>
+                  {folder.description && (
+                    <p className="text-sm text-zinc-500 mt-1">{folder.description}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Credentials */}
+      {finalProject.credentials.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
+            Accounts & Credentials
+          </h2>
+          <div className="mt-4 space-y-2">
+            {finalProject.credentials.map((cred) => (
+              <div key={cred.id} className="flex items-center justify-between rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
+                <div className="flex items-center gap-3">
+                  <Key className="h-4 w-4 text-zinc-400" strokeWidth={1.5} />
+                  <div>
+                    <p className="font-medium text-zinc-700 dark:text-zinc-300">{cred.service}</p>
+                    {cred.username && (
+                      <p className="text-sm text-zinc-500">{cred.username}</p>
+                    )}
+                  </div>
+                </div>
+                {cred.password && (
+                  <code className="text-sm text-zinc-400 font-mono">••••••••</code>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </>
+  )
+
   return (
     <div className="min-h-screen p-8 lg:p-12">
       <div className="mx-auto max-w-3xl">
@@ -66,7 +374,7 @@ export default async function ProjectDetailPage({ params }: Props) {
         </Link>
 
         {/* Header */}
-        <div className="mt-6">
+        <div className="mt-6 mb-8">
           <h1 className="text-2xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
             {finalProject.name}
           </h1>
@@ -75,6 +383,18 @@ export default async function ProjectDetailPage({ params }: Props) {
           )}
           <div className="mt-3 flex items-center gap-4 text-sm text-zinc-400">
             <span>{totalAssets} assets</span>
+            {symbols.length > 0 && (
+              <>
+                <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                <span>{symbols.length} symbols</span>
+              </>
+            )}
+            {metrics && (
+              <>
+                <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                <span>{metrics.total_loc.toLocaleString()} LOC</span>
+              </>
+            )}
             {changelog.length > 0 && (
               <>
                 <span className="text-zinc-300 dark:text-zinc-600">·</span>
@@ -84,292 +404,15 @@ export default async function ProjectDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Project Info (onboarding metadata) */}
-        {(finalProject.tech_stack?.length || finalProject.build_command || finalProject.live_url) && (
-          <section className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Project Info
-            </h2>
-            <div className="mt-4 rounded-xl px-4 py-4 bg-white/30 dark:bg-zinc-800/20 space-y-3">
-              {/* Tech Stack */}
-              {finalProject.tech_stack && finalProject.tech_stack.length > 0 && (
-                <div className="flex items-start gap-3">
-                  <Code className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
-                  <div className="flex flex-wrap gap-1.5">
-                    {finalProject.tech_stack.map((tech) => (
-                      <span key={tech} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Languages */}
-              {finalProject.languages && finalProject.languages.length > 0 && (
-                <div className="flex items-start gap-3">
-                  <Globe className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
-                  <div className="flex flex-wrap gap-1.5">
-                    {finalProject.languages.map((lang) => (
-                      <span key={lang} className="px-2 py-0.5 text-xs rounded-full bg-zinc-100 dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">
-                        {lang}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Commands */}
-              {(finalProject.build_command || finalProject.dev_command || finalProject.test_command) && (
-                <div className="flex items-start gap-3">
-                  <Terminal className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
-                  <div className="space-y-1 text-sm font-mono">
-                    {finalProject.dev_command && (
-                      <p className="text-zinc-600 dark:text-zinc-300">
-                        <span className="text-zinc-400">dev:</span> {finalProject.dev_command}
-                      </p>
-                    )}
-                    {finalProject.build_command && (
-                      <p className="text-zinc-600 dark:text-zinc-300">
-                        <span className="text-zinc-400">build:</span> {finalProject.build_command}
-                      </p>
-                    )}
-                    {finalProject.test_command && (
-                      <p className="text-zinc-600 dark:text-zinc-300">
-                        <span className="text-zinc-400">test:</span> {finalProject.test_command}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Links */}
-              {(finalProject.live_url || finalProject.repo_url) && (
-                <div className="flex items-start gap-3">
-                  <ExternalLink className="h-4 w-4 text-zinc-400 mt-0.5" strokeWidth={1.5} />
-                  <div className="space-y-1 text-sm">
-                    {finalProject.live_url && (
-                      <a href={finalProject.live_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {finalProject.live_url}
-                      </a>
-                    )}
-                    {finalProject.repo_url && (
-                      <a href={finalProject.repo_url} target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-                        {finalProject.repo_url}
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* Changelog - prominent position */}
-        {changelog.length > 0 && (
-          <section className="mt-10">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Recent Changes
-            </h2>
-            <div className="mt-4 space-y-3">
-              {changelog.slice(0, 10).map((entry) => (
-                <div key={entry.id} className="flex items-start gap-3 rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
-                  <div className="mt-0.5">
-                    {getChangeIcon(entry.change_type)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-zinc-700 dark:text-zinc-300">
-                      {entry.title}
-                    </p>
-                    {entry.items_affected.length > 0 && (
-                      <p className="mt-1 text-sm text-zinc-500 truncate">
-                        {entry.items_affected.join(', ')}
-                      </p>
-                    )}
-                    <p className="mt-1 text-xs text-zinc-400">
-                      {entry.relativeTime}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Memories */}
-        <MemoryList memories={memories} />
-
-        {/* Assets Overview */}
-        {totalAssets > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Assets
-            </h2>
-
-            {/* Commands */}
-            {totalCommands > 0 && (
-              <div className="mt-4">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <Terminal className="h-4 w-4" />
-                  <span className="text-sm font-medium">Commands ({totalCommands})</span>
-                </div>
-                <div className="space-y-1">
-                  {commands.map((cat) => (
-                    cat.commands.map((cmd) => (
-                      <div key={cmd.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                        <code className="text-sm text-zinc-700 dark:text-zinc-300">/{cmd.name}</code>
-                        {cmd.description && (
-                          <span className="text-sm text-zinc-400 truncate">{cmd.description}</span>
-                        )}
-                      </div>
-                    ))
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Agents */}
-            {agents.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <Bot className="h-4 w-4" />
-                  <span className="text-sm font-medium">Agents ({agents.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {agents.map((agent) => (
-                    <div key={agent.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">{agent.name}</span>
-                      <span className="text-xs text-zinc-400">{agent.toolCount} tools</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Skills */}
-            {skills.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <Sparkles className="h-4 w-4" />
-                  <span className="text-sm font-medium">Skills ({skills.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {skills.map((skill) => (
-                    <div key={skill.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">{skill.name}</span>
-                      {skill.description && (
-                        <span className="text-sm text-zinc-400 truncate">{skill.description}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Prompts */}
-            {prompts.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <MessageSquare className="h-4 w-4" />
-                  <span className="text-sm font-medium">Prompts ({prompts.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {prompts.map((prompt) => (
-                    <div key={prompt.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">{prompt.name}</span>
-                      <span className="text-xs text-zinc-400">{prompt.type}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* APIs */}
-            {apis.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <Key className="h-4 w-4" />
-                  <span className="text-sm font-medium">APIs ({apis.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {apis.map((api) => (
-                    <div key={api.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">{api.name}</span>
-                      <span className="text-xs text-zinc-400">{api.authType}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Instructions */}
-            {instructions.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 text-zinc-500 mb-2">
-                  <FileText className="h-4 w-4" />
-                  <span className="text-sm font-medium">Instructions ({instructions.length})</span>
-                </div>
-                <div className="space-y-1">
-                  {instructions.map((inst) => (
-                    <div key={inst.id} className="flex items-center gap-3 rounded-lg px-4 py-2 hover:bg-white/30 dark:hover:bg-zinc-800/20">
-                      <span className="text-sm text-zinc-700 dark:text-zinc-300">{inst.name}</span>
-                      <span className="text-xs text-zinc-400">{inst.scope}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* Folder Structure */}
-        {finalProject.folders.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Structure
-            </h2>
-            <div className="mt-4 space-y-2">
-              {finalProject.folders.map((folder) => (
-                <div key={folder.id} className="flex items-start gap-3 rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
-                  <FolderOpen className="h-5 w-5 text-zinc-400 mt-0.5" strokeWidth={1.5} />
-                  <div>
-                    <p className="font-mono text-sm text-zinc-700 dark:text-zinc-300">{folder.path}</p>
-                    {folder.description && (
-                      <p className="text-sm text-zinc-500 mt-1">{folder.description}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Credentials */}
-        {finalProject.credentials.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-              Accounts & Credentials
-            </h2>
-            <div className="mt-4 space-y-2">
-              {finalProject.credentials.map((cred) => (
-                <div key={cred.id} className="flex items-center justify-between rounded-xl px-4 py-3 bg-white/30 dark:bg-zinc-800/20">
-                  <div className="flex items-center gap-3">
-                    <Key className="h-4 w-4 text-zinc-400" strokeWidth={1.5} />
-                    <div>
-                      <p className="font-medium text-zinc-700 dark:text-zinc-300">{cred.service}</p>
-                      {cred.username && (
-                        <p className="text-sm text-zinc-500">{cred.username}</p>
-                      )}
-                    </div>
-                  </div>
-                  {cred.password && (
-                    <code className="text-sm text-zinc-400 font-mono">••••••••</code>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Tabbed content */}
+        <ProjectTabs tabs={tabs}>
+          {{
+            overview: overviewContent,
+            code: <CodeTab symbols={symbols} />,
+            dependencies: <DependenciesTab dependencies={dependencies} />,
+            health: <HealthTab metrics={metrics} />,
+          }}
+        </ProjectTabs>
       </div>
     </div>
   )
