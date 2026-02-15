@@ -10,6 +10,9 @@ import { HealthTab } from '@/components/code-intel/HealthTab'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+// Force dynamic rendering — code intelligence data must be fetched at request time
+export const dynamic = 'force-dynamic'
+
 interface Props {
   params: Promise<{ slug: string }>
 }
@@ -32,8 +35,8 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   if (!finalProject) notFound()
 
-  // Get all assets for this project + code intelligence data
-  const [commands, agents, skills, prompts, apis, instructions, changelog, memories, metrics, symbols, dependencies] = await Promise.all([
+  // Get all assets for this project
+  const [commands, agents, skills, prompts, apis, instructions, changelog, memories] = await Promise.all([
     getCommands(finalProject.name),
     getAgents(finalProject.name),
     getSkills(finalProject.name),
@@ -42,6 +45,10 @@ export default async function ProjectDetailPage({ params }: Props) {
     getInstructions(finalProject.name),
     getProjectChangelog(finalProject.name, 20),
     getProjectMemories(finalProject.name),
+  ])
+
+  // Fetch code intelligence data separately (after registry queries)
+  const [metrics, symbols, dependencies] = await Promise.all([
     getProjectMetrics(slug),
     getProjectSymbols(slug, { limit: 500 }),
     getProjectDependencies(slug),

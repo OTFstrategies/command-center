@@ -18,7 +18,10 @@ function getSupabase(): SupabaseClient {
     }
 
     supabase = createClient(url, key, {
-      auth: { autoRefreshToken: false, persistSession: false }
+      auth: { autoRefreshToken: false, persistSession: false },
+      global: {
+        fetch: (url, init) => fetch(url, { ...init, cache: 'no-store' }),
+      },
     })
   }
   return supabase
