@@ -3,6 +3,11 @@ import type { CodeSymbol, CodeDiagnostic, CodeDependency, CodeMetrics } from '@/
 
 let supabase: SupabaseClient | null = null
 
+// Normalize project name to slug format (lowercase, dashes) to match MCP analyzer storage
+function toSlug(project: string): string {
+  return project.toLowerCase().replace(/\s+/g, '-')
+}
+
 function getSupabase(): SupabaseClient {
   if (!supabase) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -12,7 +17,9 @@ function getSupabase(): SupabaseClient {
       throw new Error('Supabase environment variables not configured')
     }
 
-    supabase = createClient(url, key)
+    supabase = createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
   }
   return supabase
 }
@@ -22,7 +29,7 @@ export async function getProjectMetrics(project: string): Promise<CodeMetrics | 
     const { data, error } = await getSupabase()
       .from('project_metrics')
       .select('*')
-      .eq('project', project)
+      .eq('project', toSlug(project))
       .single()
 
     if (error) return null
@@ -40,7 +47,7 @@ export async function getProjectSymbols(
     let query = getSupabase()
       .from('project_symbols')
       .select('*')
-      .eq('project', project)
+      .eq('project', toSlug(project))
       .order('file_path')
       .order('line_start')
       .limit(options?.limit || 100)
@@ -61,7 +68,7 @@ export async function getProjectDiagnostics(project: string): Promise<CodeDiagno
     const { data, error } = await getSupabase()
       .from('project_diagnostics')
       .select('*')
-      .eq('project', project)
+      .eq('project', toSlug(project))
       .order('severity')
       .order('file_path')
 
@@ -77,7 +84,7 @@ export async function getProjectDependencies(project: string): Promise<CodeDepen
     const { data, error } = await getSupabase()
       .from('project_dependencies')
       .select('*')
-      .eq('project', project)
+      .eq('project', toSlug(project))
       .order('dep_type')
       .order('name')
 

@@ -42,9 +42,9 @@ export default async function ProjectDetailPage({ params }: Props) {
     getInstructions(finalProject.name),
     getProjectChangelog(finalProject.name, 20),
     getProjectMemories(finalProject.name),
-    getProjectMetrics(finalProject.name),
-    getProjectSymbols(finalProject.name, { limit: 500 }),
-    getProjectDependencies(finalProject.name),
+    getProjectMetrics(slug),
+    getProjectSymbols(slug, { limit: 500 }),
+    getProjectDependencies(slug),
   ])
 
   // Calculate asset counts
