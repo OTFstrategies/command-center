@@ -1,0 +1,155 @@
+{
+  "description": "Example Kanban board structure with 3 columns",
+  "boardId": "your-board-id-here",
+  "items": [
+    {
+      "type": "frame",
+      "data": {
+        "title": "📋 To Do"
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geometry": {
+        "width": 350,
+        "height": 600
+      }
+    },
+    {
+      "type": "frame",
+      "data": {
+        "title": "🔄 Doing"
+      },
+      "position": {
+        "x": 400,
+        "y": 0
+      },
+      "geometry": {
+        "width": 350,
+        "height": 600
+      }
+    },
+    {
+      "type": "frame",
+      "data": {
+        "title": "✅ Done"
+      },
+      "position": {
+        "x": 800,
+        "y": 0
+      },
+      "geometry": {
+        "width": 350,
+        "height": 600
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Implement login feature"
+      },
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "style": {
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Fix bug in checkout"
+      },
+      "position": {
+        "x": 50,
+        "y": 170
+      },
+      "style": {
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Update documentation"
+      },
+      "position": {
+        "x": 50,
+        "y": 290
+      },
+      "style": {
+        "color": "yellow"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Code review PR #123"
+      },
+      "position": {
+        "x": 450,
+        "y": 50
+      },
+      "style": {
+        "color": "light_blue"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Testing new API"
+      },
+      "position": {
+        "x": 450,
+        "y": 170
+      },
+      "style": {
+        "color": "light_blue"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Deploy to staging"
+      },
+      "position": {
+        "x": 850,
+        "y": 50
+      },
+      "style": {
+        "color": "light_green"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Homepage redesign"
+      },
+      "position": {
+        "x": 850,
+        "y": 170
+      },
+      "style": {
+        "color": "light_green"
+      }
+    }
+  ],
+  "layout": {
+    "columns": 3,
+    "columnWidth": 350,
+    "columnSpacing": 50,
+    "cardHeight": 100,
+    "cardSpacing": 20,
+    "framePadding": 50
+  },
+  "usage": "Use with mcp__mcp-miro__bulk_create_items tool",
+  "notes": [
+    "3 frames for columns at x=0, 400, 800",
+    "Frame dimensions: 350×600",
+    "Sticky notes positioned inside frames",
+    "Color coding: yellow=todo, light_blue=doing, light_green=done",
+    "Cards stack vertically with 120px spacing"
+  ]
+}

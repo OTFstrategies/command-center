@@ -1,0 +1,27 @@
+{
+  "description": "API configuraties en credentials referenties",
+  "items": [
+    {
+      "id": "anthropic-claude",
+      "name": "Anthropic Claude API",
+      "path": "apis/anthropic/config.md",
+      "description": "Claude API voor Command Center chat-agent Edge Function",
+      "created": "2026-02-01",
+      "project": "command-center",
+      "tags": ["ai", "llm", "supabase", "edge-function"],
+      "service": "anthropic",
+      "auth_type": "api_key"
+    },
+    {
+      "id": "supabase-veha-hub",
+      "name": "Supabase VEHA Hub",
+      "path": "apis/supabase/veha-hub.json",
+      "description": "Supabase project voor VEHA Hub - URL, anon key, en service role key",
+      "created": "2026-02-07",
+      "project": "veha-hub",
+      "tags": ["supabase", "database", "auth", "rbac"],
+      "service": "supabase",
+      "auth_type": "jwt"
+    }
+  ]
+}

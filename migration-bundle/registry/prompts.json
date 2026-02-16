@@ -1,0 +1,14 @@
+{
+  "description": "Herbruikbare prompt templates",
+  "items": [
+    {
+      "id": "design-style-shadow",
+      "name": "Shadow's Design Style",
+      "path": "prompts/design-style-shadow.md",
+      "description": "Monochroom design systeem met zinc palette, DM Sans typografie, en minimalistisch ethos",
+      "created": "2026-02-01",
+      "project": "global",
+      "tags": ["design", "ui", "style-guide", "tailwind", "zinc"]
+    }
+  ]
+}

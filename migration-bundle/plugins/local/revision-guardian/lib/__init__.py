@@ -1,0 +1,1 @@
+# Revision Guardian - Shared library

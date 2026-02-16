@@ -1,0 +1,166 @@
+{
+  "description": "Example flowchart item structure for vertical process flow",
+  "boardId": "your-board-id-here",
+  "items": [
+    {
+      "type": "shape",
+      "data": {
+        "content": "Start",
+        "shape": "flow_chart_terminator"
+      },
+      "position": {
+        "x": 0,
+        "y": 0,
+        "origin": "center"
+      },
+      "geometry": {
+        "width": 200,
+        "height": 80,
+        "rotation": 0
+      },
+      "style": {
+        "fillColor": "#BBDEFB",
+        "borderColor": "#1A73E8",
+        "borderWidth": 2,
+        "fontSize": 14,
+        "textAlign": "center",
+        "textAlignVertical": "middle"
+      }
+    },
+    {
+      "type": "shape",
+      "data": {
+        "content": "Validate Input",
+        "shape": "flow_chart_process"
+      },
+      "position": {
+        "x": 0,
+        "y": 300
+      },
+      "geometry": {
+        "width": 200,
+        "height": 100
+      },
+      "style": {
+        "fillColor": "#D3E5FF",
+        "borderColor": "#1A73E8",
+        "borderWidth": 2,
+        "fontSize": 14
+      }
+    },
+    {
+      "type": "shape",
+      "data": {
+        "content": "Is Valid?",
+        "shape": "flow_chart_decision"
+      },
+      "position": {
+        "x": 0,
+        "y": 600
+      },
+      "geometry": {
+        "width": 180,
+        "height": 180
+      },
+      "style": {
+        "fillColor": "#FFF9C4",
+        "borderColor": "#F9A825",
+        "borderWidth": 2,
+        "fontSize": 14
+      }
+    },
+    {
+      "type": "shape",
+      "data": {
+        "content": "Process Data",
+        "shape": "flow_chart_process"
+      },
+      "position": {
+        "x": 300,
+        "y": 900
+      },
+      "geometry": {
+        "width": 200,
+        "height": 100
+      },
+      "style": {
+        "fillColor": "#D3E5FF",
+        "borderColor": "#1A73E8",
+        "borderWidth": 2
+      }
+    },
+    {
+      "type": "shape",
+      "data": {
+        "content": "Show Error",
+        "shape": "flow_chart_process"
+      },
+      "position": {
+        "x": -300,
+        "y": 900
+      },
+      "geometry": {
+        "width": 200,
+        "height": 100
+      },
+      "style": {
+        "fillColor": "#FFCDD2",
+        "borderColor": "#F44336",
+        "borderWidth": 2
+      }
+    },
+    {
+      "type": "shape",
+      "data": {
+        "content": "End",
+        "shape": "flow_chart_terminator"
+      },
+      "position": {
+        "x": 0,
+        "y": 1200
+      },
+      "geometry": {
+        "width": 200,
+        "height": 80
+      },
+      "style": {
+        "fillColor": "#C8E6C9",
+        "borderColor": "#4CAF50",
+        "borderWidth": 2
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "Yes →"
+      },
+      "position": {
+        "x": 150,
+        "y": 750
+      },
+      "style": {
+        "color": "cyan"
+      }
+    },
+    {
+      "type": "sticky_note",
+      "data": {
+        "content": "← No"
+      },
+      "position": {
+        "x": -150,
+        "y": 750
+      },
+      "style": {
+        "color": "cyan"
+      }
+    }
+  ],
+  "usage": "Use with mcp__mcp-miro__bulk_create_items tool",
+  "notes": [
+    "Vertical flow pattern with 300px spacing",
+    "Decision diamond at y=600 with yes/no branches",
+    "Color coding: blue=process, yellow=decision, green=success, pink=error",
+    "Sticky notes for arrow labels"
+  ]
+}

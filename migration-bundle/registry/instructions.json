@@ -1,0 +1,49 @@
+{
+  "items": [
+    {
+      "id": "deployment-protocol",
+      "name": "deployment-protocol",
+      "path": "instructions/workflows/deployment-protocol.md",
+      "description": "Standaard deployment workflow voor Vercel projecten",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["deployment", "vercel", "workflow"]
+    },
+    {
+      "id": "command-center-v2",
+      "name": "command-center-v2",
+      "path": "instructions/per-project/command-center-v2.md",
+      "description": "Project-specifieke instructies voor Command Center v2",
+      "created": "2026-02-10",
+      "project": "command-center",
+      "tags": ["project", "next.js", "supabase"]
+    },
+    {
+      "id": "llm-gedragspatroon-content-revisie",
+      "name": "LLM Gedragspatroon: Content Revisie Failure",
+      "path": "instructions/research/llm-gedragspatroon-content-revisie.md",
+      "description": "Onderzoeksrapport over LLM-gedragspatroon waarbij content niet herzien wordt na nieuwe informatie, inclusief oorzaken, confabulatie-analyse, en mitigatiemaatregelen",
+      "created": "2026-02-11",
+      "project": "global",
+      "tags": ["research", "llm-behavior", "anchoring-bias", "confabulation", "rlhf", "self-correction", "sycophancy"]
+    },
+    {
+      "id": "revision-guardian-plugin",
+      "name": "Revision Guardian Plugin",
+      "path": "plugins/local/revision-guardian/",
+      "description": "Plugin die het revisie-faalpatroon bij LLMs voorkomt en detecteert. 6 lagen: bewustzijnsinjectie, feedback-detectie, confrontatie-detectie, stop-blokkade, batch-protocol, revisie-audit.",
+      "created": "2026-02-11",
+      "project": "global",
+      "tags": ["plugin", "revision-guardian", "llm-behavior", "hooks", "quality"]
+    },
+    {
+      "id": "revision-guardian-verslag",
+      "name": "Revision Guardian Verslag",
+      "path": "instructions/research/revision-guardian-verslag.md",
+      "description": "Volledig verslag van oorzaak (LLM gedragspatroon) tot oplossing (Revision Guardian plugin). Bevat onderzoeksresultaten, architectuur, testresultaten, en beperkingen.",
+      "created": "2026-02-11",
+      "project": "global",
+      "tags": ["research", "verslag", "revision-guardian", "llm-behavior", "plugin"]
+    }
+  ]
+}

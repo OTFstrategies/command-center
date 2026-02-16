@@ -1,0 +1,662 @@
+{
+  "description": "Slash commands definities",
+  "items": [
+    {
+      "id": "save-to-cc",
+      "name": "save-to-cc",
+      "path": "commands/save-to-cc.md",
+      "description": "Sla het huidige item op in Command Center - handmatige trigger voor opslag",
+      "created": "2026-02-01",
+      "project": "command-center",
+      "tags": ["command-center", "save", "registry", "trigger"]
+    },
+    {
+      "id": "agent-os",
+      "name": "agent-os",
+      "path": "commands/agent-os.md",
+      "description": "Start een nieuw project met Agent OS - spec-driven development",
+      "created": "2026-01-07",
+      "project": "global",
+      "tags": ["workflow", "spec-driven", "main"],
+      "subcommands": [
+        "agent-os/write-spec",
+        "agent-os/shape-spec",
+        "agent-os/create-tasks",
+        "agent-os/implement-tasks",
+        "agent-os/orchestrate-tasks",
+        "agent-os/plan-product"
+      ]
+    },
+    {
+      "id": "agent-os-write-spec",
+      "name": "agent-os/write-spec",
+      "path": "commands/agent-os/write-spec.md",
+      "description": "Schrijf een gedetailleerde specificatie",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["spec", "writing"]
+    },
+    {
+      "id": "agent-os-shape-spec",
+      "name": "agent-os/shape-spec",
+      "path": "commands/agent-os/shape-spec.md",
+      "description": "Vorm en verfijn een specificatie",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["spec", "shaping"]
+    },
+    {
+      "id": "agent-os-create-tasks",
+      "name": "agent-os/create-tasks",
+      "path": "commands/agent-os/create-tasks.md",
+      "description": "Maak takenlijst van een spec",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["tasks", "planning"]
+    },
+    {
+      "id": "agent-os-implement-tasks",
+      "name": "agent-os/implement-tasks",
+      "path": "commands/agent-os/implement-tasks.md",
+      "description": "Implementeer taken uit de takenlijst",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["implementation", "development"]
+    },
+    {
+      "id": "agent-os-orchestrate-tasks",
+      "name": "agent-os/orchestrate-tasks",
+      "path": "commands/agent-os/orchestrate-tasks.md",
+      "description": "Orkestreer de implementatie van taken",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["orchestration", "workflow"]
+    },
+    {
+      "id": "agent-os-plan-product",
+      "name": "agent-os/plan-product",
+      "path": "commands/agent-os/plan-product.md",
+      "description": "Plan product features en roadmap",
+      "created": "2026-01-07",
+      "project": "agent-os",
+      "tags": ["planning", "product"]
+    },
+    {
+      "id": "design-os",
+      "name": "design-os",
+      "path": "commands/design-os.md",
+      "description": "Start een nieuw Design OS project - product planning en design tool",
+      "created": "2026-01-07",
+      "project": "global",
+      "tags": ["workflow", "design", "planning"]
+    },
+    {
+      "id": "vibe-sync",
+      "name": "vibe-sync",
+      "path": "commands/vibe-sync.md",
+      "description": "Synchroniseer taken met Vibe Kanban",
+      "created": "2026-01-25",
+      "project": "global",
+      "tags": ["sync", "kanban", "tasks"]
+    },
+    {
+      "id": "miro-start",
+      "name": "miro-start",
+      "path": "commands/miro-start.md",
+      "description": "Miro Toolkit Navigator - Start hier voor flowcharts, frameworks en architecture diagrams",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "navigation", "diagrams"]
+    },
+    {
+      "id": "miro-flowcharts",
+      "name": "miro-flowcharts",
+      "path": "commands/miro-flowcharts.md",
+      "description": "Flowchart categorie - Kies tussen process flows, decision trees of workflows",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "category"]
+    },
+    {
+      "id": "miro-flowcharts-process",
+      "name": "miro-flowcharts-process",
+      "path": "commands/miro-flowcharts-process.md",
+      "description": "Process flow templates - Linear, swimlane of circular flows",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "process"]
+    },
+    {
+      "id": "miro-flowcharts-process-linear",
+      "name": "miro-flowcharts-process-linear",
+      "path": "commands/miro-flowcharts-process-linear.md",
+      "description": "Maak een simpel linear A→B→C process flow diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "linear"]
+    },
+    {
+      "id": "miro-flowcharts-process-swimlane",
+      "name": "miro-flowcharts-process-swimlane",
+      "path": "commands/miro-flowcharts-process-swimlane.md",
+      "description": "Maak een multi-actor swimlane process diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "swimlane"]
+    },
+    {
+      "id": "miro-flowcharts-process-circular",
+      "name": "miro-flowcharts-process-circular",
+      "path": "commands/miro-flowcharts-process-circular.md",
+      "description": "Maak een cyclisch/iteratief process flow",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "circular"]
+    },
+    {
+      "id": "miro-flowcharts-decision",
+      "name": "miro-flowcharts-decision",
+      "path": "commands/miro-flowcharts-decision.md",
+      "description": "Decision tree templates - Binary, multi-choice of comparison matrix",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "decision"]
+    },
+    {
+      "id": "miro-flowcharts-decision-binary",
+      "name": "miro-flowcharts-decision-binary",
+      "path": "commands/miro-flowcharts-decision-binary.md",
+      "description": "Maak een binary Yes/No decision flow diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "binary"]
+    },
+    {
+      "id": "miro-flowcharts-decision-multi",
+      "name": "miro-flowcharts-decision-multi",
+      "path": "commands/miro-flowcharts-decision-multi.md",
+      "description": "Maak een multi-choice decision tree (3-5 opties)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "multi-choice"]
+    },
+    {
+      "id": "miro-flowcharts-decision-matrix",
+      "name": "miro-flowcharts-decision-matrix",
+      "path": "commands/miro-flowcharts-decision-matrix.md",
+      "description": "Maak een decision comparison matrix grid",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "matrix"]
+    },
+    {
+      "id": "miro-flowcharts-workflow",
+      "name": "miro-flowcharts-workflow",
+      "path": "commands/miro-flowcharts-workflow.md",
+      "description": "Workflow templates - Approval chains, pipelines of state machines",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "workflow"]
+    },
+    {
+      "id": "miro-flowcharts-workflow-approval",
+      "name": "miro-flowcharts-workflow-approval",
+      "path": "commands/miro-flowcharts-workflow-approval.md",
+      "description": "Maak een approval chain workflow diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "approval"]
+    },
+    {
+      "id": "miro-flowcharts-workflow-pipeline",
+      "name": "miro-flowcharts-workflow-pipeline",
+      "path": "commands/miro-flowcharts-workflow-pipeline.md",
+      "description": "Maak een CI/CD style pipeline diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "pipeline"]
+    },
+    {
+      "id": "miro-flowcharts-workflow-state",
+      "name": "miro-flowcharts-workflow-state",
+      "path": "commands/miro-flowcharts-workflow-state.md",
+      "description": "Maak een state machine diagram met transities",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "flowcharts", "state-machine"]
+    },
+    {
+      "id": "miro-frameworks",
+      "name": "miro-frameworks",
+      "path": "commands/miro-frameworks.md",
+      "description": "Frameworks categorie - Kies tussen Kanban boards, matrices of roadmaps",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "category"]
+    },
+    {
+      "id": "miro-frameworks-kanban",
+      "name": "miro-frameworks-kanban",
+      "path": "commands/miro-frameworks-kanban.md",
+      "description": "Kanban board templates - Basic, extended of WIP-limited",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "kanban"]
+    },
+    {
+      "id": "miro-frameworks-kanban-basic",
+      "name": "miro-frameworks-kanban-basic",
+      "path": "commands/miro-frameworks-kanban-basic.md",
+      "description": "Maak een simpel 3-kolom Kanban board (To Do / Doing / Done)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "kanban-basic"]
+    },
+    {
+      "id": "miro-frameworks-kanban-extended",
+      "name": "miro-frameworks-kanban-extended",
+      "path": "commands/miro-frameworks-kanban-extended.md",
+      "description": "Maak een 5-kolom extended Kanban workflow board",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "kanban-extended"]
+    },
+    {
+      "id": "miro-frameworks-kanban-wip",
+      "name": "miro-frameworks-kanban-wip",
+      "path": "commands/miro-frameworks-kanban-wip.md",
+      "description": "Maak een Kanban board met WIP (Work In Progress) limits",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "kanban-wip"]
+    },
+    {
+      "id": "miro-frameworks-matrix",
+      "name": "miro-frameworks-matrix",
+      "path": "commands/miro-frameworks-matrix.md",
+      "description": "Matrix templates - Priority, Eisenhower of risk assessment",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "matrix"]
+    },
+    {
+      "id": "miro-frameworks-matrix-priority",
+      "name": "miro-frameworks-matrix-priority",
+      "path": "commands/miro-frameworks-matrix-priority.md",
+      "description": "Maak een Impact/Effort priority matrix (2x2)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "priority"]
+    },
+    {
+      "id": "miro-frameworks-matrix-eisenhower",
+      "name": "miro-frameworks-matrix-eisenhower",
+      "path": "commands/miro-frameworks-matrix-eisenhower.md",
+      "description": "Maak een Urgent/Important Eisenhower matrix (2x2)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "eisenhower"]
+    },
+    {
+      "id": "miro-frameworks-matrix-risk",
+      "name": "miro-frameworks-matrix-risk",
+      "path": "commands/miro-frameworks-matrix-risk.md",
+      "description": "Maak een 3x3 risk assessment matrix (Probability x Impact)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "risk"]
+    },
+    {
+      "id": "miro-frameworks-roadmap",
+      "name": "miro-frameworks-roadmap",
+      "path": "commands/miro-frameworks-roadmap.md",
+      "description": "Roadmap templates - Timeline, now-next-later of multi-track",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "roadmap"]
+    },
+    {
+      "id": "miro-frameworks-roadmap-timeline",
+      "name": "miro-frameworks-roadmap-timeline",
+      "path": "commands/miro-frameworks-roadmap-timeline.md",
+      "description": "Maak een horizontale timeline roadmap met milestones",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "timeline"]
+    },
+    {
+      "id": "miro-frameworks-roadmap-now-next-later",
+      "name": "miro-frameworks-roadmap-now-next-later",
+      "path": "commands/miro-frameworks-roadmap-now-next-later.md",
+      "description": "Maak een Now/Next/Later 3-horizon planning roadmap",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "now-next-later"]
+    },
+    {
+      "id": "miro-frameworks-roadmap-swimlane",
+      "name": "miro-frameworks-roadmap-swimlane",
+      "path": "commands/miro-frameworks-roadmap-swimlane.md",
+      "description": "Maak een multi-track swimlane roadmap met timeline",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "frameworks", "swimlane"]
+    },
+    {
+      "id": "miro-architecture",
+      "name": "miro-architecture",
+      "path": "commands/miro-architecture.md",
+      "description": "Architecture categorie - Kies tussen system diagrams, components of data flows",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "category"]
+    },
+    {
+      "id": "miro-architecture-system",
+      "name": "miro-architecture-system",
+      "path": "commands/miro-architecture-system.md",
+      "description": "System diagram templates - C4, layers of microservices",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "system"]
+    },
+    {
+      "id": "miro-architecture-system-c4",
+      "name": "miro-architecture-system-c4",
+      "path": "commands/miro-architecture-system-c4.md",
+      "description": "Maak een C4 Context diagram met system boundaries",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "c4"]
+    },
+    {
+      "id": "miro-architecture-system-layers",
+      "name": "miro-architecture-system-layers",
+      "path": "commands/miro-architecture-system-layers.md",
+      "description": "Maak een layered architecture diagram (UI/Business/Data)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "layers"]
+    },
+    {
+      "id": "miro-architecture-system-microservices",
+      "name": "miro-architecture-system-microservices",
+      "path": "commands/miro-architecture-system-microservices.md",
+      "description": "Maak een microservices architecture map",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "microservices"]
+    },
+    {
+      "id": "miro-architecture-component",
+      "name": "miro-architecture-component",
+      "path": "commands/miro-architecture-component.md",
+      "description": "Component diagram templates - Class, module of container style",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "component"]
+    },
+    {
+      "id": "miro-architecture-component-class",
+      "name": "miro-architecture-component-class",
+      "path": "commands/miro-architecture-component-class.md",
+      "description": "Maak een UML-style class diagram met relaties",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "class"]
+    },
+    {
+      "id": "miro-architecture-component-module",
+      "name": "miro-architecture-component-module",
+      "path": "commands/miro-architecture-component-module.md",
+      "description": "Maak een module dependency diagram",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "module"]
+    },
+    {
+      "id": "miro-architecture-component-container",
+      "name": "miro-architecture-component-container",
+      "path": "commands/miro-architecture-component-container.md",
+      "description": "Maak een container diagram met technology stack",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "container"]
+    },
+    {
+      "id": "miro-architecture-data",
+      "name": "miro-architecture-data",
+      "path": "commands/miro-architecture-data.md",
+      "description": "Data flow templates - Flow diagram, ERD of pipeline",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "data"]
+    },
+    {
+      "id": "miro-architecture-data-flow",
+      "name": "miro-architecture-data-flow",
+      "path": "commands/miro-architecture-data-flow.md",
+      "description": "Maak een data flow diagram met sources, transforms en destinations",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "data-flow"]
+    },
+    {
+      "id": "miro-architecture-data-erd",
+      "name": "miro-architecture-data-erd",
+      "path": "commands/miro-architecture-data-erd.md",
+      "description": "Maak een Entity Relationship Diagram (ERD)",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "erd"]
+    },
+    {
+      "id": "miro-architecture-data-pipeline",
+      "name": "miro-architecture-data-pipeline",
+      "path": "commands/miro-architecture-data-pipeline.md",
+      "description": "Maak een ETL/data pipeline diagram met stages en stores",
+      "created": "2026-01-14",
+      "project": "global",
+      "tags": ["miro", "architecture", "pipeline"]
+    },
+    {
+      "id": "hs-docs",
+      "name": "hs-docs",
+      "path": "commands/hs-docs.md",
+      "description": "H&S Document Generatie - Kies L4 procedure of L5 werkinstructie",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "documents", "generation", "main"],
+      "subcommands": ["hs-l4", "hs-l5", "hs-extract", "hs-scan", "hs-combine"]
+    },
+    {
+      "id": "hs-l4",
+      "name": "hs-l4",
+      "path": "commands/hs-l4.md",
+      "description": "Start L4 procedure intake - complete flow van extractie tot JSON output",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "l4", "procedure"]
+    },
+    {
+      "id": "hs-l5",
+      "name": "hs-l5",
+      "path": "commands/hs-l5.md",
+      "description": "Start L5 werkinstructie intake - complete flow van extractie tot JSON output",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "l5", "werkinstructie"]
+    },
+    {
+      "id": "hs-extract",
+      "name": "hs-extract",
+      "path": "commands/hs-extract.md",
+      "description": "Extraheer data uit .txt en .docx bestanden (losse fase)",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "extractie", "fase"]
+    },
+    {
+      "id": "hs-scan",
+      "name": "hs-scan",
+      "path": "commands/hs-scan.md",
+      "description": "Verrijk extractie data met H&S domeinkennis (losse fase)",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "scan", "verrijking"]
+    },
+    {
+      "id": "hs-combine",
+      "name": "hs-combine",
+      "path": "commands/hs-combine.md",
+      "description": "Combineer data en presenteer aannames ter verificatie (losse fase)",
+      "created": "2026-02-04",
+      "project": "hs-docs",
+      "tags": ["h&s", "combine", "aannames"]
+    },
+    {
+      "id": "connect-project",
+      "name": "connect-project",
+      "path": "commands/connect-project/COMMAND.md",
+      "description": "Connect een project folder aan Command Center - scant assets en registreert ze",
+      "created": "2026-02-05",
+      "project": "command-center",
+      "tags": ["command-center", "connect", "scan", "registry"]
+    },
+    {
+      "id": "setup-huisstijl",
+      "name": "setup-huisstijl",
+      "path": "commands/setup-huisstijl.md",
+      "description": "Setup Shadow Huisstijl design system in het huidige project - kopieer tokens, animaties, shadcn config",
+      "created": "2026-02-09",
+      "project": "global",
+      "tags": ["design-system", "huisstijl", "setup", "automation"]
+    },
+    {
+      "id": "veha-status",
+      "name": "veha-status",
+      "path": "plugins/local/veha-manager/commands/veha-status.md",
+      "description": "Toon status dashboard van alle VEHA projecten",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["veha", "status", "dashboard"]
+    },
+    {
+      "id": "veha-huisstijl",
+      "name": "veha-huisstijl",
+      "path": "plugins/local/veha-manager/commands/veha-huisstijl.md",
+      "description": "Pas Shadow Huisstijl toe op alle VEHA projecten",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["veha", "huisstijl", "design-system"]
+    },
+    {
+      "id": "veha-build",
+      "name": "veha-build",
+      "path": "plugins/local/veha-manager/commands/veha-build.md",
+      "description": "Build alle VEHA projecten en rapporteer resultaten",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["veha", "build", "ci"]
+    },
+    {
+      "id": "veha-audit",
+      "name": "veha-audit",
+      "path": "plugins/local/veha-manager/commands/veha-audit.md",
+      "description": "Cross-project huisstijl audit",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["veha", "audit", "huisstijl"]
+    },
+    {
+      "id": "session-status",
+      "name": "session-status",
+      "path": "commands/session-status.md",
+      "description": "Genereer of update STATUS.md met huidige project staat",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["session", "status", "handoff"]
+    },
+    {
+      "id": "security-scan",
+      "name": "security-scan",
+      "path": "plugins/local/security-os/commands/security-scan.md",
+      "description": "Voer een volledige beveiligingsscan uit op het huidige project of alle projecten",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "scan", "audit", "main"]
+    },
+    {
+      "id": "security-secrets",
+      "name": "security-secrets",
+      "path": "plugins/local/security-os/commands/security-secrets.md",
+      "description": "Scan op gelekte secrets en API keys met gitleaks",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "secrets", "gitleaks"]
+    },
+    {
+      "id": "security-deps",
+      "name": "security-deps",
+      "path": "plugins/local/security-os/commands/security-deps.md",
+      "description": "Scan dependencies op bekende kwetsbaarheden (npm audit + snyk)",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "dependencies", "npm-audit", "snyk"]
+    },
+    {
+      "id": "security-code",
+      "name": "security-code",
+      "path": "plugins/local/security-os/commands/security-code.md",
+      "description": "Statische code analyse (SAST) met Semgrep",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "sast", "semgrep", "code-analysis"]
+    },
+    {
+      "id": "security-containers",
+      "name": "security-containers",
+      "path": "plugins/local/security-os/commands/security-containers.md",
+      "description": "Scan Docker containers en configuratie met Trivy",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "docker", "containers", "trivy"]
+    },
+    {
+      "id": "security-database",
+      "name": "security-database",
+      "path": "plugins/local/security-os/commands/security-database.md",
+      "description": "Audit Supabase database beveiliging (RLS, policies, advisors)",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "database", "supabase", "rls"]
+    },
+    {
+      "id": "security-report",
+      "name": "security-report",
+      "path": "plugins/local/security-os/commands/security-report.md",
+      "description": "Genereer een compleet security compliance rapport",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "report", "compliance", "owasp"]
+    },
+    {
+      "id": "security-fix",
+      "name": "security-fix",
+      "path": "plugins/local/security-os/commands/security-fix.md",
+      "description": "Fix automatisch oplosbare beveiligingsproblemen",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "fix", "auto-remediation"]
+    },
+    {
+      "id": "security-status",
+      "name": "security-status",
+      "path": "plugins/local/security-os/commands/security-status.md",
+      "description": "Toon quick security dashboard met score en openstaande issues",
+      "created": "2026-02-10",
+      "project": "global",
+      "tags": ["security", "status", "dashboard"]
+    }
+  ]
+}
