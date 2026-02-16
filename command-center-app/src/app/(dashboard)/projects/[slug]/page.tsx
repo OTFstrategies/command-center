@@ -1,12 +1,18 @@
-import { ArrowLeft, FolderOpen, Key, Clock, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw, Globe, Code, ExternalLink } from 'lucide-react'
+import { ArrowLeft, FolderOpen, Key, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw, Globe, Code, ExternalLink } from 'lucide-react'
 import { getProjectByName, getProjectMemories } from '@/lib/projects'
 import { getCommands, getAgents, getSkills, getPrompts, getApis, getInstructions, getProjectChangelog } from '@/lib/registry'
 import { getProjectMetrics, getProjectSymbols, getProjectDependencies } from '@/lib/code-intel'
+import { getProjectDossierData } from '@/lib/project-dossier'
+import { detectCapabilities } from '@/lib/functions'
 import { MemoryList } from '@/components/memories/MemoryList'
 import { ProjectTabs } from '@/components/code-intel/ProjectTabs'
 import { CodeTab } from '@/components/code-intel/CodeTab'
 import { DependenciesTab } from '@/components/code-intel/DependenciesTab'
 import { HealthTab } from '@/components/code-intel/HealthTab'
+import { OverviewSection } from '@/components/project-dossier/OverviewSection'
+import { FunctionsSection } from '@/components/project-dossier/FunctionsSection'
+import { AssetsTree } from '@/components/project-dossier/AssetsTree'
+import { ConnectionsSection } from '@/components/project-dossier/ConnectionsSection'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -47,16 +53,28 @@ export default async function ProjectDetailPage({ params }: Props) {
     getProjectMemories(finalProject.name),
   ])
 
-  // Fetch code intelligence data separately (after registry queries)
-  const [metrics, symbols, dependencies] = await Promise.all([
+  // Fetch code intelligence + dossier data in parallel
+  const [metrics, symbols, dependencies, dossierData] = await Promise.all([
     getProjectMetrics(slug),
     getProjectSymbols(slug, { limit: 500 }),
     getProjectDependencies(slug),
+    getProjectDossierData(finalProject.name),
   ])
 
   // Calculate asset counts
   const totalCommands = commands.reduce((sum, cat) => sum + cat.commands.length, 0)
   const totalAssets = totalCommands + agents.length + skills.length + prompts.length + apis.length + instructions.length
+
+  // Detect capabilities from all assets
+  const allAssets = [
+    ...commands.flatMap((cat) => cat.commands.map((cmd) => ({ name: cmd.name, description: cmd.description, type: 'command' }))),
+    ...agents.map((a) => ({ name: a.name, description: '', type: 'agent' })),
+    ...skills.map((s) => ({ name: s.name, description: s.description || '', type: 'skill' })),
+    ...prompts.map((p) => ({ name: p.name, description: '', type: 'prompt' })),
+    ...apis.map((a) => ({ name: a.name, description: '', type: 'api' })),
+    ...instructions.map((i) => ({ name: i.name, description: '', type: 'instruction' })),
+  ]
+  const capabilities = detectCapabilities(allAssets)
 
   // Get change type icon
   const getChangeIcon = (type: string) => {
@@ -70,18 +88,29 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   // Build tab configuration
   const tabs = [
-    { id: 'overview', label: 'Overview' },
+    { id: 'overview', label: 'Overzicht' },
+    ...(capabilities.length > 0 ? [{ id: 'functions', label: 'Functies', count: capabilities.length }] : []),
+    ...(dossierData.hierarchy.length > 0 ? [{ id: 'assets', label: 'Onderdelen', count: dossierData.hierarchy.length }] : []),
+    ...(dossierData.connections.length > 0 || dossierData.sharedServices.length > 0
+      ? [{ id: 'connections', label: 'Verbindingen', count: dossierData.connections.length }]
+      : []),
     { id: 'code', label: 'Code', count: symbols.length },
     { id: 'dependencies', label: 'Dependencies', count: dependencies.length },
     { id: 'health', label: 'Health', count: metrics ? 1 : 0 },
   ]
 
-  // Overview tab content (existing page content)
+  // Overview tab content
   const overviewContent = (
     <>
+      {/* Enhanced Identity + Attention Points */}
+      <OverviewSection
+        identity={dossierData.identity}
+        insights={dossierData.insights}
+      />
+
       {/* Project Info (onboarding metadata) */}
       {(finalProject.tech_stack?.length || finalProject.build_command || finalProject.live_url) && (
-        <section>
+        <section className="mt-8">
           <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
             Project Info
           </h2>
@@ -160,11 +189,11 @@ export default async function ProjectDetailPage({ params }: Props) {
         </section>
       )}
 
-      {/* Changelog - prominent position */}
+      {/* Changelog */}
       {changelog.length > 0 && (
         <section className="mt-8">
           <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Recent Changes
+            Recente wijzigingen
           </h2>
           <div className="mt-4 space-y-3">
             {changelog.slice(0, 10).map((entry) => (
@@ -321,7 +350,7 @@ export default async function ProjectDetailPage({ params }: Props) {
       {finalProject.folders.length > 0 && (
         <section className="mt-8">
           <h2 className="text-xs font-medium uppercase tracking-widest text-zinc-400">
-            Structure
+            Structuur
           </h2>
           <div className="mt-4 space-y-2">
             {finalProject.folders.map((folder) => (
@@ -377,7 +406,7 @@ export default async function ProjectDetailPage({ params }: Props) {
           className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-          Back
+          Terug
         </Link>
 
         {/* Header */}
@@ -388,24 +417,24 @@ export default async function ProjectDetailPage({ params }: Props) {
           {finalProject.description && (
             <p className="mt-2 text-zinc-500">{finalProject.description}</p>
           )}
-          <div className="mt-3 flex items-center gap-4 text-sm text-zinc-400">
+          <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-zinc-400">
             <span>{totalAssets} assets</span>
             {symbols.length > 0 && (
               <>
-                <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                <span className="text-zinc-300 dark:text-zinc-600">&middot;</span>
                 <span>{symbols.length} symbols</span>
               </>
             )}
             {metrics && (
               <>
-                <span className="text-zinc-300 dark:text-zinc-600">·</span>
+                <span className="text-zinc-300 dark:text-zinc-600">&middot;</span>
                 <span>{metrics.total_loc.toLocaleString()} LOC</span>
               </>
             )}
-            {changelog.length > 0 && (
+            {dossierData.connections.length > 0 && (
               <>
-                <span className="text-zinc-300 dark:text-zinc-600">·</span>
-                <span>{changelog.length} changes</span>
+                <span className="text-zinc-300 dark:text-zinc-600">&middot;</span>
+                <span>{dossierData.connections.length} verbindingen</span>
               </>
             )}
           </div>
@@ -415,6 +444,14 @@ export default async function ProjectDetailPage({ params }: Props) {
         <ProjectTabs tabs={tabs}>
           {{
             overview: overviewContent,
+            functions: <FunctionsSection capabilities={capabilities} />,
+            assets: <AssetsTree items={dossierData.hierarchy} />,
+            connections: (
+              <ConnectionsSection
+                connections={dossierData.connections}
+                sharedServices={dossierData.sharedServices}
+              />
+            ),
             code: <CodeTab symbols={symbols} />,
             dependencies: <DependenciesTab dependencies={dependencies} />,
             health: <HealthTab metrics={metrics} />,

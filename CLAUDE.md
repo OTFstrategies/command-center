@@ -27,10 +27,11 @@ Shadow Huisstijl is toegepast:
 command-center-v2/
 ├── command-center-app/src/       # Next.js dashboard
 │   ├── app/
-│   │   ├── (dashboard)/          # Pages: home, activity, registry, tasks, settings
-│   │   │   └── projects/[slug]/  # Project detail met tabs (Overview/Code/Dependencies/Health)
+│   │   ├── (dashboard)/          # Pages: home, activity, registry, tasks, settings, map
+│   │   │   ├── map/              # Intelligence Map (overzichtskaart)
+│   │   │   └── projects/[slug]/  # Project detail met tabs (Overzicht/Functies/Onderdelen/Verbindingen/Code/Dependencies/Health)
 │   │   └── api/
-│   │       ├── sync/             # Registry sync + inbox
+│   │       ├── sync/             # Registry sync + inbox + deep-scan
 │   │       ├── tasks/            # Task CRUD
 │   │       ├── search/           # Global search
 │   │       ├── activity/         # Activity log (GET + POST)
@@ -44,18 +45,24 @@ command-center-v2/
 │   │   ├── dashboard/            # StatCard, ProjectCard, QuickActionBar
 │   │   ├── kanban/               # KanbanBoard, KanbanColumn, TaskCard, AddTaskModal
 │   │   ├── code-intel/           # ProjectTabs, CodeTab, DependenciesTab, HealthTab
+│   │   ├── map/                  # Intelligence Map components (cockpit, graph, filters, insights, detail, help, risk, quick-actions)
+│   │   ├── project-dossier/      # Enhanced project detail (IdentityCard, AttentionPoints, FunctionsSection, AssetsTree, ConnectionsSection)
 │   │   ├── memories/             # MemoryList
 │   │   ├── search/               # SearchDialog, SearchProvider
 │   │   ├── shell/                # AppShell, MainNav, ProjectSwitcher, ShellLayout
 │   │   ├── sync/                 # InboxPanel
 │   │   ├── activity/             # ActivityList (client filters)
-│   │   └── ui/                   # Toast, Skeleton, NotificationBadge
+│   │   └── ui/                   # Toast, Skeleton, NotificationBadge, HelpButton, Tooltip
 │   ├── lib/
 │   │   ├── supabase/client.ts    # Browser Supabase client
 │   │   ├── registry.ts           # Server-side registry + activity queries
 │   │   ├── tasks.ts              # Server-side task queries
 │   │   ├── projects.ts           # Server-side project + memory queries
-│   │   └── code-intel.ts         # Server-side code intelligence queries
+│   │   ├── code-intel.ts         # Server-side code intelligence queries
+│   │   ├── map.ts                # Server-side Intelligence Map data queries
+│   │   ├── project-dossier.ts    # Server-side project dossier data (relaties, hiërarchie, inzichten)
+│   │   ├── functions.ts          # Capability detection voor project dossier
+│   │   └── deep-scan/            # Deep Scan engine (5 fases: inventory, hierarchy, relationships, clusters, insights)
 │   └── types/index.ts            # Alle TypeScript interfaces
 │
 ├── cc-v2-mcp/                    # Code Intelligence MCP server
@@ -106,6 +113,21 @@ command-center-v2/
 | `project_memories` | Markdown documenten per project |
 | `inbox_pending` | Onverwerkte sync-verzoeken |
 
+### Intelligence Map & Deep Scan
+| Tabel | Doel |
+|-------|------|
+| `entity_relationships` | Alle relaties tussen items (source → target, type, sterkte) |
+| `asset_hierarchy` | Boomstructuur van assets (parent-child, depth, path) |
+| `system_clusters` | Auto-gedetecteerde groepen (naam, slug, health, member_count) |
+| `map_insights` | Gegenereerde inzichten (orphans, hubs, gaps, patronen) |
+| `entity_versions` | Versie-geschiedenis per entity |
+| `project_api_routes` | Gedetecteerde API routes per project |
+| `service_costs` | Kosten per dienst/project |
+| `usage_statistics` | Gebruiksstatistieken per item |
+| `user_visits` | Laatste bezoek per gebruiker (voor "Sinds je laatste bezoek") |
+| `shared_views` | Gedeelde kaart-weergaven |
+| `user_bookmarks` | Opgeslagen bladwijzers |
+
 ### Code Intelligence
 | Tabel | Doel | Volume |
 |-------|------|--------|
@@ -147,10 +169,51 @@ analyze_project(pad)
 ### Dashboard Tabs (Project Detail)
 | Tab | Component | Data |
 |-----|-----------|------|
-| Overview | Bestaand | Changelog, memories, assets, tech stack |
+| Overzicht | OverviewSection + bestaand | IdentityCard, AttentionPoints, changelog, memories, assets, tech stack |
+| Functies | `FunctionsSection.tsx` | Auto-detected capabilities gegroepeerd per categorie |
+| Onderdelen | `AssetsTree.tsx` | Hiërarchische boom van project assets |
+| Verbindingen | `ConnectionsSection.tsx` | Relaties + gedeelde diensten |
 | Code | `CodeTab.tsx` | Symbolen gegroepeerd per bestand, filter chips per kind |
 | Dependencies | `DependenciesTab.tsx` | Packages gegroepeerd op type (production/dev/peer/optional) |
 | Health | `HealthTab.tsx` | Health badge, metrics grid, diagnostics, taalverdeling |
+
+## Intelligence Map
+
+### Overzichtskaart (`/map`)
+Interactieve visuele kaart van het hele AI-ecosysteem.
+
+**Componenten:**
+| Component | Functie |
+|-----------|---------|
+| `MapPageClient.tsx` | Hoofdcontainer met cockpit/graph toggle, filters, state |
+| `CockpitView.tsx` | Grid van cluster-kaarten met stats |
+| `FullGraphView.tsx` | react-force-graph-2d WebGL graph met custom node shapes |
+| `FilterBar.tsx` | Zoeken + type filter + cluster filter |
+| `InsightsPanel.tsx` | Zijpaneel met gegenereerde inzichten |
+| `RiskAnalysis.tsx` | Risicoanalyse van afhankelijkheden |
+| `DetailPanel.tsx` | Slide-in paneel met node details + relaties |
+| `HelpOverlay.tsx` | Uitleg modal met legenda |
+| `SinceLastVisit.tsx` | Banner met wijzigingen sinds laatste bezoek |
+| `QuickActions.tsx` | FAB met scan/sync knoppen |
+
+### Deep Scan Pipeline
+Scant `~/.claude/` directory en genereert relaties, hiërarchie, clusters en inzichten.
+
+**Data Flow:**
+```
+runDeepScan(basePath)
+  → scanInventory()     → 232+ items uit ~/.claude/
+  → detectHierarchies() → 90+ tree structures
+  → detectRelationships() → 338+ relaties
+  → detectClusters()    → 12+ groepen
+  → generateInsights()  → 58+ inzichten
+  → storeDeepScanResult() → Supabase (alle 4 tabellen)
+```
+
+**Uitvoeren:**
+- Via CLI: `npx tsx scripts/deep-scan.ts` vanuit `command-center-app/`
+- Via Claude Code: `/deep-scan` command
+- Via API: `GET /api/sync/deep-scan` (status) of `POST /api/sync/deep-scan` (opslaan)
 
 ## Sync Pipeline
 Registry data flow: `~/.claude/registry/*.json` → `scripts/sync-registry.mjs` → `POST /api/sync` → Supabase

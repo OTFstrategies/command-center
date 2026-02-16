@@ -402,3 +402,56 @@ export interface InboxPending {
   created_at: string
   synced_at: string | null
 }
+
+// =============================================================================
+// INTELLIGENCE MAP
+// =============================================================================
+
+export interface MapNode {
+  id: string
+  type: string
+  name: string
+  cluster?: string
+  size: number
+  health?: string
+  description?: string
+  x?: number
+  y?: number
+}
+
+export interface MapEdge {
+  source: string
+  target: string
+  relationship: string
+  strength: number
+  label?: string
+}
+
+export interface MapCluster {
+  id: string
+  name: string
+  slug: string
+  memberCount: number
+  health: string
+  description: string
+  icon: string
+}
+
+export interface MapInsight {
+  id: string
+  type: string
+  severity: string
+  title: string
+  description: string
+  affectedItems: string[]
+  actionLabel?: string
+  actionType?: string
+  resolved: boolean
+}
+
+export interface MapData {
+  nodes: MapNode[]
+  edges: MapEdge[]
+  clusters: MapCluster[]
+  insights: MapInsight[]
+}
