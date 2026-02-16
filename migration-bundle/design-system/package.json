@@ -1,7 +1,0 @@
-{
-  "name": "shadow-huisstijl",
-  "private": true,
-  "scripts": {
-    "preview": "cd preview && npm run dev"
-  }
-}
