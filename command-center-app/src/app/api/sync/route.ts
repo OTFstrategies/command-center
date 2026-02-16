@@ -208,11 +208,15 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (!existingProject) {
-        // Create new project
+        // Create new project (projects table requires workspace_id, client_id, start_date, end_date)
         await supabase.from('projects').insert({
           name: projectName,
           slug,
           description: null,
+          workspace_id: 'a0000000-0000-0000-0000-000000000001',
+          client_id: '10000000-0000-0000-0000-000000000002',
+          start_date: new Date().toISOString().slice(0, 10),
+          end_date: '2026-12-31',
         })
 
         // Log project creation in changelog
