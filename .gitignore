@@ -27,3 +27,5 @@ dist-ssr
 .playwright-mcp/
 .claude/
 sync-cli/.env
+nul
+command-center-app/nul
