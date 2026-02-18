@@ -6,6 +6,8 @@ import { useSearch } from '@/components/search/SearchProvider'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
 import { ProjectSwitcher } from './ProjectSwitcher'
+import { NotificationBell } from './NotificationBell'
+import { SyncStatus } from './SyncStatus'
 
 export interface NavigationItem {
   label: string
@@ -40,8 +42,8 @@ export function AppShell({
     <div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950">
       {/* Sidebar - Desktop */}
       <aside className="fixed inset-y-0 left-0 z-50 w-16 glass max-md:hidden flex flex-col">
-        {/* Search Button */}
-        <div className="flex justify-center p-3">
+        {/* Search + Alerts */}
+        <div className="flex flex-col items-center gap-1 p-2">
           <button
             onClick={openSearch}
             className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100/50 hover:text-zinc-900 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-50"
@@ -49,6 +51,7 @@ export function AppShell({
           >
             <Search className="h-5 w-5" strokeWidth={1.5} />
           </button>
+          <NotificationBell />
         </div>
 
         {/* Navigation - Top */}
@@ -59,8 +62,9 @@ export function AppShell({
           />
         </div>
 
-        {/* Bottom controls: Project, Dark mode, User */}
+        {/* Bottom controls: Sync Status, Project, User */}
         <div className="flex flex-col items-center gap-1 p-2 border-t border-zinc-200/50 dark:border-zinc-800/50">
+          <SyncStatus />
           {/* Project Switcher - Compact */}
           <ProjectSwitcher
             projects={projects}
@@ -92,6 +96,7 @@ export function AppShell({
           >
             <Search className="h-5 w-5" strokeWidth={1.5} />
           </button>
+          <NotificationBell />
           <ProjectSwitcher
             projects={projects}
             currentProject={currentProject}

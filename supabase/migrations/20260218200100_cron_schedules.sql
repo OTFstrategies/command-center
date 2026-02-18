@@ -1,0 +1,41 @@
+-- pg_cron schedules voor Observer + Actor
+-- BELANGRIJK: Deze migration moet handmatig in Supabase SQL Editor gedraaid worden
+-- pg_cron en pg_net zijn alleen beschikbaar via de Supabase dashboard
+
+-- Enable required extensions (als nog niet actief)
+-- CREATE EXTENSION IF NOT EXISTS pg_cron;
+-- CREATE EXTENSION IF NOT EXISTS pg_net;
+
+-- Elke 6 uur: trigger sync
+-- SELECT cron.schedule(
+--   'sync-every-6h',
+--   '0 */6 * * *',
+--   $$
+--   SELECT net.http_post(
+--     url := 'https://ikpmlhmbooaxfrlpzcfa.supabase.co/functions/v1/sync-trigger',
+--     body := '{}'::jsonb,
+--     headers := '{"Authorization": "Bearer <SERVICE_ROLE_KEY>", "Content-Type": "application/json"}'::jsonb
+--   );
+--   $$
+-- );
+
+-- Elke ochtend 7:00 UTC: daily digest
+-- SELECT cron.schedule(
+--   'daily-digest',
+--   '0 7 * * *',
+--   $$
+--   SELECT net.http_post(
+--     url := 'https://ikpmlhmbooaxfrlpzcfa.supabase.co/functions/v1/alert-digest',
+--     body := '{}'::jsonb,
+--     headers := '{"Authorization": "Bearer <SERVICE_ROLE_KEY>", "Content-Type": "application/json"}'::jsonb
+--   );
+--   $$
+-- );
+
+-- INSTRUCTIES:
+-- 1. Open Supabase Dashboard > Database > Extensions
+-- 2. Enable pg_cron en pg_net als nog niet actief
+-- 3. Ga naar SQL Editor
+-- 4. Uncomment de cron.schedule statements hierboven
+-- 5. Vervang <SERVICE_ROLE_KEY> met je echte service role key
+-- 6. Execute

@@ -11,13 +11,16 @@ import {
   Settings,
   LayoutGrid,
   Network,
+  Bell,
 } from 'lucide-react'
+import { CommandPanel } from './CommandPanel'
 
 const navigationItems: Omit<NavigationItem, 'isActive'>[] = [
   { label: 'Home', href: '/', icon: <Home className="h-5 w-5" /> },
   { label: 'Overzichtskaart', href: '/map', icon: <Network className="h-5 w-5" /> },
   { label: 'Tasks', href: '/tasks', icon: <LayoutGrid className="h-5 w-5" /> },
   { label: 'Registry', href: '/registry', icon: <Database className="h-5 w-5" /> },
+  { label: 'Alerts', href: '/alerts', icon: <Bell className="h-5 w-5" /> },
   { label: 'Activity', href: '/activity', icon: <Activity className="h-5 w-5" /> },
   { label: 'Settings', href: '/settings', icon: <Settings className="h-5 w-5" /> },
 ]
@@ -48,6 +51,7 @@ export function ShellLayout({ children, projects }: ShellLayoutProps) {
   return (
     <ToastProvider>
       <SearchProvider>
+        <CommandPanel />
         <AppShell
           navigationItems={navItemsWithActive}
           user={{ name: 'Shadow' }}
