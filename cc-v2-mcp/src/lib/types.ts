@@ -59,6 +59,18 @@ export interface MetricsRecord {
   analyzed_at?: string;
 }
 
+export interface ApiRouteRecord {
+  project: string;
+  path: string;
+  method: string;
+  auth_type: string;
+  params: Record<string, string>;
+  response_type: string;
+  file_path: string;
+  line_start: number;
+  tables_used: string[];
+}
+
 export interface AnalysisResult {
   project: string;
   symbols: SymbolRecord[];
@@ -66,4 +78,5 @@ export interface AnalysisResult {
   diagnostics: DiagnosticRecord[];
   dependencies: DependencyRecord[];
   metrics: MetricsRecord;
+  apiRoutes?: ApiRouteRecord[];
 }

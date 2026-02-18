@@ -1,7 +1,7 @@
 import { ArrowLeft, FolderOpen, Key, Terminal, Bot, Sparkles, MessageSquare, FileText, Plus, Minus, RefreshCw, Globe, Code, ExternalLink } from 'lucide-react'
 import { getProjectByName, getProjectMemories } from '@/lib/projects'
 import { getCommands, getAgents, getSkills, getPrompts, getApis, getInstructions, getProjectChangelog } from '@/lib/registry'
-import { getProjectMetrics, getProjectSymbols, getProjectDependencies } from '@/lib/code-intel'
+import { getProjectMetrics, getProjectSymbols, getProjectDependencies, getProjectApiRoutes } from '@/lib/code-intel'
 import { getProjectDossierData } from '@/lib/project-dossier'
 import { detectCapabilities } from '@/lib/functions'
 import { MemoryList } from '@/components/memories/MemoryList'
@@ -9,6 +9,7 @@ import { ProjectTabs } from '@/components/code-intel/ProjectTabs'
 import { CodeTab } from '@/components/code-intel/CodeTab'
 import { DependenciesTab } from '@/components/code-intel/DependenciesTab'
 import { HealthTab } from '@/components/code-intel/HealthTab'
+import ApiRoutesTab from '@/components/code-intel/ApiRoutesTab'
 import { OverviewSection } from '@/components/project-dossier/OverviewSection'
 import { FunctionsSection } from '@/components/project-dossier/FunctionsSection'
 import { AssetsTree } from '@/components/project-dossier/AssetsTree'
@@ -54,11 +55,12 @@ export default async function ProjectDetailPage({ params }: Props) {
   ])
 
   // Fetch code intelligence + dossier data in parallel
-  const [metrics, symbols, dependencies, dossierData] = await Promise.all([
+  const [metrics, symbols, dependencies, dossierData, apiRoutes] = await Promise.all([
     getProjectMetrics(slug),
     getProjectSymbols(slug, { limit: 500 }),
     getProjectDependencies(slug),
     getProjectDossierData(finalProject.name),
+    getProjectApiRoutes(slug),
   ])
 
   // Calculate asset counts
@@ -94,6 +96,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     ...(dossierData.connections.length > 0 || dossierData.sharedServices.length > 0
       ? [{ id: 'connections', label: 'Verbindingen', count: dossierData.connections.length }]
       : []),
+    ...(apiRoutes.length > 0 ? [{ id: 'api-routes', label: 'API Routes', count: apiRoutes.length }] : []),
     { id: 'code', label: 'Code', count: symbols.length },
     { id: 'dependencies', label: 'Dependencies', count: dependencies.length },
     { id: 'health', label: 'Health', count: metrics ? 1 : 0 },
@@ -452,6 +455,7 @@ export default async function ProjectDetailPage({ params }: Props) {
                 sharedServices={dossierData.sharedServices}
               />
             ),
+            'api-routes': <ApiRoutesTab routes={apiRoutes} />,
             code: <CodeTab symbols={symbols} />,
             dependencies: <DependenciesTab dependencies={dependencies} />,
             health: <HealthTab metrics={metrics} />,

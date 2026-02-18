@@ -97,3 +97,29 @@ export async function getProjectDependencies(project: string): Promise<CodeDepen
     return []
   }
 }
+
+export interface ApiRoute {
+  id: string
+  project: string
+  path: string
+  method: string
+  auth_type: string
+  file_path: string | null
+  line_start: number | null
+  tables_used: string[]
+}
+
+export async function getProjectApiRoutes(project: string): Promise<ApiRoute[]> {
+  try {
+    const { data, error } = await getSupabase()
+      .from('project_api_routes')
+      .select('*')
+      .eq('project', toSlug(project))
+      .order('path')
+
+    if (error) return []
+    return data || []
+  } catch {
+    return []
+  }
+}

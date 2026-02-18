@@ -24,6 +24,7 @@ export async function storeAnalysis(result: AnalysisResult): Promise<void> {
     supabase.from('project_diagnostics').delete().eq('project', project),
     supabase.from('project_dependencies').delete().eq('project', project),
     supabase.from('project_metrics').delete().eq('project', project),
+    supabase.from('project_api_routes').delete().eq('project', project),
   ]);
 
   // Insert symbols in batches
@@ -55,6 +56,14 @@ export async function storeAnalysis(result: AnalysisResult): Promise<void> {
       .from('project_dependencies')
       .upsert(result.dependencies, { onConflict: 'project,name' });
     if (error) console.error('[storage] Dependencies insert error:', error.message);
+  }
+
+  // Insert API routes
+  if (result.apiRoutes && result.apiRoutes.length > 0) {
+    const { error: routeError } = await supabase
+      .from('project_api_routes')
+      .insert(result.apiRoutes);
+    if (routeError) console.error('[storage] API routes insert error:', routeError.message);
   }
 
   // Upsert metrics

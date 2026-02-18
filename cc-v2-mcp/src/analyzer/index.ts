@@ -3,6 +3,7 @@ import { extractSymbols } from './symbols.js';
 import { extractReferences } from './references.js';
 import { extractDiagnostics } from './diagnostics.js';
 import { extractDependencies } from './dependencies.js';
+import { extractApiRoutes } from './api-routes.js';
 import { calculateMetrics } from './metrics.js';
 import type { AnalysisResult } from '../lib/types.js';
 
@@ -44,6 +45,10 @@ export async function analyzeProject(
   const allDependencies = extractDependencies(projectPath, projectSlug);
   console.error(`[analyze] Found ${allDependencies.length} dependencies`);
 
+  // Extract API routes (Next.js App Router)
+  const allApiRoutes = extractApiRoutes(tsMorphProject, projectSlug, projectPath);
+  console.error(`[analyze] Found ${allApiRoutes.length} API routes`);
+
   // Calculate metrics
   const metrics = calculateMetrics(
     tsMorphProject,
@@ -62,5 +67,6 @@ export async function analyzeProject(
     diagnostics: allDiagnostics,
     dependencies: allDependencies,
     metrics,
+    apiRoutes: allApiRoutes,
   };
 }
