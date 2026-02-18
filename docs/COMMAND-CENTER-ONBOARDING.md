@@ -1,19 +1,22 @@
-# Command Center v2 — Onboarding voor Claude Sessies
+# Command Center — Onboarding voor Claude Sessies
 
-> **Lees dit als je voor het eerst werkt aan of met Command Center v2.**
-> Dit document legt uit wat het systeem is, hoe het samenhangt met Claude Code, en wat jouw rol is als Claude in dit ecosysteem.
+> **Lees dit als je voor het eerst werkt aan of met Command Center.**
+> Dit document legt uit wat het systeem is, hoe `~/.claude/` is ingericht, hoe alles samenhangt met Claude Code, en wat jouw rol is als Claude in dit ecosysteem.
 
 ---
 
 ## 1. Wat is Command Center?
 
-Command Center v2 is Shadow's **centraal dashboard** voor zijn complete Claude Code setup. Het visualiseert, beheert en bewaakt alles wat Shadow met Claude Code heeft gebouwd: agents, commands, skills, prompts, API-configuraties, instructies en projecten.
+Command Center is Shadow's **absoluut middelpunt** voor zijn complete Claude Code setup. Het visualiseert, beheert en bewaakt alles wat Shadow met Claude Code heeft gebouwd en doet: agents, commands, skills, prompts, API-configuraties, instructies, projecten en hun onderlinge relaties.
 
-Denk aan het als een **vliegtuigcockpit** — Shadow ziet in één oogopslag:
+Denk aan het als een **vliegtuigcockpit** — Shadow ziet in een oogopslag:
 - Welke assets hij heeft (100+ agents, commands, skills)
-- Hoe ze samenhangen (338 relaties, 12 clusters)
+- Hoe ze samenhangen (338+ relaties, 12+ clusters)
 - Of alles gezond is (automatische health checks elke 6 uur)
 - Wat er recent is veranderd (changelog, alerts, sync status)
+- Hoe zijn code erbij staat (symbolen, dependencies, health scores)
+
+**Kernprincipe:** Alles wat Claude Code produceert of wijzigt, moet uiteindelijk zichtbaar zijn in Command Center. Geen onzichtbare assets, geen vergeten projecten, geen losse eindjes.
 
 **Live URL:** https://command-center-app-nine.vercel.app
 **Supabase Project:** `ikpmlhmbooaxfrlpzcfa`
@@ -22,13 +25,11 @@ Denk aan het als een **vliegtuigcockpit** — Shadow ziet in één oogopslag:
 
 ## 2. De Drie Systeemrollen
 
-Het ecosysteem bestaat uit drie onderdelen die elk een eigen rol hebben:
-
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Shadow (Product Owner)                     │
-│                   Geeft opdrachten, checkt resultaten         │
-└──────────────────────────┬──────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                    Shadow (Product Owner)                      │
+│                Geeft opdrachten, checkt resultaten              │
+└──────────────────────────┬───────────────────────────────────┘
                            │
          ┌─────────────────┼─────────────────┐
          ▼                 ▼                 ▼
@@ -40,16 +41,16 @@ Het ecosysteem bestaat uit drie onderdelen die elk een eigen rol hebben:
 │ gebruikt    │  │ via TypeScript   │  │ visueel in een   │
 │ assets      │  │ compiler API     │  │ web dashboard    │
 │             │  │                  │  │                  │
-│ ~/.claude/  │  │ cc-v2-mcp/      │  │ command-center-  │
+│ ~/.claude/  │  │ cc-mcp/         │  │ command-center-  │
 │ registry/   │  │                  │  │ app/             │
 └──────┬──────┘  └────────┬─────────┘  └────────┬─────────┘
        │                  │                     │
        │    sync          │    analyse          │    lees
        ▼                  ▼                     ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Supabase (PostgreSQL)                     │
-│  registry_items · alerts · job_queue · project_symbols · ... │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     Supabase (PostgreSQL)                      │
+│  registry_items · alerts · job_queue · project_symbols · ...  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ### 2.1 Claude Code CLI (Producent)
@@ -58,7 +59,7 @@ Dit is waar jij als Claude draait. Claude Code is de **producent** van het ecosy
 
 | Actie | Wat het doet | Waar het landt |
 |-------|-------------|----------------|
-| `/save-to-cc` | Slaat een nieuw asset op (agent, command, skill, etc.) | `~/.claude/registry/*.json` |
+| `/save-to-cc` | Slaat een nieuw asset op (agent, command, skill, etc.) | `~/.claude/registry/*.json` + bestand |
 | `/sync-cc` | Synchroniseert registry naar database | Supabase via `/api/sync` |
 | `/memory` | Schrijft project-specifieke notities | Supabase `project_memories` |
 | `/onboard` | Detecteert project info en registreert het | `~/.claude/registry/` |
@@ -69,11 +70,11 @@ Dit is waar jij als Claude draait. Claude Code is de **producent** van het ecosy
 
 ### 2.2 MCP Server (Analyseur)
 
-De MCP server (`cc-v2-mcp/`) analyseert TypeScript projecten via de ts-morph compiler API. Hij biedt 7 tools die jij als Claude direct kunt aanroepen:
+De MCP server (`cc-mcp/`) analyseert TypeScript projecten via de ts-morph compiler API. 7 tools die jij als Claude direct kunt aanroepen:
 
 | MCP Tool | Wat het doet |
 |----------|-------------|
-| `analyze_project` | Volledige code-analyse: symbolen + references + diagnostics + dependencies + metrics. Slaat resultaten op in Supabase. |
+| `analyze_project` | Volledige code-analyse: symbolen + references + diagnostics + dependencies + metrics. Slaat op in Supabase. |
 | `query_symbols` | Zoek functies, classes, interfaces met filters op kind, naam, bestand |
 | `find_references` | Vind alle plekken waar een symbool wordt gebruikt |
 | `get_diagnostics` | TypeScript compiler fouten en warnings ophalen |
@@ -81,17 +82,266 @@ De MCP server (`cc-v2-mcp/`) analyseert TypeScript projecten via de ts-morph com
 | `get_metrics` | Totaalcijfers: bestanden, regels code, symbolen, exports, errors |
 | `project_health` | Health score: healthy / needs-attention / unhealthy |
 
-**Gebruik:** Roep `analyze_project` aan met een projectpad. De resultaten verschijnen daarna in het dashboard onder de Code, Dependencies en Health tabs.
-
 ### 2.3 Dashboard (Overzicht)
 
 De Next.js web applicatie die alles visueel maakt. Shadow opent dit in zijn browser om te zien wat er speelt. Het dashboard **leest** data uit Supabase — het produceert zelf geen assets.
 
 ---
 
-## 3. Data Flow — Van Lokaal naar Dashboard
+## 3. ~/.claude/ Inrichting — De Kern van Command Center
 
-Er zijn drie parallelle data-pipelines die het dashboard vullen:
+De `~/.claude/` directory is het fundament van het hele ecosysteem. Hoe deze is ingericht bepaalt wat Command Center kan zien, tracken en bewaken.
+
+### 3.1 Directory Classificatie
+
+Elke map en elk bestand in `~/.claude/` valt in een van vier categorieen:
+
+```
+~/.claude/
+│
+├── ══════════ ASSETS (getrackt door CC) ══════════════════════
+│
+├── commands/                  # 62+ slash commands (.md bestanden)
+│   ├── agent-os.md            #   → Hoofd-entry voor Agent OS workflow
+│   ├── agent-os/              #   → 6 sub-commands (create-tasks, implement, etc.)
+│   ├── miro-start.md          #   → Hoofd-entry voor Miro diagrammen
+│   ├── miro-flowcharts*.md    #   → 12 flowchart templates
+│   ├── miro-architecture*.md  #   → 12 architectuur templates
+│   ├── miro-frameworks*.md    #   → 12 framework templates
+│   ├── hs-*.md                #   → 6 Handboek Staalconstructies commands
+│   ├── sync-cc.md             #   → Registry sync trigger
+│   ├── save-to-cc.md          #   → Asset opslaan in CC
+│   ├── memory.md              #   → Project memory schrijven
+│   ├── onboard.md             #   → Project onboarding
+│   ├── session-status.md      #   → Sessie status rapportage
+│   ├── setup-huisstijl.md     #   → Design system installatie
+│   ├── design-os.md           #   → Product planning workflow
+│   ├── vibe-sync.md           #   → Kanban synchronisatie
+│   └── connect-project/       #   → Project koppelen aan CC
+│
+├── agents/                    # 10+ agent definities
+│   ├── agent-os/              #   → 8 sub-agents (spec-writer, implementer, etc.)
+│   ├── hs-docs/               #   → Handboek Staalconstructies agent
+│   ├── Form-maker/            #   → RMONI formulier agent (bevat agent-os fork)
+│   └── veha-marketing-agent.md
+│
+├── skills/                    # Herbruikbare multi-step workflows
+│   └── miro-patterns/         #   → 40 Miro diagram patronen
+│       ├── SKILL.md            #     Hoofd-instructie
+│       ├── examples/           #     JSON voorbeelden
+│       └── references/         #     Kleur/layout/shape catalogi
+│
+├── apis/                      # API configuraties per dienst
+│   ├── anthropic/config.md    #   → Anthropic API setup
+│   └── supabase/veha-hub.json #   → Supabase VEHA Hub config
+│
+├── instructions/              # Workflow regels en project-specifieke instructies
+│   ├── per-project/           #   → command-center-v2.md
+│   ├── workflows/             #   → deployment-protocol.md
+│   └── research/              #   → LLM gedragspatroon onderzoek
+│
+├── prompts/                   # Prompt templates
+│   ├── design-style-shadow.md #   → Shadow's design stijl prompt
+│   ├── system/                #   → System prompts
+│   ├── project/               #   → Project-specifieke prompts
+│   └── templates/             #   → Herbruikbare templates
+│
+├── design-system/             # Shadow's Huisstijl (verplicht voor elk UI-project)
+│   ├── HUISSTIJL.md           #   → Volledige design regels
+│   ├── tokens/index.css       #   → CSS tokens (zinc, glassmorphism, glow)
+│   ├── animations/            #   → Framer Motion + GSAP presets
+│   ├── components/            #   → shadcn/ui configuratie
+│   ├── lib/utils.ts           #   → cn() utility
+│   └── examples/              #   → Voorbeeldcode
+│
+│
+├── ══════════ REGISTRY (source of truth voor CC) ════════════
+│
+├── registry/
+│   ├── commands.json          # 72 geregistreerde commands
+│   ├── agents.json            # 20 geregistreerde agents
+│   ├── skills.json            # 2 geregistreerde skills
+│   ├── apis.json              # 2 geregistreerde API configs
+│   ├── instructions.json      # 5 geregistreerde instructie sets
+│   ├── prompts.json           # 1 geregistreerd prompt template
+│   └── logs.json              # Sync log (intern gebruik)
+│
+│
+├── ══════════ INTEGRATIE (CC triggers & automatisering) ══════
+│
+├── hookify.command-center-agent.local.md      # Auto-detectie: nieuwe agent
+├── hookify.command-center-api.local.md        # Auto-detectie: nieuwe API config
+├── hookify.command-center-command.local.md     # Auto-detectie: nieuwe slash command
+├── hookify.command-center-instruction.local.md # Auto-detectie: nieuwe instructie
+├── hookify.command-center-prompt.local.md      # Auto-detectie: nieuw prompt template
+├── hookify.command-center-skill.local.md       # Auto-detectie: nieuwe skill
+├── hooks/                                      # Git-style hooks (beschikbaar voor auto-sync)
+│
+│
+├── ══════════ PLUGINS (uitbreidingen) ════════════════════════
+│
+├── plugins/
+│   ├── local/                 # 4 zelfgebouwde plugins
+│   │   ├── revision-guardian/ #   → Document revisie bewaking
+│   │   ├── security-os/       #   → Security scanning & tooling
+│   │   ├── veha-generators/   #   → VEHA document generatoren
+│   │   └── veha-manager/      #   → VEHA project management
+│   ├── cache/                 # Geinstalleerde marketplace plugins (auto-managed)
+│   └── marketplaces/          # Plugin bronnen (auto-managed)
+│
+│
+├── ══════════ CONFIGURATIE ═══════════════════════════════════
+│
+├── CLAUDE.md                  # Globale instructies (jij leest dit elke sessie)
+├── settings.json              # Plugins + permissions (bypassPermissions)
+├── settings.local.json        # Per-machine allow-regels
+│
+│
+└── ══════════ SYSTEEM (genegeerd door CC) ════════════════════
+
+    ├── cache/                 # Claude Code interne cache
+    ├── debug/                 # Debug bestanden
+    ├── telemetry/             # Usage telemetry
+    ├── session-env/           # Sessie omgevingsvariabelen
+    ├── shell-snapshots/       # Shell state snapshots
+    ├── todos/                 # Todo lijsten (per sessie)
+    ├── paste-cache/           # Clipboard cache
+    ├── file-history/          # File edit history
+    ├── downloads/             # Downloaded bestanden
+    ├── usage-data/            # Usage data
+    ├── statsig/               # Feature flags
+    ├── logs/                  # Interne logs
+    ├── backups/               # Backup bestanden
+    ├── plans/                 # Sessie plannen
+    ├── projects/              # Per-project Claude state (conversations, etc.)
+    ├── security/              # Security state
+    ├── stats-cache.json       # Stats cache
+    ├── history.jsonl          # Conversation history
+    ├── .credentials.json      # Auth credentials
+    └── security_warnings_*.json # Per-sessie security warnings
+```
+
+### 3.2 Wat Command Center Scant
+
+CC heeft drie manieren om data uit `~/.claude/` te halen. Elk scant andere dingen:
+
+| Pipeline | Wat het leest | Wat het negeert | Wanneer |
+|----------|--------------|-----------------|---------|
+| **Registry Sync** | `registry/*.json` (6 bestanden) | Alles behalve registry | Op `/sync-cc` |
+| **Deep Scan** | commands, agents, skills, apis, instructions, prompts, plugins, design-system, projects | cache, debug, telemetry, session-env, todos, node_modules, .git | Op `/deep-scan` |
+| **MCP Server** | Project broncode (buiten ~/.claude/) | ~/.claude/ zelf | Op `analyze_project` |
+
+### 3.3 Registry Structuur
+
+Elk registry bestand volgt hetzelfde formaat. Dit is wat de sync naar Supabase stuurt:
+
+```json
+{
+  "description": "Beschrijving van dit type",
+  "items": [
+    {
+      "id": "uniek-id",
+      "name": "Weergavenaam",
+      "path": "relatief/pad/naar/bestand",
+      "description": "Wat dit asset doet (1 zin)",
+      "created": "2026-02-01",
+      "project": "project-naam of 'global'",
+      "tags": ["tag1", "tag2"]
+    }
+  ]
+}
+```
+
+**Regels:**
+- `id` moet uniek zijn binnen het type
+- `path` is relatief ten opzichte van `~/.claude/`
+- `project` koppelt het asset aan een project in CC (of `"global"` voor ecosysteem-breed)
+- `tags` worden gebruikt door Deep Scan voor relatie-detectie
+- Elk registry bestand correspondeert met een asset-directory (commands.json ↔ commands/)
+
+### 3.4 Hookify Integratie
+
+Zes hookify-regels zorgen ervoor dat CC automatisch op de hoogte wordt gebracht wanneer je een nieuw asset aanmaakt. Ze detecteren patronen in bestanden en waarschuwen je:
+
+| Hookify Regel | Detecteert | Regex Pattern |
+|---------------|-----------|---------------|
+| `command-center-command` | Slash commands | `/[a-z]+-[a-z]+`, `command:`, `subcommands:` |
+| `command-center-agent` | Agent definities | `"Deze agent..."`, `tools: [...]`, `persona` |
+| `command-center-skill` | Skill definities | `SKILL.md`, `multi-step`, `workflow` |
+| `command-center-prompt` | Prompt templates | `"You are..."`, `role: "system"` |
+| `command-center-api` | API configuraties | `API_KEY`, `sk-`, `Bearer`, `endpoint` |
+| `command-center-instruction` | Instructie sets | `"Altijd eerst..."`, `coding standards` |
+
+**Flow bij detectie:**
+```
+Je maakt iets herbruikbaars
+    │
+    ▼
+Hookify detecteert patroon
+    │
+    ▼
+Waarschuwing: "Wil je dit opslaan in Command Center?"
+    │
+    ├── Ja → /save-to-cc → bestand + registry update → /sync-cc
+    ├── Nee → lokaal houden
+    └── Later → review lijst
+```
+
+### 3.5 Lokale Plugins
+
+Vier zelfgebouwde plugins breiden Claude Code uit met domein-specifieke functionaliteit:
+
+| Plugin | Inhoud | Domein |
+|--------|--------|--------|
+| **revision-guardian** | Agents, hooks, skills voor document revisie bewaking | Kwaliteitscontrole |
+| **security-os** | Agents, commands, config, hooks, scripts voor security | Beveiliging |
+| **veha-generators** | Skills voor VEHA document generatie | VEHA bedrijf |
+| **veha-manager** | Agents, commands voor VEHA project management | VEHA bedrijf |
+
+Plugins worden getrackt door Deep Scan (als onderdeel van het ecosysteem) en verschijnen als clusters op de Intelligence Map.
+
+### 3.6 Design System (Huisstijl)
+
+Het design system is **verplicht voor elk UI-project** en wordt door Deep Scan herkend als apart systeem:
+
+- **Detectie:** Deep Scan zoekt naar "Huisstijl" of "design-system" in project CLAUDE.md bestanden
+- **Relatie:** Projecten die het gebruiken krijgen een `applies` relatie met het design system
+- **Cluster:** Alle projecten met Huisstijl vormen samen een cluster op de Intelligence Map
+
+**Kernregels:**
+- ALLEEN zinc palette (GEEN blauwe, groene, paarse accenten)
+- DM Sans headings, Inter body, JetBrains Mono code
+- Glassmorphism voor depth, monochrome glow voor hover
+- Spring animaties (Framer Motion) voor interactie
+- Installatie: `/setup-huisstijl` in elk nieuw project
+
+### 3.7 Settings Configuratie
+
+`settings.json` bepaalt welke plugins actief zijn en hoe permissies werken:
+
+```json
+{
+  "permissions": { "defaultMode": "bypassPermissions" },
+  "enabledPlugins": {
+    "revision-guardian@local": true,
+    "security-os@local": true,
+    "veha-generators@local": false,
+    "veha-manager@local": false,
+    "context7@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "supabase@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "...en 20+ andere marketplace plugins"
+  }
+}
+```
+
+---
+
+## 4. Data Flow — Van Lokaal naar Dashboard
+
+Drie parallelle pipelines vullen het dashboard:
 
 ### Pipeline 1: Registry Sync
 
@@ -111,11 +361,7 @@ POST /api/sync                     ← Vercel API route, beveiligd met x-api-key
         └── UPSERT → projecten                     (auto-create projecten)
 ```
 
-**Hoe te draaien:**
-```bash
-cd command-center-app
-SYNC_API_KEY="<key>" npm run sync
-```
+**Draaien:** `cd command-center-app && SYNC_API_KEY="<key>" npm run sync`
 
 ### Pipeline 2: Code Intelligence (MCP)
 
@@ -123,7 +369,7 @@ SYNC_API_KEY="<key>" npm run sync
 Claude Code roept aan: analyze_project("/pad/naar/project")
         │
         ▼
-cc-v2-mcp → ts-morph laadt tsconfig.json + bronbestanden
+cc-mcp → ts-morph laadt tsconfig.json + bronbestanden
         │
         ├── extractSymbols()      → project_symbols      (~419 per project)
         ├── extractReferences()   → project_references    (~427 per project)
@@ -136,20 +382,31 @@ cc-v2-mcp → ts-morph laadt tsconfig.json + bronbestanden
 ### Pipeline 3: Deep Scan (Ecosysteem)
 
 ```
-npx tsx scripts/deep-scan.ts       ← Draait lokaal (niet op Vercel)
+npx tsx scripts/deep-scan.ts       ← Draait lokaal
         │
         ▼
 ~/.claude/ wordt gescand in 5 fases:
         │
         ├── Phase 1: scanInventory()        → 232+ items
+        │   Leest: registry/, commands/, agents/, skills/, apis/,
+        │   instructions/, prompts/, plugins/local/, design-system/
+        │
         ├── Phase 2: detectHierarchies()    → 90+ tree structures
+        │   Methodes: slash-naming, dash-naming, agent folders, plugin nesting
+        │
         ├── Phase 3: detectRelationships()  → 338+ relaties
+        │   9 typen: belongs_to, shares_service, applies, parent_of,
+        │   part_of, invokes, references, related_to, depends_on
+        │
         ├── Phase 4: detectClusters()       → 12+ groepen
+        │   6 strategieen: name prefix, plugin, project, design system,
+        │   services, unclustered remainder
+        │
         └── Phase 5: generateInsights()     → 58+ inzichten
+            8 typen: orphan, hub, gap, scale, isolated, SPOF, pattern, health
         │
         ▼
 POST /api/sync/deep-scan → Supabase
-        │
         ├── entity_relationships    (wie hangt samen met wie)
         ├── asset_hierarchy         (ouder-kind boomstructuren)
         ├── system_clusters         (auto-gedetecteerde groepen)
@@ -158,9 +415,9 @@ POST /api/sync/deep-scan → Supabase
 
 ---
 
-## 4. Observer + Actor — Het Automatiseringssysteem
+## 5. Observer + Actor — Automatische Bewaking
 
-Het Observer + Actor systeem bewaakt het ecosysteem automatisch en genereert alerts wanneer er iets mis is.
+Het Observer + Actor systeem bewaakt het ecosysteem automatisch en genereert alerts.
 
 ### Observer: 3 Edge Functions
 
@@ -176,7 +433,7 @@ Het Observer + Actor systeem bewaakt het ecosysteem automatisch en genereert ale
 |-----------|------|-------------|
 | **NotificationBell** | Sidebar | Realtime badge met aantal ongelezen alerts, dropdown met laatste 5 |
 | **SyncStatus** | Sidebar | Groene/amber/rode stip met tijd sinds laatste sync |
-| **CommandPanel** | Ctrl+J | 4 acties: Sync Registry, Deep Scan, Health Check, Code Analyse |
+| **CommandPanel** | Cmd+J | 4 acties: Sync Registry, Deep Scan, Health Check, Code Analyse |
 | **AttentionSection** | Homepage | Toont critical en warning alerts bovenaan |
 | **AlertsList** | /alerts | Volledig alert management met filters en bulk acties |
 
@@ -202,7 +459,7 @@ NotificationBell badge update (live in browser)
 
 ---
 
-## 5. Intelligence Map — Het Ecosysteem Visueel
+## 6. Intelligence Map — Het Ecosysteem Visueel
 
 De Intelligence Map (`/map`) toont het hele AI-ecosysteem als een interactieve kaart.
 
@@ -222,22 +479,27 @@ De Intelligence Map (`/map`) toont het hele AI-ecosysteem als een interactieve k
 | **Kosten** | Maandelijkse kosten per dienst en project |
 | **Gebruik** | Top 10 meest gebruikte assets + ongebruikte items |
 | **Inzichten** | Auto-gegenereerde aanbevelingen (orphans, hubs, gaps) |
-| **Risico** | Afhankelijkheidsanalyse |
+| **Risico** | Afhankelijkheidsanalyse (single points of failure) |
 
-### Data
+### Deep Scan Relatie-Detectie
 
-De Intelligence Map leest uit 4 tabellen die door Deep Scan worden gevuld:
+De Intelligence Map is zo krachtig als de relaties die Deep Scan detecteert:
 
-| Tabel | Inhoud | Volume |
-|-------|--------|--------|
-| `entity_relationships` | Alle relaties (source → target, type, sterkte) | 338+ |
-| `asset_hierarchy` | Boomstructuren (parent-child, depth) | 90+ |
-| `system_clusters` | Groepen (naam, health, member_count) | 12 |
-| `map_insights` | Inzichten (type, severity, affected items) | 58+ |
+| Relatie Type | Hoe gedetecteerd | Sterkte |
+|-------------|-----------------|---------|
+| `belongs_to` | Items met zelfde `project` veld | 2 |
+| `shares_service` | Gedeelde Supabase/Vercel/etc. in .env of package.json | 1-3 |
+| `applies` | Project CLAUDE.md noemt "Huisstijl" of "design-system" | 2 |
+| `parent_of` | Hierarchie uit naamgeving (slash/dash) of mapstructuur | 3 |
+| `part_of` | Item hoort bij een plugin | 3 |
+| `invokes` | Agent .md bevat `/command-naam` patronen | 2 |
+| `references` | Agent noemt andere agent bij naam | 1 |
+| `related_to` | Gedeelde tags (groepen van 2-10 items) | 1 |
+| `depends_on` | Externe dienst in package.json (Supabase, React, Next.js) | 2 |
 
 ---
 
-## 6. Project Dossier — Per Project
+## 7. Project Dossier — Per Project
 
 Elk project heeft een detail-pagina (`/projects/[slug]`) met 7 tabs:
 
@@ -253,28 +515,92 @@ Elk project heeft een detail-pagina (`/projects/[slug]`) met 7 tabs:
 
 ---
 
-## 7. Jouw Rol als Claude
+## 8. Alle Beschikbare Commands
 
-### Wat je moet weten
+### Command Center Commands
+
+| Command | Functie |
+|---------|---------|
+| `/sync-cc` | Registry synchroniseren naar Supabase |
+| `/save-to-cc` | Asset opslaan in Command Center |
+| `/memory` | Project-specifieke notitie schrijven |
+| `/onboard` | Project detecteren en registreren |
+| `/session-status` | STATUS.md updaten bij sessie-einde |
+| `/connect-project` | Project koppelen aan CC |
+
+### Workflow Commands
+
+| Command | Functie |
+|---------|---------|
+| `/agent-os` | Spec-driven development starten (8 sub-agents) |
+| `/agent-os/write-spec` | Specificatie schrijven |
+| `/agent-os/shape-spec` | Specificatie verfijnen |
+| `/agent-os/plan-product` | Product planning |
+| `/agent-os/create-tasks` | Taken genereren |
+| `/agent-os/implement-tasks` | Taken implementeren |
+| `/agent-os/orchestrate-tasks` | Taken orchestreren |
+| `/design-os` | Product planning workflow |
+| `/vibe-sync` | Kanban synchronisatie |
+| `/setup-huisstijl` | Design system installeren in project |
+
+### Miro Diagram Commands (40 templates)
+
+| Categorie | Commands | Aantal |
+|-----------|---------|--------|
+| **Start** | `/miro-start` | 1 |
+| **Flowcharts** | `/miro-flowcharts`, `-process` (-linear, -circular, -swimlane), `-decision` (-binary, -multi, -matrix), `-workflow` (-approval, -pipeline, -state) | 12 |
+| **Architecture** | `/miro-architecture`, `-system` (-c4, -layers, -microservices), `-component` (-class, -container, -module), `-data` (-erd, -flow, -pipeline) | 12 |
+| **Frameworks** | `/miro-frameworks`, `-kanban` (-basic, -extended, -wip), `-matrix` (-eisenhower, -priority, -risk), `-roadmap` (-timeline, -swimlane, -now-next-later) | 12 |
+
+### Domein-Specifieke Commands
+
+| Command | Functie |
+|---------|---------|
+| `/hs-scan` | Handboek Staalconstructies scannen |
+| `/hs-extract` | HS data extractie |
+| `/hs-combine` | HS data combineren |
+| `/hs-docs` | HS documentatie |
+| `/hs-l4` | HS Level 4 verwerking |
+| `/hs-l5` | HS Level 5 verwerking |
+
+---
+
+## 9. Jouw Rol als Claude
+
+### Kernprincipes
 
 1. **Shadow codeert niet.** Jij bent zijn complete development team. Hij geeft opdrachten, jij voert uit.
-2. **Command Center is het centrale overzicht.** Alles wat je maakt of wijzigt, moet uiteindelijk zichtbaar zijn in het dashboard.
+2. **Command Center is het absolute middelpunt.** Alles wat je maakt of wijzigt, moet uiteindelijk zichtbaar zijn in het dashboard.
 3. **De registry is de source of truth.** `~/.claude/registry/*.json` bepaalt wat er in het dashboard staat.
+4. **Hookify waarschuwt je.** Als je iets herbruikbaars maakt, krijg je een trigger — volg die op.
 
-### Commands die je kent
+### Workflow bij Asset Creatie
 
-| Command | Wanneer gebruiken |
-|---------|-------------------|
-| `/sync-cc` | Na het toevoegen/wijzigen van assets in de registry |
-| `/memory` | Om project-specifieke kennis op te slaan die tussen sessies bewaard moet blijven |
-| `/onboard` | Bij het eerste bezoek aan een nieuw project |
-| `/save-to-cc` | Wanneer je iets herbruikbaars hebt gemaakt (agent, command, skill, etc.) |
-| `/deep-scan` | Na grote wijzigingen aan het ecosysteem |
-| `/session-status` | Bij het afsluiten van een sessie |
+Elke keer dat je iets herbruikbaars maakt:
 
-### MCP Tools die je hebt
+```
+1. Maak het bestand aan in de juiste ~/.claude/ directory
+2. Registreer in ~/.claude/registry/[type].json
+3. Draai /sync-cc om het naar het dashboard te pushen
+4. (Optioneel) Draai /deep-scan als relaties zijn veranderd
+```
 
-Je hebt directe toegang tot de Code Intelligence MCP server. Gebruik deze tools wanneer Shadow vraagt over code-kwaliteit, projectgezondheid, of technische details:
+### Trigger Systeem
+
+Als je iets herbruikbaars aanmaakt, **vraag Shadow of het opgeslagen moet worden**:
+
+| Type | Detectie | Opslaglocatie | Registry |
+|------|----------|---------------|----------|
+| API configuratie | API key, endpoint, credentials | `~/.claude/apis/[service]/` | `apis.json` |
+| Prompt template | System prompt, persona, instructies | `~/.claude/prompts/` | `prompts.json` |
+| Skill definitie | SKILL.md, multi-step workflow | `~/.claude/skills/` | `skills.json` |
+| Agent definitie | Agent met rol en tools | `~/.claude/agents/` | `agents.json` |
+| Instructie set | Coding standards, workflow regels | `~/.claude/instructions/` | `instructions.json` |
+| Slash command | `/command-naam` | `~/.claude/commands/` | `commands.json` |
+
+### MCP Tools
+
+Je hebt directe toegang tot de Code Intelligence MCP server:
 
 ```
 analyze_project(path)       → Volledige analyse starten
@@ -286,21 +612,6 @@ get_metrics(project)        → Code metrics
 project_health(project)     → Health score
 ```
 
-### Trigger Systeem
-
-Als je iets herbruikbaars aanmaakt, **vraag Shadow of het opgeslagen moet worden** in Command Center:
-
-| Type | Detectie | Opslaglocatie |
-|------|----------|---------------|
-| API configuratie | API key, endpoint, credentials | `~/.claude/apis/[service]/` |
-| Prompt template | Herbruikbaar systeem/user prompt | `~/.claude/prompts/` |
-| Skill definitie | SKILL.md of herbruikbare instructies | `~/.claude/skills/` |
-| Agent definitie | Agent met specifieke rol | `~/.claude/agents/` |
-| Instructie set | Project/workflow regels | `~/.claude/instructions/` |
-| Slash command | Nieuwe /command | `~/.claude/commands/` |
-
-Na opslag: registreer in `~/.claude/registry/[type].json` en draai `/sync-cc`.
-
 ### Wat je NIET moet doen
 
 - **Geen bestanden verwijderen** zonder toestemming
@@ -311,7 +622,7 @@ Na opslag: registreer in `~/.claude/registry/[type].json` en draai `/sync-cc`.
 
 ---
 
-## 8. Technisch Overzicht
+## 10. Technisch Overzicht
 
 ### Tech Stack
 
@@ -330,18 +641,10 @@ Na opslag: registreer in `~/.claude/registry/[type].json` en draai `/sync-cc`.
 | Automatisering | Supabase Edge Functions + pg_cron |
 | Realtime | Supabase Realtime (WebSocket) |
 
-### Design System
-
-Shadow's Huisstijl is strikt:
-- **ALLEEN** zinc palette (geen blauw, groen, paars)
-- Glassmorphism voor depth, monochrome glow voor hover
-- Inter (body), DM Sans (headings), JetBrains Mono (code)
-- Spring animaties via Framer Motion
-
 ### Directory Structuur
 
 ```
-command-center-v2/
+command-center/
 ├── command-center-app/            # Next.js dashboard
 │   ├── src/
 │   │   ├── app/                   # Pages + API routes
@@ -356,7 +659,7 @@ command-center-v2/
 │   │   └── deep-scan.ts           # Deep scan runner
 │   └── .env.local                 # Environment variables
 │
-├── cc-v2-mcp/                     # Code Intelligence MCP server
+├── cc-mcp/                        # Code Intelligence MCP server
 │   └── src/
 │       ├── index.ts               # 7 MCP tools
 │       ├── analyzer/              # ts-morph analyse pipeline
@@ -386,7 +689,7 @@ command-center-v2/
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-side key (bypass RLS) |
 | `SYNC_API_KEY` | Auth token voor sync API routes |
 
-### Database Schema (25 tabellen)
+### Database Schema (28 tabellen)
 
 **Registry & Dashboard:**
 `registry_items` · `projecten` · `project_changelog` · `kanban_tasks` · `activity_log` · `project_memories` · `inbox_pending`
@@ -402,7 +705,7 @@ command-center-v2/
 
 ---
 
-## 9. Conventies
+## 11. Conventies
 
 | Regel | Toelichting |
 |-------|-------------|
@@ -416,19 +719,19 @@ command-center-v2/
 
 ---
 
-## 10. Snelle Referentie
+## 12. Snelle Referentie
 
-### Veel voorkomende taken
+### Dagelijkse taken
 
 | Ik wil... | Doe dit... |
 |-----------|-----------|
 | Zien wat er in CC staat | Open https://command-center-app-nine.vercel.app |
-| Registry synchroniseren | `cd command-center-app && SYNC_API_KEY="<key>" npm run sync` |
-| Deep Scan draaien | `cd command-center-app && npx tsx scripts/deep-scan.ts` |
+| Registry synchroniseren | `/sync-cc` of `cd command-center-app && SYNC_API_KEY="<key>" npm run sync` |
+| Deep Scan draaien | `/deep-scan` of `cd command-center-app && npx tsx scripts/deep-scan.ts` |
 | Project analyseren | MCP tool: `analyze_project("/pad/naar/project")` |
-| Health check forceren | `curl -X POST https://ikpmlhmbooaxfrlpzcfa.supabase.co/functions/v1/health-check -H "Authorization: Bearer <SERVICE_ROLE_KEY>"` |
-| Memory schrijven | `/memory` command of `POST /api/projects/[slug]/memories` |
-| Asset opslaan | `/save-to-cc` → registreer in registry JSON → `/sync-cc` |
+| Health check forceren | Cmd+J → "Health Check" in dashboard |
+| Memory schrijven | `/memory` of `POST /api/projects/[slug]/memories` |
+| Asset opslaan | `/save-to-cc` → registreer → `/sync-cc` |
 | Deployen | `cd command-center-app && vercel --prod` |
 | Status checken | Lees `STATUS.md` in project root |
 
@@ -436,11 +739,13 @@ command-center-v2/
 
 | Bestand | Wat het is |
 |---------|-----------|
-| `CLAUDE.md` | Project instructies (lees dit altijd eerst) |
+| `~/.claude/CLAUDE.md` | Globale instructies (geldt voor ALLE projecten) |
+| `CLAUDE.md` (in project root) | Project-specifieke instructies |
 | `STATUS.md` | Huidige staat + sessie-log |
+| `~/.claude/registry/*.json` | Source of truth voor alle assets |
 | `command-center-app/src/types/index.ts` | Alle TypeScript interfaces |
 | `command-center-app/src/lib/` | Server-side data queries |
 | `command-center-app/scripts/sync-registry.mjs` | Sync script |
-| `cc-v2-mcp/src/index.ts` | MCP server met 7 tools |
+| `cc-mcp/src/index.ts` | MCP server met 7 tools |
 | `supabase/functions/health-check/index.ts` | Health check logica |
 | `.env.local` | Environment variables (nooit committen) |
