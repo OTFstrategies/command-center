@@ -455,3 +455,50 @@ export interface MapData {
   clusters: MapCluster[]
   insights: MapInsight[]
 }
+
+// =============================================================================
+// OBSERVER + ACTOR
+// =============================================================================
+
+export interface Alert {
+  id: string
+  type: string
+  severity: 'critical' | 'warning' | 'info'
+  title: string
+  description: string | null
+  entity_type: string | null
+  entity_id: string | null
+  status: 'new' | 'acknowledged' | 'resolved' | 'dismissed'
+  metadata: Record<string, unknown>
+  created_at: string
+  resolved_at: string | null
+}
+
+export interface AlertCounts {
+  total: number
+  new: number
+  critical: number
+  warning: number
+  info: number
+}
+
+export interface Job {
+  id: string
+  type: string
+  status: 'pending' | 'running' | 'completed' | 'failed'
+  payload: Record<string, unknown>
+  result: Record<string, unknown> | null
+  started_at: string | null
+  completed_at: string | null
+  created_at: string
+  error: string | null
+}
+
+export interface SyncStatusRecord {
+  id: string
+  last_run_at: string | null
+  status: 'idle' | 'running' | 'success' | 'failed'
+  duration_ms: number | null
+  items_processed: number
+  next_run_at: string | null
+}

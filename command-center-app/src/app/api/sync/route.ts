@@ -194,6 +194,49 @@ export async function POST(request: NextRequest) {
       await supabase.from('project_changelog').insert(changelogEntries)
     }
 
+    // Create entity_version entries for Timeline view
+    const versionEntries: {
+      entity_type: string
+      entity_id: string
+      version: string
+      change_type: string
+      title: string
+      description: string
+      items_changed: { name: string; type: string; action: string }[]
+      detected_by: string
+    }[] = []
+    for (const [project, changes] of changesByProject) {
+      const slug = project.toLowerCase().replace(/\s+/g, '-')
+      if (changes.added.length > 0) {
+        versionEntries.push({
+          entity_type: 'project',
+          entity_id: slug,
+          version: new Date().toISOString().slice(0, 10),
+          change_type: 'added',
+          title: `${changes.added.length} ${type}(s) toegevoegd`,
+          description: changes.added.join(', '),
+          items_changed: changes.added.map(name => ({ name, type, action: 'added' })),
+          detected_by: 'sync',
+        })
+      }
+      if (changes.removed.length > 0) {
+        versionEntries.push({
+          entity_type: 'project',
+          entity_id: slug,
+          version: new Date().toISOString().slice(0, 10),
+          change_type: 'removed',
+          title: `${changes.removed.length} ${type}(s) verwijderd`,
+          description: changes.removed.join(', '),
+          items_changed: changes.removed.map(name => ({ name, type, action: 'removed' })),
+          detected_by: 'sync',
+        })
+      }
+    }
+
+    if (versionEntries.length > 0) {
+      await supabase.from('entity_versions').insert(versionEntries)
+    }
+
     // Auto-create projects in projects table if they don't exist
     const uniqueProjects = [...new Set(dbItems.map(i => i.project).filter(p => p !== 'global'))]
     for (const projectName of uniqueProjects) {

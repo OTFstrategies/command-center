@@ -1,4 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Alert, AlertCounts } from '@/types'
+
+export type { Alert, AlertCounts }
 
 function getSupabase() {
   return createClient(
@@ -6,28 +9,6 @@ function getSupabase() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   )
-}
-
-export interface Alert {
-  id: string
-  type: string
-  severity: 'critical' | 'warning' | 'info'
-  title: string
-  description: string | null
-  entity_type: string | null
-  entity_id: string | null
-  status: 'new' | 'acknowledged' | 'resolved' | 'dismissed'
-  metadata: Record<string, unknown>
-  created_at: string
-  resolved_at: string | null
-}
-
-export interface AlertCounts {
-  total: number
-  critical: number
-  warning: number
-  info: number
-  new: number
 }
 
 export async function getAlerts(options?: {

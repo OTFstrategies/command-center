@@ -2,20 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { AlertTriangle, AlertCircle, Info, Check, X, Eye } from 'lucide-react'
-
-interface Alert {
-  id: string
-  type: string
-  severity: 'critical' | 'warning' | 'info'
-  title: string
-  description: string | null
-  entity_type: string | null
-  entity_id: string | null
-  status: 'new' | 'acknowledged' | 'resolved' | 'dismissed'
-  metadata: Record<string, unknown>
-  created_at: string
-  resolved_at: string | null
-}
+import type { Alert } from '@/types'
 
 interface AlertsListProps {
   initialAlerts: Alert[]

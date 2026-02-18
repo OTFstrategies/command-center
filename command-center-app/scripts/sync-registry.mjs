@@ -67,6 +67,26 @@ async function main() {
   console.log(`Target: ${API_BASE}/api/sync`)
   console.log('---')
 
+  // Create job entry
+  let jobId = null
+  try {
+    const jobRes = await fetch(`${API_BASE}/api/jobs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+      },
+      body: JSON.stringify({ type: 'registry_sync' }),
+    })
+    if (jobRes.ok) {
+      const jobData = await jobRes.json()
+      jobId = jobData.job?.id || jobData.id
+      console.log(`Job created: ${jobId}`)
+    }
+  } catch {
+    console.log('  [WARN] Could not create job entry (jobs table may not exist)')
+  }
+
   let files
   try {
     files = readdirSync(REGISTRY_DIR).filter(f => f.endsWith('.json'))
@@ -76,6 +96,7 @@ async function main() {
   }
 
   const results = []
+  const startTime = Date.now()
 
   for (const filename of files) {
     const type = TYPE_MAP[filename]
@@ -87,6 +108,8 @@ async function main() {
     results.push(result)
   }
 
+  const duration = Date.now() - startTime
+
   console.log('\n--- Summary ---')
   const ok = results.filter(r => r.status === 'ok')
   const failed = results.filter(r => r.status === 'error')
@@ -94,8 +117,32 @@ async function main() {
   const totalItems = ok.reduce((sum, r) => sum + (r.count || 0), 0)
 
   console.log(`Synced: ${ok.length} types, ${totalItems} total items`)
+  console.log(`Duration: ${duration}ms`)
   if (skipped.length) console.log(`Skipped: ${skipped.length} types`)
   if (failed.length) console.log(`Failed: ${failed.length} types`)
+
+  // Update job status
+  if (jobId) {
+    try {
+      await fetch(`${API_BASE}/api/jobs`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY,
+        },
+        body: JSON.stringify({
+          id: jobId,
+          type: 'registry_sync',
+          status: failed.length > 0 ? 'failed' : 'completed',
+          result: { types_ok: ok.length, types_failed: failed.length, total_items: totalItems },
+          duration_ms: duration,
+        }),
+      })
+      console.log('Job status updated')
+    } catch {
+      console.log('  [WARN] Could not update job status')
+    }
+  }
 
   process.exit(failed.length > 0 ? 1 : 0)
 }

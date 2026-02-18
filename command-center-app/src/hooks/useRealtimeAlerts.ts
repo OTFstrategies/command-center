@@ -20,10 +20,14 @@ export function useRealtimeAlerts() {
   const fetchCounts = useCallback(async () => {
     try {
       const res = await fetch('/api/alerts?counts=true')
+      if (!res.ok) {
+        setUnreadCount(0)
+        return
+      }
       const data = await res.json()
       setUnreadCount(data.new || 0)
     } catch {
-      // silently fail
+      setUnreadCount(0)
     }
   }, [])
 

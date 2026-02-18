@@ -1,4 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
+import type { Job, SyncStatusRecord } from '@/types'
+
+export type { Job }
+export type SyncStatus = SyncStatusRecord
 
 function getSupabase() {
   return createClient(
@@ -6,27 +10,6 @@ function getSupabase() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   )
-}
-
-export interface Job {
-  id: string
-  type: string
-  status: 'pending' | 'running' | 'completed' | 'failed'
-  payload: Record<string, unknown>
-  result: Record<string, unknown> | null
-  started_at: string | null
-  completed_at: string | null
-  created_at: string
-  error: string | null
-}
-
-export interface SyncStatus {
-  id: string
-  last_run_at: string | null
-  status: string
-  duration_ms: number | null
-  items_processed: number
-  next_run_at: string | null
 }
 
 export async function getSyncStatuses(): Promise<SyncStatus[]> {

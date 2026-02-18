@@ -1,17 +1,6 @@
 import { AlertTriangle, AlertCircle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-
-interface Alert {
-  id: string
-  type: string
-  severity: 'critical' | 'warning' | 'info'
-  title: string
-  description: string | null
-  entity_type: string | null
-  entity_id: string | null
-  status: string
-  created_at: string
-}
+import type { Alert } from '@/types'
 
 interface AttentionSectionProps {
   alerts: Alert[]

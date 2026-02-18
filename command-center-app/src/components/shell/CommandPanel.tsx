@@ -38,13 +38,14 @@ export function CommandPanel() {
       description: 'Synchroniseer ~/.claude/registry/ naar database',
       icon: RefreshCw,
       handler: async () => {
-        const res = await fetch('/api/jobs', {
+        // Create job entry
+        await fetch('/api/jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'registry_sync' }),
-        })
-        const data = await res.json()
-        return data.success ? 'Sync job aangemaakt' : 'Sync mislukt'
+        }).catch(() => {})
+        // Registry sync requires local CLI access
+        return 'Sync vereist lokale toegang. Gebruik /sync-cc in Claude Code.'
       },
     },
     {
@@ -53,13 +54,24 @@ export function CommandPanel() {
       description: 'Scan heel ~/.claude/ voor relaties en clusters',
       icon: ScanSearch,
       handler: async () => {
-        const res = await fetch('/api/jobs', {
+        // Create job entry
+        await fetch('/api/jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'deep_scan' }),
-        })
-        const data = await res.json()
-        return data.success ? 'Deep Scan job aangemaakt' : 'Scan mislukt'
+        }).catch(() => {})
+        // Execute actual deep scan
+        try {
+          const res = await fetch('/api/sync/deep-scan', { method: 'POST' })
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: 'Onbekende fout' }))
+            return `Deep Scan mislukt: ${err.error || res.statusText}`
+          }
+          const data = await res.json()
+          return `Deep Scan voltooid — ${data.stats?.items || 0} items, ${data.stats?.relationships || 0} relaties`
+        } catch {
+          return 'Deep Scan mislukt: kon endpoint niet bereiken'
+        }
       },
     },
     {
@@ -68,13 +80,29 @@ export function CommandPanel() {
       description: 'Controleer gezondheid van alle projecten',
       icon: HeartPulse,
       handler: async () => {
-        const res = await fetch('/api/jobs', {
+        // Create job entry
+        await fetch('/api/jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'health_check' }),
-        })
-        const data = await res.json()
-        return data.success ? 'Health Check job aangemaakt' : 'Check mislukt'
+        }).catch(() => {})
+        // Execute actual health check via Supabase Edge Function
+        try {
+          const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+          if (!supabaseUrl) {
+            return 'Health Check mislukt: Supabase URL niet geconfigureerd'
+          }
+          const res = await fetch(`${supabaseUrl}/functions/v1/health-check`, {
+            method: 'POST',
+          })
+          if (!res.ok) {
+            return `Health Check mislukt: ${res.statusText}`
+          }
+          const data = await res.json()
+          return data.message || 'Health Check voltooid'
+        } catch {
+          return 'Health Check mislukt: kon endpoint niet bereiken'
+        }
       },
     },
     {
@@ -83,13 +111,14 @@ export function CommandPanel() {
       description: 'Draai TypeScript analyse via MCP server',
       icon: Code,
       handler: async () => {
-        const res = await fetch('/api/jobs', {
+        // Create job entry
+        await fetch('/api/jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ type: 'code_analysis' }),
-        })
-        const data = await res.json()
-        return data.success ? 'Code Analyse job aangemaakt' : 'Analyse mislukt'
+        }).catch(() => {})
+        // Code analysis requires MCP server
+        return 'Code Analyse vereist MCP server. Gebruik /analyze in Claude Code.'
       },
     },
   ]
@@ -104,7 +133,7 @@ export function CommandPanel() {
       setResult('Actie mislukt')
     }
     setRunning(null)
-    setTimeout(() => setResult(null), 3000)
+    setTimeout(() => setResult(null), 5000)
   }, [])
 
   return (

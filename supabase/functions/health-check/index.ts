@@ -120,6 +120,40 @@ serve(async (req) => {
       })
     }
 
+    // Check 5: Stale sync (> 24 uur geleden)
+    const { data: syncStatusData } = await supabase
+      .from('sync_status')
+      .select('last_run_at')
+      .eq('id', 'registry_sync')
+      .single()
+
+    if (syncStatusData?.last_run_at) {
+      const lastSync = new Date(syncStatusData.last_run_at).getTime()
+      const hoursAgo = (Date.now() - lastSync) / (1000 * 60 * 60)
+
+      if (hoursAgo > 24) {
+        newAlerts.push({
+          type: 'sync_stale',
+          severity: 'warning',
+          title: `Registry sync is ${Math.floor(hoursAgo)} uur oud`,
+          description: 'De laatste sync was meer dan 24 uur geleden. Draai /sync-cc in Claude Code of gebruik de Command Panel.',
+          entity_type: 'system',
+          entity_id: 'registry_sync',
+          metadata: { hours_ago: Math.floor(hoursAgo), last_sync: syncStatusData.last_run_at },
+        })
+      }
+    } else {
+      newAlerts.push({
+        type: 'sync_stale',
+        severity: 'info',
+        title: 'Nog nooit gesynchroniseerd',
+        description: 'Draai /sync-cc in Claude Code om je registry te synchroniseren.',
+        entity_type: 'system',
+        entity_id: 'registry_sync',
+        metadata: { never_synced: true },
+      })
+    }
+
     // Deduplicate
     const { data: existingAlerts } = await supabase
       .from('alerts')
@@ -140,7 +174,7 @@ serve(async (req) => {
       .from('alerts')
       .select('id, type, entity_id')
       .in('status', ['new', 'acknowledged'])
-      .in('type', ['unhealthy_project', 'stale_asset', 'orphan_detected', 'sync_failed'])
+      .in('type', ['unhealthy_project', 'stale_asset', 'orphan_detected', 'sync_failed', 'sync_stale'])
 
     const resolveIds = (toResolve || [])
       .filter((a: { type: string; entity_id: string }) => !activeAlertTypes.has(`${a.type}:${a.entity_id}`))
