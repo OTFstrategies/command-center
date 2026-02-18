@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { RefreshCw, ScanSearch, HeartPulse, Code, X } from 'lucide-react'
+import { RefreshCw, ScanSearch, HeartPulse, Code, FileText, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface CommandAction {
@@ -119,6 +119,15 @@ export function CommandPanel() {
         }).catch(() => {})
         // Code analysis requires MCP server
         return 'Code Analyse vereist MCP server. Gebruik /analyze in Claude Code.'
+      },
+    },
+    {
+      id: 'status',
+      label: 'Update STATUS.md',
+      description: 'Genereer project status overzicht',
+      icon: FileText,
+      handler: async () => {
+        return 'STATUS.md update vereist Claude Code. Gebruik /session-status in je terminal.'
       },
     },
   ]
