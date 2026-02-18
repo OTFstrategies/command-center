@@ -30,7 +30,7 @@
     {
       "section": "3. Page Rendering",
       "tests": [
-        {"testId": "3.1", "name": "Home Page Renders", "status": "PASS", "evidence": "Title 'Shadow's Command Center', heading visible, 6 asset cards", "confidence": 1.0},
+        {"testId": "3.1", "name": "Home Page Renders", "status": "PASS", "evidence": "Title 'Command Center', heading visible, 6 asset cards", "confidence": 1.0},
         {"testId": "3.2", "name": "Home Page - Asset Cards Display", "status": "PASS", "evidence": "APIs=1, Prompts=1, Skills=1, Agents=15, Commands=56, Instructions=0", "confidence": 1.0},
         {"testId": "3.3", "name": "Registry Page Renders", "status": "PASS", "evidence": "7 filter tabs visible", "confidence": 1.0},
         {"testId": "3.4", "name": "Registry Page - Item Count", "status": "PASS", "evidence": "74 items displayed", "confidence": 1.0},
@@ -57,7 +57,7 @@
       "section": "5. Data Display",
       "tests": [
         {"testId": "5.1", "name": "Registry - APIs Display", "status": "PASS", "evidence": "1 item: 'Anthropic Claude API'", "confidence": 1.0},
-        {"testId": "5.2", "name": "Registry - Prompts Display", "status": "PASS", "evidence": "1 item: 'Shadow's Design Style'", "confidence": 1.0},
+        {"testId": "5.2", "name": "Registry - Prompts Display", "status": "PASS", "evidence": "1 item: 'Design Style'", "confidence": 1.0},
         {"testId": "5.3", "name": "Registry - Skills Display", "status": "PASS", "evidence": "1 item: 'miro-patterns'", "confidence": 1.0},
         {"testId": "5.4", "name": "Registry - Agents Display", "status": "PASS", "evidence": "15 agents displayed", "confidence": 1.0},
         {"testId": "5.5", "name": "Registry - Commands Display", "status": "PASS", "evidence": "56 commands displayed", "confidence": 1.0},

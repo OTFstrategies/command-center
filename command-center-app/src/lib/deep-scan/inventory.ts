@@ -543,7 +543,7 @@ function scanProjects(basePath: string): ScannedItem[] {
     const fullPath = path.join(projectsDir, entry)
     if (!isDirectorySafe(fullPath)) continue
 
-    // Convert folder name back to path: C--Users-Shadow-Projects-foo → C:\Users\Shadow\Projects\foo
+    // Convert folder name back to path (legacy Windows format: C--Users-Name-Projects-foo)
     const projectPath = entry.replace(/--/g, ':\\').replace(/-/g, '\\')
 
     // Check for CLAUDE.md in the actual project directory
@@ -598,7 +598,7 @@ function scanDesignSystem(basePath: string): ScannedItem[] {
   const huisstijl = path.join(designDir, 'HUISSTIJL.md')
   const description = existsSafe(huisstijl)
     ? extractDescription(readTextSafe(huisstijl))
-    : 'Shadow Huisstijl design system'
+    : 'Huisstijl design system'
 
   // Count all files in design system
   let fileCount = 0
@@ -621,7 +621,7 @@ function scanDesignSystem(basePath: string): ScannedItem[] {
   return [
     {
       type: 'design-system',
-      name: 'Shadow Huisstijl',
+      name: 'Huisstijl',
       path: 'design-system',
       description,
       tags: ['global', 'design'],

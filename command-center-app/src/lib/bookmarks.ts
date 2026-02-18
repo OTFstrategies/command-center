@@ -31,7 +31,7 @@ export interface Bookmark {
   created_at: string
 }
 
-export async function getBookmarks(userId: string = 'shadow'): Promise<Bookmark[]> {
+export async function getBookmarks(userId: string = 'default'): Promise<Bookmark[]> {
   const db = getClient()
   const { data } = await db
     .from('user_bookmarks')
@@ -46,7 +46,7 @@ export async function addBookmark(
   entityType: string,
   entityId: string,
   label?: string,
-  userId: string = 'shadow'
+  userId: string = 'default'
 ): Promise<Bookmark | null> {
   const db = getClient()
 
@@ -85,7 +85,7 @@ export async function removeBookmark(bookmarkId: string): Promise<boolean> {
 export async function isBookmarked(
   entityType: string,
   entityId: string,
-  userId: string = 'shadow'
+  userId: string = 'default'
 ): Promise<boolean> {
   const db = getClient()
   const { data } = await db

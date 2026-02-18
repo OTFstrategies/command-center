@@ -205,7 +205,7 @@ export function detectClusters(
     candidates.push({
       name: 'Design System',
       slug: 'design-system',
-      description: 'Shadow Huisstijl en gerelateerde projecten',
+      description: 'Huisstijl design system en gerelateerde projecten',
       icon: 'palette',
       members,
       source: 'design',

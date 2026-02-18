@@ -54,7 +54,7 @@ export function ShellLayout({ children, projects }: ShellLayoutProps) {
         <CommandPanel />
         <AppShell
           navigationItems={navItemsWithActive}
-          user={{ name: 'Shadow' }}
+          user={{ name: 'Opdrachtgever' }}
           onNavigate={handleNavigate}
           projects={projects}
           currentProject={currentProject}

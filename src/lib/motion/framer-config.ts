@@ -1,5 +1,5 @@
 /**
- * Shadow Huisstijl - Framer Motion Spring Configurations
+ * Huisstijl - Framer Motion Spring Configurations
  *
  * Notion/Linear-style spring presets for playful, modern animations
  */

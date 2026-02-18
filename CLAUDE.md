@@ -1,7 +1,7 @@
 # Command Center v2
 
 ## Project
-Centraal command center dashboard voor Shadow's Claude Code setup.
+Centraal command center dashboard voor Claude Code setup.
 - **Live:** https://command-center-app-nine.vercel.app
 - **Supabase:** Project ID `ikpmlhmbooaxfrlpzcfa`
 
@@ -16,7 +16,7 @@ Centraal command center dashboard voor Shadow's Claude Code setup.
 - **Deployment:** Vercel
 
 ## Design System
-Shadow Huisstijl is toegepast:
+Huisstijl is toegepast:
 - ALLEEN zinc palette (GEEN blauwe, groene, paarse accenten)
 - Glassmorphism + monochrome glow voor hover
 - Inter (body), DM Sans (headings optioneel), monospace voor code

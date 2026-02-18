@@ -1,5 +1,5 @@
 /**
- * Shadow Huisstijl - Framer Motion Variants
+ * Huisstijl - Framer Motion Variants
  *
  * Reusable animation variants for common patterns
  */
