@@ -9,22 +9,52 @@
 
 ## Huidige Staat
 
-Volledig operationeel dashboard met 7 pagina's, 20 API routes, 51 componenten en een MCP server voor code intelligence. Intelligence Map is compleet met alle 7 features geimplementeerd.
+Volledig operationeel dashboard met 9 pagina's, 22 API routes, 56 componenten en een MCP server voor code intelligence. Intelligence Map compleet. Observer + Actor systeem geimplementeerd (code deployed, Supabase infra pending activatie).
 
 ---
 
-## Pagina's (8)
+## Pagina's (9)
 
 | Pagina | Route | Functie |
 |--------|-------|---------|
-| Dashboard | `/` | Stats, project cards, recent changes, quick actions |
+| Dashboard | `/` | Stats, project cards, recent changes, quick actions, attention alerts |
 | Registry | `/registry` | Alle assets (apis, prompts, skills, agents, commands, instructions) |
 | Tasks | `/tasks` | Kanban board met drag-and-drop |
+| Alerts | `/alerts` | Alert management met severity/status filters en bulk acties |
 | Activity | `/activity` | Audit trail met filters |
 | Map | `/map` | Intelligence Map - visueel ecosysteem overzicht |
-| Project Detail | `/projects/[slug]` | 7-tabs dossier (Overzicht, Functies, Onderdelen, Verbindingen, Code, Dependencies, Health, API Routes) |
+| Project Detail | `/projects/[slug]` | 7-tabs dossier (Overzicht, Functies, Onderdelen, Verbindingen, Code, Dependencies, Health) |
 | Settings | `/settings` | Project instellingen |
 | Auth Callback | `/auth/callback` | Supabase auth redirect |
+
+---
+
+## Observer + Actor System
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| Database tabellen | Code ready | alerts, job_queue, sync_status (SQL migration klaar) |
+| RLS policies | Code ready | Migration klaar, moet in Supabase gedraaid worden |
+| Realtime | Code ready | alerts tabel subscription |
+| Edge Functions | Code ready | health-check, sync-trigger, alert-digest |
+| pg_cron | Code ready | Health check elke 6u, digest elke ochtend 7:00 |
+| NotificationBell | Live | Realtime badge + dropdown in sidebar |
+| SyncStatus | Live | Polling elke 60s, groene/amber/rode stip |
+| CommandPanel | Live | Cmd+J, 4 acties (deep scan + health check werkend) |
+| AttentionSection | Live | Homepage critical/warning alerts |
+| Alerts pagina | Live | /alerts met filters en bulk acties |
+| Graceful degradation | Live | Components handlen missing tables |
+| entity_versions | Live | Sync vult Timeline data |
+| Job tracking | Live | Sync script maakt job_queue entries |
+| Stale sync detectie | Code ready | Health-check waarschuwt bij >24u geen sync |
+
+### Supabase Activatie (handmatig)
+
+Volgende stappen om het systeem volledig te activeren:
+
+1. **SQL Migration draaien** → Supabase SQL Editor → `20260218200000_observer_actor.sql` + `20260218200200_observer_actor_rls.sql`
+2. **Edge Functions deployen** → `supabase functions deploy health-check/sync-trigger/alert-digest`
+3. **pg_cron activeren** → Extensions enablen + cron schedules SQL
 
 ---
 
@@ -50,14 +80,16 @@ Volledig operationeel dashboard met 7 pagina's, 20 API routes, 51 componenten en
 
 ---
 
-## API Routes (20)
+## API Routes (22)
 
 | Route | Methodes | Functie |
 |-------|----------|---------|
-| `/api/sync` | GET, POST | Registry sync van `~/.claude/` |
+| `/api/sync` | GET, POST | Registry sync van `~/.claude/` + entity_versions |
 | `/api/sync/inbox` | GET, POST | Inbox staging area |
 | `/api/sync/inbox/process` | POST | Inbox items verwerken |
 | `/api/sync/deep-scan` | GET, POST | Deep Scan pipeline |
+| `/api/alerts` | GET, PATCH | Alert CRUD + counts + bulk status updates |
+| `/api/jobs` | GET, POST, PATCH | Job queue + sync statussen + status updates |
 | `/api/tasks` | GET, POST | Task CRUD |
 | `/api/tasks/[id]` | PATCH, DELETE | Task update/delete |
 | `/api/search` | GET | Global search (Cmd+K) |
@@ -110,27 +142,28 @@ Laatst gedraaid: 2026-02-16
 ## Recente Commits
 
 ```
+1dfdd28 feat: Observer + Actor activatie - types, graceful degradation, data pipeline, RLS
+5fec692 feat: implement Observer + Actor system for live alerts and actionable dashboard
+117dce5 docs: update STATUS.md with complete project overview
 c94f494 feat: implement all 7 skipped Intelligence Map features
 6689fa4 chore: commit all uncommitted work before PC migration
-331a0bc fix: add required fields to auto-create projects in sync route
-7b17338 docs: add implementation plan for 7 skipped Intelligence Map features
-c25352a feat: add Intelligence Map - visual overview of entire AI ecosystem
 ```
 
 ---
 
 ## Bekende Issues
 
-- Tijdlijn view toont lege staat als `entity_versions` tabel nog geen data heeft
 - Vergelijkingsweergave vereist data in `projecten` tabel (via deep scan)
 - Vercel auto-deploy werkt soms niet bij git push; handmatig `npx vercel --prod` als fallback
+- CSS @import warning in build (pre-existing, cosmetisch)
 
 ---
 
-## Volgende Stappen (suggesties)
+## Volgende Stappen
 
-- [ ] Bookmark pin/unpin knop toevoegen aan DetailPanel
-- [ ] Automatische sync scheduling (cron)
-- [ ] entity_versions vullen bij elke sync voor tijdlijn data
+- [ ] **Supabase infra activeren** — SQL migration + Edge Functions + pg_cron (zie Activatie sectie)
+- [ ] Claude Code session hook configureren voor auto-sync
 - [ ] Nieuwe deep scan draaien na recente wijzigingen
-- [ ] Code analyse updaten voor nieuwste bestanden (130 files, 750 symbols, 18.6K LOC)
+- [ ] Test framework opzetten (Vitest + React Testing Library)
+- [ ] Alert email notificaties
+- [ ] Usage statistics automatisch vullen
