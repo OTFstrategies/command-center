@@ -1,6 +1,6 @@
 # Command Center v2 — Status
 
-**Laatste update:** 2026-02-18
+**Laatste update:** 2026-02-18 22:00
 **Branch:** master
 **Deploy:** https://command-center-app-nine.vercel.app
 **Supabase:** Project ID `ikpmlhmbooaxfrlpzcfa`
@@ -9,7 +9,31 @@
 
 ## Huidige Staat
 
-Volledig operationeel dashboard met 9 pagina's, 22 API routes, 56 componenten en een MCP server voor code intelligence. Intelligence Map compleet. Observer + Actor systeem geimplementeerd (code deployed, Supabase infra pending activatie).
+Volledig operationeel dashboard met 9 pagina's, 22 API routes, 56 componenten en een MCP server voor code intelligence. Intelligence Map compleet. Observer + Actor systeem **volledig actief** — Supabase infra geactiveerd, Edge Functions deployed, pg_cron draait, alle tests geslaagd (48 tests, 0 failures).
+
+---
+
+## Deze Sessie (2026-02-18)
+
+### Uitgevoerd
+- Observer + Actor activatieplan geschreven (18 taken, 6 fases)
+- Plan volledig uitgevoerd met subagent-driven development (4 parallelle agents)
+- Types geconsolideerd: Alert, AlertCounts, Job, SyncStatusRecord in `types/index.ts`
+- Graceful degradation toegevoegd aan useRealtimeAlerts hook
+- CommandPanel bijgewerkt met echte acties (deep scan, health check)
+- entity_versions populatie toegevoegd aan sync route
+- Job tracking geïntegreerd in sync-registry.mjs script
+- Stale sync detectie (>24u) toegevoegd aan health-check Edge Function
+- RLS policies geschreven voor alerts, job_queue, sync_status
+- **Supabase infra volledig via CLI geactiveerd** (geen handmatige stappen):
+  - 3 SQL migraties gepusht via `supabase db push`
+  - 3 Edge Functions deployed via `supabase functions deploy`
+  - pg_cron extensie geactiveerd met 2 schedules (health-check 6u, digest dagelijks 7:00 UTC)
+  - Secrets geconfigureerd (APP_URL, SYNC_API_KEY)
+- **Uitputtend test- en kwaliteitsplan opgesteld en uitgevoerd:**
+  - 9 test-angles, 48 tests, 4 subagents
+  - Resultaat: 40 pass, 8 warnings, 0 failures
+  - Bevindingen gedocumenteerd in `docs/plans/2026-02-18-observer-actor-test-plan.md`
 
 ---
 
@@ -29,32 +53,35 @@ Volledig operationeel dashboard met 9 pagina's, 22 API routes, 56 componenten en
 
 ---
 
-## Observer + Actor System
+## Observer + Actor System — VOLLEDIG ACTIEF
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| Database tabellen | Code ready | alerts, job_queue, sync_status (SQL migration klaar) |
-| RLS policies | Code ready | Migration klaar, moet in Supabase gedraaid worden |
-| Realtime | Code ready | alerts tabel subscription |
-| Edge Functions | Code ready | health-check, sync-trigger, alert-digest |
-| pg_cron | Code ready | Health check elke 6u, digest elke ochtend 7:00 |
-| NotificationBell | Live | Realtime badge + dropdown in sidebar |
-| SyncStatus | Live | Polling elke 60s, groene/amber/rode stip |
-| CommandPanel | Live | Cmd+J, 4 acties (deep scan + health check werkend) |
-| AttentionSection | Live | Homepage critical/warning alerts |
-| Alerts pagina | Live | /alerts met filters en bulk acties |
-| Graceful degradation | Live | Components handlen missing tables |
-| entity_versions | Live | Sync vult Timeline data |
-| Job tracking | Live | Sync script maakt job_queue entries |
-| Stale sync detectie | Code ready | Health-check waarschuwt bij >24u geen sync |
+| Database tabellen | **Actief** | alerts, job_queue, sync_status (3 migraties gepusht) |
+| RLS policies | **Actief** | SELECT/INSERT/UPDATE policies voor alle 3 tabellen |
+| Realtime | **Actief** | alerts tabel subscription via WebSocket |
+| Edge Functions | **Actief** | health-check, sync-trigger, alert-digest (deployed) |
+| pg_cron | **Actief** | Health check elke 6u, digest dagelijks 7:00 UTC |
+| NotificationBell | **Live** | Realtime badge + dropdown in sidebar |
+| SyncStatus | **Live** | Polling elke 60s, groene/amber/rode stip |
+| CommandPanel | **Live** | Cmd+J, 4 acties (deep scan + health check werkend) |
+| AttentionSection | **Live** | Homepage critical/warning alerts |
+| Alerts pagina | **Live** | /alerts met filters en bulk acties |
+| Graceful degradation | **Live** | Components handlen missing tables + network errors |
+| entity_versions | **Live** | Sync vult Timeline data |
+| Job tracking | **Live** | Sync script maakt + update job_queue entries |
+| Stale sync detectie | **Actief** | Health-check waarschuwt bij >24u geen sync |
 
-### Supabase Activatie (handmatig)
+### Testresultaten (2026-02-18)
 
-Volgende stappen om het systeem volledig te activeren:
+| Metric | Waarde |
+|--------|--------|
+| Totaal tests | 48 |
+| Geslaagd | 40 |
+| Waarschuwingen | 8 |
+| Gefaald | 0 |
 
-1. **SQL Migration draaien** → Supabase SQL Editor → `20260218200000_observer_actor.sql` + `20260218200200_observer_actor_rls.sql`
-2. **Edge Functions deployen** → `supabase functions deploy health-check/sync-trigger/alert-digest`
-3. **pg_cron activeren** → Extensions enablen + cron schedules SQL
+Zie `docs/plans/2026-02-18-observer-actor-test-plan.md` voor alle details.
 
 ---
 
@@ -142,11 +169,12 @@ Laatst gedraaid: 2026-02-16
 ## Recente Commits
 
 ```
+0c34e90 docs: add Observer + Actor test and quality plan with full results
+efd5139 feat: activate pg_cron schedules for automated health checks and daily digests
+6568ac6 docs: update STATUS.md with Observer + Actor system status
 1dfdd28 feat: Observer + Actor activatie - types, graceful degradation, data pipeline, RLS
 5fec692 feat: implement Observer + Actor system for live alerts and actionable dashboard
-117dce5 docs: update STATUS.md with complete project overview
-c94f494 feat: implement all 7 skipped Intelligence Map features
-6689fa4 chore: commit all uncommitted work before PC migration
+3b3560d docs: add Observer + Actor implementation plan (20 tasks)
 ```
 
 ---
@@ -156,14 +184,20 @@ c94f494 feat: implement all 7 skipped Intelligence Map features
 - Vergelijkingsweergave vereist data in `projecten` tabel (via deep scan)
 - Vercel auto-deploy werkt soms niet bij git push; handmatig `npx vercel --prod` als fallback
 - CSS @import warning in build (pre-existing, cosmetisch)
+- Homepage Promise.all zonder try/catch — crasht als DB volledig onbereikbaar (laag risico)
+- Alerts/Jobs PATCH endpoints hebben geen auth — alleen URL-kennis nodig (laag risico)
+- activity_log tabel is leeg — sync schrijft niet naar activity_log
+- entity_versions mist `created_at` kolom — niet sorteerbaar op datum
 
 ---
 
 ## Volgende Stappen
 
-- [ ] **Supabase infra activeren** — SQL migration + Edge Functions + pg_cron (zie Activatie sectie)
 - [ ] Claude Code session hook configureren voor auto-sync
 - [ ] Nieuwe deep scan draaien na recente wijzigingen
-- [ ] Test framework opzetten (Vitest + React Testing Library)
+- [ ] Error boundary toevoegen aan homepage (Promise.all crash preventie)
+- [ ] Auth toevoegen aan alerts/jobs PATCH endpoints
+- [ ] activity_log vullen vanuit sync pipeline
+- [ ] entity_versions `created_at` kolom toevoegen
 - [ ] Alert email notificaties
 - [ ] Usage statistics automatisch vullen
