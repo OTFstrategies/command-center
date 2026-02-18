@@ -1,6 +1,6 @@
-import { Project } from 'ts-morph';
-import * as path from 'path';
-import * as fs from 'fs';
+import { Project } from "ts-morph";
+import * as path from "path";
+import * as fs from "fs";
 
 /**
  * Initialize a ts-morph Project from a given root directory.
@@ -26,15 +26,13 @@ export function loadProject(projectPath: string): Project {
     },
   });
 
-  project.addSourceFilesAtPaths(
-    path.join(projectPath, 'src/**/*.{ts,tsx}')
-  );
+  project.addSourceFilesAtPaths(path.join(projectPath, "src/**/*.{ts,tsx}"));
 
   return project;
 }
 
 function findTsConfig(dir: string): string | null {
-  const candidates = ['tsconfig.json', 'tsconfig.app.json'];
+  const candidates = ["tsconfig.json", "tsconfig.app.json"];
   for (const name of candidates) {
     const fullPath = path.join(dir, name);
     if (fs.existsSync(fullPath)) return fullPath;
@@ -44,8 +42,8 @@ function findTsConfig(dir: string): string | null {
 
 /**
  * Compute the project slug from a directory path.
- * E.g., "C:\Users\Shadow\Projects\command-center-v2" -> "command-center-v2"
+ * E.g., "~/projects/command-center" -> "command-center"
  */
 export function getProjectSlug(projectPath: string): string {
-  return path.basename(projectPath).toLowerCase().replace(/\s+/g, '-');
+  return path.basename(projectPath).toLowerCase().replace(/\s+/g, "-");
 }

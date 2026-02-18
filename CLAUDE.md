@@ -1,11 +1,14 @@
 # Command Center v2
 
 ## Project
+
 Centraal command center dashboard voor Claude Code setup.
+
 - **Live:** https://command-center-app-nine.vercel.app
 - **Supabase:** Project ID `ikpmlhmbooaxfrlpzcfa`
 
 ## Tech Stack
+
 - **Framework:** Next.js 14 (App Router, Server Components)
 - **Database:** Supabase (PostgreSQL)
 - **Styling:** Tailwind CSS v4
@@ -16,15 +19,18 @@ Centraal command center dashboard voor Claude Code setup.
 - **Deployment:** Vercel
 
 ## Design System
+
 Huisstijl is toegepast:
+
 - ALLEEN zinc palette (GEEN blauwe, groene, paarse accenten)
 - Glassmorphism + monochrome glow voor hover
 - Inter (body), DM Sans (headings optioneel), monospace voor code
 - Bron: `~/.claude/design-system/HUISSTIJL.md`
 
 ## Directory Structuur
+
 ```
-command-center-v2/
+command-center/
 ├── command-center-app/src/       # Next.js dashboard
 │   ├── app/
 │   │   ├── (dashboard)/          # Pages: home, activity, registry, tasks, settings, map
@@ -88,6 +94,7 @@ command-center-v2/
 ```
 
 ## Conventies
+
 - Server Components by default (pages zijn async server components)
 - 'use client' alleen voor interactieve UI (filters, modals, drag-drop)
 - Supabase server queries via SERVICE_ROLE_KEY (bypass RLS)
@@ -95,6 +102,7 @@ command-center-v2/
 - Tailwind v4: custom CSS in `@layer components` blok voor behoud door Lightning CSS
 
 ## Environment Variables
+
 - `NEXT_PUBLIC_SUPABASE_URL` — Supabase project URL
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Publieke Supabase key
 - `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase key (bypass RLS)
@@ -103,43 +111,47 @@ command-center-v2/
 ## Supabase Schema
 
 ### Registry & Dashboard
-| Tabel | Doel |
-|-------|------|
-| `registry_items` | Alle assets (apis, prompts, skills, agents, commands, instructions) |
-| `projecten` | Geregistreerde projecten met metadata |
-| `project_changelog` | Wijzigingslog per project (door sync gegenereerd) |
-| `kanban_tasks` | Taken met status, prioriteit, project-koppeling |
-| `activity_log` | Alle events (created, used, synced) |
-| `project_memories` | Markdown documenten per project |
-| `inbox_pending` | Onverwerkte sync-verzoeken |
+
+| Tabel               | Doel                                                                |
+| ------------------- | ------------------------------------------------------------------- |
+| `registry_items`    | Alle assets (apis, prompts, skills, agents, commands, instructions) |
+| `projecten`         | Geregistreerde projecten met metadata                               |
+| `project_changelog` | Wijzigingslog per project (door sync gegenereerd)                   |
+| `kanban_tasks`      | Taken met status, prioriteit, project-koppeling                     |
+| `activity_log`      | Alle events (created, used, synced)                                 |
+| `project_memories`  | Markdown documenten per project                                     |
+| `inbox_pending`     | Onverwerkte sync-verzoeken                                          |
 
 ### Intelligence Map & Deep Scan
-| Tabel | Doel |
-|-------|------|
-| `entity_relationships` | Alle relaties tussen items (source → target, type, sterkte) |
-| `asset_hierarchy` | Boomstructuur van assets (parent-child, depth, path) |
-| `system_clusters` | Auto-gedetecteerde groepen (naam, slug, health, member_count) |
-| `map_insights` | Gegenereerde inzichten (orphans, hubs, gaps, patronen) |
-| `entity_versions` | Versie-geschiedenis per entity |
-| `project_api_routes` | Gedetecteerde API routes per project |
-| `service_costs` | Kosten per dienst/project |
-| `usage_statistics` | Gebruiksstatistieken per item |
-| `user_visits` | Laatste bezoek per gebruiker (voor "Sinds je laatste bezoek") |
-| `shared_views` | Gedeelde kaart-weergaven |
-| `user_bookmarks` | Opgeslagen bladwijzers |
+
+| Tabel                  | Doel                                                          |
+| ---------------------- | ------------------------------------------------------------- |
+| `entity_relationships` | Alle relaties tussen items (source → target, type, sterkte)   |
+| `asset_hierarchy`      | Boomstructuur van assets (parent-child, depth, path)          |
+| `system_clusters`      | Auto-gedetecteerde groepen (naam, slug, health, member_count) |
+| `map_insights`         | Gegenereerde inzichten (orphans, hubs, gaps, patronen)        |
+| `entity_versions`      | Versie-geschiedenis per entity                                |
+| `project_api_routes`   | Gedetecteerde API routes per project                          |
+| `service_costs`        | Kosten per dienst/project                                     |
+| `usage_statistics`     | Gebruiksstatistieken per item                                 |
+| `user_visits`          | Laatste bezoek per gebruiker (voor "Sinds je laatste bezoek") |
+| `shared_views`         | Gedeelde kaart-weergaven                                      |
+| `user_bookmarks`       | Opgeslagen bladwijzers                                        |
 
 ### Code Intelligence
-| Tabel | Doel | Volume |
-|-------|------|--------|
-| `project_symbols` | Functies, classes, interfaces, types, enums, methods, properties | ~419 per project |
-| `project_references` | Cross-references tussen symbolen (imports, calls) | ~427 per project |
-| `project_diagnostics` | TypeScript compiler fouten en warnings | 0 bij gezonde code |
-| `project_dependencies` | npm packages met versie en type (prod/dev/peer/optional) | ~21 per project |
-| `project_metrics` | Geaggregeerde metrics (1 rij per project): files, LOC, languages, symbols, exports, errors, warnings, deps | 1 per project |
+
+| Tabel                  | Doel                                                                                                       | Volume             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
+| `project_symbols`      | Functies, classes, interfaces, types, enums, methods, properties                                           | ~419 per project   |
+| `project_references`   | Cross-references tussen symbolen (imports, calls)                                                          | ~427 per project   |
+| `project_diagnostics`  | TypeScript compiler fouten en warnings                                                                     | 0 bij gezonde code |
+| `project_dependencies` | npm packages met versie en type (prod/dev/peer/optional)                                                   | ~21 per project    |
+| `project_metrics`      | Geaggregeerde metrics (1 rij per project): files, LOC, languages, symbols, exports, errors, warnings, deps | 1 per project      |
 
 ## Code Intelligence
 
 ### MCP Server (`cc-v2-mcp/`)
+
 Een Model Context Protocol server die TypeScript projecten analyseert via ts-morph.
 
 **7 MCP Tools:**
@@ -156,6 +168,7 @@ Een Model Context Protocol server die TypeScript projecten analyseert via ts-mor
 **Gebruik:** Bij vragen over code, symbolen, dependencies of projectgezondheid → gebruik deze MCP tools. Ze lezen uit Supabase (na eerdere analyse) of draaien een nieuwe analyse.
 
 ### Data Flow
+
 ```
 analyze_project(pad)
   → ts-morph laadt tsconfig.json + bronbestanden
@@ -167,19 +180,21 @@ analyze_project(pad)
 ```
 
 ### Dashboard Tabs (Project Detail)
-| Tab | Component | Data |
-|-----|-----------|------|
-| Overzicht | OverviewSection + bestaand | IdentityCard, AttentionPoints, changelog, memories, assets, tech stack |
-| Functies | `FunctionsSection.tsx` | Auto-detected capabilities gegroepeerd per categorie |
-| Onderdelen | `AssetsTree.tsx` | Hiërarchische boom van project assets |
-| Verbindingen | `ConnectionsSection.tsx` | Relaties + gedeelde diensten |
-| Code | `CodeTab.tsx` | Symbolen gegroepeerd per bestand, filter chips per kind |
-| Dependencies | `DependenciesTab.tsx` | Packages gegroepeerd op type (production/dev/peer/optional) |
-| Health | `HealthTab.tsx` | Health badge, metrics grid, diagnostics, taalverdeling |
+
+| Tab          | Component                  | Data                                                                   |
+| ------------ | -------------------------- | ---------------------------------------------------------------------- |
+| Overzicht    | OverviewSection + bestaand | IdentityCard, AttentionPoints, changelog, memories, assets, tech stack |
+| Functies     | `FunctionsSection.tsx`     | Auto-detected capabilities gegroepeerd per categorie                   |
+| Onderdelen   | `AssetsTree.tsx`           | Hiërarchische boom van project assets                                  |
+| Verbindingen | `ConnectionsSection.tsx`   | Relaties + gedeelde diensten                                           |
+| Code         | `CodeTab.tsx`              | Symbolen gegroepeerd per bestand, filter chips per kind                |
+| Dependencies | `DependenciesTab.tsx`      | Packages gegroepeerd op type (production/dev/peer/optional)            |
+| Health       | `HealthTab.tsx`            | Health badge, metrics grid, diagnostics, taalverdeling                 |
 
 ## Intelligence Map
 
 ### Overzichtskaart (`/map`)
+
 Interactieve visuele kaart van het hele AI-ecosysteem.
 
 **Componenten:**
@@ -197,9 +212,11 @@ Interactieve visuele kaart van het hele AI-ecosysteem.
 | `QuickActions.tsx` | FAB met scan/sync knoppen |
 
 ### Deep Scan Pipeline
+
 Scant `~/.claude/` directory en genereert relaties, hiërarchie, clusters en inzichten.
 
 **Data Flow:**
+
 ```
 runDeepScan(basePath)
   → scanInventory()     → 232+ items uit ~/.claude/
@@ -211,12 +228,15 @@ runDeepScan(basePath)
 ```
 
 **Uitvoeren:**
+
 - Via CLI: `npx tsx scripts/deep-scan.ts` vanuit `command-center-app/`
 - Via Claude Code: `/deep-scan` command
 - Via API: `GET /api/sync/deep-scan` (status) of `POST /api/sync/deep-scan` (opslaan)
 
 ## Sync Pipeline
+
 Registry data flow: `~/.claude/registry/*.json` → `scripts/sync-registry.mjs` → `POST /api/sync` → Supabase
+
 - **Handmatig:** `SYNC_API_KEY="<key>" npm run sync` vanuit `command-center-app/`
 - **Via Claude Code:** `/sync-cc` command
 - Het script leest alle registry JSON bestanden en pusht per type naar de sync API
@@ -224,10 +244,10 @@ Registry data flow: `~/.claude/registry/*.json` → `scripts/sync-registry.mjs` 
 
 ## Systeemrollen
 
-| Systeem | Rol | Data |
-|---------|-----|------|
-| **Claude CLI** | Runtime — produceert en gebruikt assets (agents, commands, skills, etc.) | `~/.claude/registry/*.json` (source of truth) |
-| **CC v2 MCP Server** | Analyse — scant TypeScript projecten, slaat resultaten op | `cc-v2-mcp/` → Supabase code intelligence tabellen |
+| Systeem               | Rol                                                                             | Data                                                       |
+| --------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Claude CLI**        | Runtime — produceert en gebruikt assets (agents, commands, skills, etc.)        | `~/.claude/registry/*.json` (source of truth)              |
+| **CC v2 MCP Server**  | Analyse — scant TypeScript projecten, slaat resultaten op                       | `cc-v2-mcp/` → Supabase code intelligence tabellen         |
 | **Command Center v2** | Dashboard + data store — visueel overzicht, project memories, code intelligence | Supabase (mirror via sync + memories + metadata + analyse) |
 
 - Claude CLI is de **producent** (`/save-to-cc` slaat assets op, `/memory` schrijft memories, `/onboard` detecteert project info)
@@ -236,7 +256,9 @@ Registry data flow: `~/.claude/registry/*.json` → `scripts/sync-registry.mjs` 
 - Geen Serena meer — CC v2 vervangt alle Serena management-functionaliteit
 
 ## Project Memories
+
 Project memories zijn markdown documenten per project, opgeslagen in Supabase `project_memories` tabel.
+
 - **Schrijven:** `/memory` command of `POST /api/projects/[slug]/memories`
 - **Lezen:** Dashboard project detail pagina of `GET /api/projects/[slug]/memories`
 - **Verwijderen:** `DELETE /api/projects/[slug]/memories/[name]`

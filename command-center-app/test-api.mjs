@@ -94,7 +94,7 @@ async function run() {
   })
 
   // A.6: PATCH without auth
-  await test('A.6 PATCH no auth', '/api/projects/command-center-v2', {
+  await test('A.6 PATCH no auth', '/api/projects/command-center', {
     method: 'PATCH',
     body: { description: 'hacked' },
     expect: { status: 401, errorContains: 'Unauthorized' }
@@ -108,7 +108,7 @@ async function run() {
   console.log('=== ANGLE B: MEMORIES CRUD TESTS ===\n')
 
   // B.1: Create memory
-  await test('B.1 Create memory', '/api/projects/command-center-v2/memories', {
+  await test('B.1 Create memory', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY },
     body: { name: 'test-quality-check', content: '# Test Memory\nAangemaakt door QA-plan.' },
@@ -116,17 +116,17 @@ async function run() {
   })
 
   // B.2: List memories
-  const listRes = await test('B.2 List memories', '/api/projects/command-center-v2/memories', {
+  const listRes = await test('B.2 List memories', '/api/projects/command-center/memories', {
     expect: { status: 200, hasKey: 'memories' }
   })
 
   // B.3: Read specific memory
-  await test('B.3 Read specific memory', '/api/projects/command-center-v2/memories/test-quality-check', {
+  await test('B.3 Read specific memory', '/api/projects/command-center/memories/test-quality-check', {
     expect: { status: 200, hasKey: 'memory' }
   })
 
   // B.4: Update memory (upsert)
-  await test('B.4 Update memory', '/api/projects/command-center-v2/memories', {
+  await test('B.4 Update memory', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY },
     body: { name: 'test-quality-check', content: '# Updated Test Memory\nContent bijgewerkt.' },
@@ -134,36 +134,36 @@ async function run() {
   })
 
   // B.5: Verify update
-  await test('B.5 Verify update', '/api/projects/command-center-v2/memories/test-quality-check', {
+  await test('B.5 Verify update', '/api/projects/command-center/memories/test-quality-check', {
     expect: { status: 200, bodyContains: 'Updated Test Memory' }
   })
 
   // B.6: Delete memory
-  await test('B.6 Delete memory', '/api/projects/command-center-v2/memories/test-quality-check', {
+  await test('B.6 Delete memory', '/api/projects/command-center/memories/test-quality-check', {
     method: 'DELETE',
     headers: { 'x-api-key': API_KEY },
     expect: { status: 200, hasKey: 'success' }
   })
 
   // B.7: Verify deletion
-  await test('B.7 Verify deletion', '/api/projects/command-center-v2/memories/test-quality-check', {
+  await test('B.7 Verify deletion', '/api/projects/command-center/memories/test-quality-check', {
     expect: { status: 404, errorContains: 'not found' }
   })
 
   // B.8: Non-existent memory
-  await test('B.8 Non-existent memory', '/api/projects/command-center-v2/memories/does-not-exist', {
+  await test('B.8 Non-existent memory', '/api/projects/command-center/memories/does-not-exist', {
     expect: { status: 404, errorContains: 'not found' }
   })
 
   console.log('=== ANGLE C: PROJECT METADATA TESTS ===\n')
 
   // C.1: Read project metadata
-  await test('C.1 Read project metadata', '/api/projects/command-center-v2', {
+  await test('C.1 Read project metadata', '/api/projects/command-center', {
     expect: { status: 200, hasKey: 'project' }
   })
 
   // C.2: Update single field
-  await test('C.2 Update tech_stack', '/api/projects/command-center-v2', {
+  await test('C.2 Update tech_stack', '/api/projects/command-center', {
     method: 'PATCH',
     headers: { 'x-api-key': API_KEY },
     body: { tech_stack: ['Next.js 14', 'Supabase', 'Tailwind CSS v4', 'Lucide React', '@dnd-kit'] },
@@ -171,7 +171,7 @@ async function run() {
   })
 
   // C.3: Update multiple fields
-  await test('C.3 Update multiple fields', '/api/projects/command-center-v2', {
+  await test('C.3 Update multiple fields', '/api/projects/command-center', {
     method: 'PATCH',
     headers: { 'x-api-key': API_KEY },
     body: { languages: ['typescript'], build_command: 'npm run build', dev_command: 'npm run dev', live_url: 'https://command-center-app-nine.vercel.app' },
@@ -179,7 +179,7 @@ async function run() {
   })
 
   // C.4: Rejected fields
-  await test('C.4 Rejected fields', '/api/projects/command-center-v2', {
+  await test('C.4 Rejected fields', '/api/projects/command-center', {
     method: 'PATCH',
     headers: { 'x-api-key': API_KEY },
     body: { id: 'hacked-id', created_at: '1970-01-01' },
@@ -187,7 +187,7 @@ async function run() {
   })
 
   // C.5: Type validation
-  await test('C.5 Type validation tech_stack', '/api/projects/command-center-v2', {
+  await test('C.5 Type validation tech_stack', '/api/projects/command-center', {
     method: 'PATCH',
     headers: { 'x-api-key': API_KEY },
     body: { tech_stack: 'not-an-array' },
@@ -197,7 +197,7 @@ async function run() {
   console.log('=== ANGLE D: EDGE CASE TESTS ===\n')
 
   // D.1: POST without name
-  await test('D.1 POST no name', '/api/projects/command-center-v2/memories', {
+  await test('D.1 POST no name', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY },
     body: { content: 'no name' },
@@ -205,7 +205,7 @@ async function run() {
   })
 
   // D.2: POST without content
-  await test('D.2 POST no content', '/api/projects/command-center-v2/memories', {
+  await test('D.2 POST no content', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY },
     body: { name: 'empty' },
@@ -213,7 +213,7 @@ async function run() {
   })
 
   // D.3: POST empty body
-  await test('D.3 POST empty body', '/api/projects/command-center-v2/memories', {
+  await test('D.3 POST empty body', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY },
     body: {},
@@ -221,7 +221,7 @@ async function run() {
   })
 
   // D.4: POST invalid JSON
-  await test('D.4 POST invalid JSON', '/api/projects/command-center-v2/memories', {
+  await test('D.4 POST invalid JSON', '/api/projects/command-center/memories', {
     method: 'POST',
     headers: { 'x-api-key': API_KEY, 'Content-Type': 'application/json' },
     body: 'this is not json',
@@ -229,7 +229,7 @@ async function run() {
   })
 
   // D.5: PATCH without valid fields
-  await test('D.5 PATCH no valid fields', '/api/projects/command-center-v2', {
+  await test('D.5 PATCH no valid fields', '/api/projects/command-center', {
     method: 'PATCH',
     headers: { 'x-api-key': API_KEY },
     body: { invalid_field: 'test' },
@@ -242,7 +242,7 @@ async function run() {
   })
 
   // D.7: Invalid URL encoding
-  await test('D.7 Invalid URL encoding', '/api/projects/command-center-v2/memories/%E0%A4%A', {
+  await test('D.7 Invalid URL encoding', '/api/projects/command-center/memories/%E0%A4%A', {
     expect: { status: 400 }
   })
 
