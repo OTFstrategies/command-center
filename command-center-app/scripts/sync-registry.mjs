@@ -121,6 +121,31 @@ async function main() {
   if (skipped.length) console.log(`Skipped: ${skipped.length} types`)
   if (failed.length) console.log(`Failed: ${failed.length} types`)
 
+  // Log sync summary as activity event
+  try {
+    await fetch(`${API_BASE}/api/activity`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+      },
+      body: JSON.stringify({
+        item_type: 'sync',
+        item_name: 'registry-sync',
+        action: 'synced',
+        details: {
+          types_synced: ok.map(r => r.type),
+          total_items: totalItems,
+          duration_ms: duration,
+          failed: failed.map(r => r.type),
+          source: 'cli',
+        },
+      }),
+    })
+  } catch {
+    console.log('  [WARN] Could not log sync activity')
+  }
+
   // Update job status
   if (jobId) {
     try {
