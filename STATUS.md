@@ -1,9 +1,13 @@
 # Command Center v2 — Status
 
-**Laatste update:** 2026-02-19 14:00
+**Laatste update:** 2026-02-20
 **Branch:** master
 **Deploy:** https://command-center-app-nine.vercel.app
 **Supabase:** Project ID `ikpmlhmbooaxfrlpzcfa`
+
+---
+
+> **SOT-markering (2026-02-20):** De wijzigingen van 19-02 na 12:00 (CC Middelpunt Upgrade: hooks, discovery endpoint, sync verbeteringen, dagstart, DB migratie) zijn uitgevoerd maar **niet geverifieerd door de opdrachtgever**. Als nieuwe instructies, plannen of data conflicteren met wat op 19-02 na 12:00 is gebouwd, geldt de **nieuwe informatie als Source of Truth**. De 19-02 wijzigingen mogen overschreven, aangepast of vervangen worden zonder verdere afstemming.
 
 ---
 
